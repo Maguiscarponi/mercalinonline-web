@@ -1,22 +1,38 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Barlow, Barlow_Condensed } from "next/font/google";
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
+import { CartProvider } from "@/lib/cart";
 import "./globals.css";
 
-const jakarta = Plus_Jakarta_Sans({
-  variable: "--font-jakarta",
+const barlow = Barlow({
+  variable: "--font-barlow",
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+});
+
+const barlowCondensed = Barlow_Condensed({
+  variable: "--font-barlow-condensed",
+  weight: ["500", "600", "700", "800"],
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Mercalin — Sistema de gestión para kioscos y almacenes",
+  title: "Mercalin — Sistema de gestión para comercios",
   description:
-    "El sistema de punto de venta para kioscos y almacenes argentinos. Funciona sin internet. Pago único, no es una suscripción. Probá 7 días gratis.",
+    "Sistema de gestión para comercios que venden productos: ventas, stock, caja, clientes y proveedores. Funciona sin internet. Pago único, $65.000 ARS. Probá 7 días gratis.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="es" className={`${jakarta.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="es" className={`${barlow.variable} ${barlowCondensed.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col">
+        <CartProvider>
+          <SiteHeader />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+        </CartProvider>
+      </body>
     </html>
   );
 }
