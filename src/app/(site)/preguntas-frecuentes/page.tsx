@@ -1,3 +1,4 @@
+import ContactoArca from "@/components/ContactoArca";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -48,12 +49,21 @@ const FAQS = [
   },
   {
     q: "¿Con quién hablo si tengo una duda?",
-    a: "Directo por mail, respondemos nosotros mismos.",
+    a: "Con nosotros, por WhatsApp al +54 2344 50-2904. Soporte 24/7: te responde la persona que hizo el sistema, no un call center.",
+  },
+  {
+    q: "¿Las actualizaciones se pagan aparte?",
+    a: "No. Las actualizaciones vienen incluidas: el sistema se actualiza solo y no te cobramos de nuevo.",
+  },
+  {
+    q: "¿Factura con ARCA?",
+    a: "Esta versión no. Si tu comercio necesita facturación electrónica, escribinos por WhatsApp antes de comprar y te contamos cómo lo resolvemos.",
   },
 ];
 
 export default function PreguntasFrecuentes() {
   return (
+    <>
     <section className="mx-auto max-w-3xl px-6 py-16 sm:py-20">
       <p className="tag-numbered text-xs text-brand">Preguntas frecuentes</p>
       <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
@@ -68,5 +78,7 @@ export default function PreguntasFrecuentes() {
         ))}
       </div>
     </section>
+    <ContactoArca />
+    </>
   );
 }

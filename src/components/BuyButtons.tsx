@@ -1,14 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart";
 import type { Product } from "@/lib/products";
 
-const TRIAL_MAILTO =
-  "mailto:magaliscarponi@gmail.com?subject=Quiero%20probar%20Mercalin%20gratis&body=Hola%2C%20quiero%20probar%20Mercalin%207%20d%C3%ADas%20gratis.%0D%0A%0D%0AMi%20mail%3A%20%0D%0AMi%20negocio%3A%20";
-
-// Las dos puertas de conversión, siempre juntas: probar (mail directo, hoy
-// es el único canal real) y comprar (agrega al carrito y lleva a pagar).
+// Las dos puertas de conversión, siempre juntas: probar (formulario propio,
+// sin pasarela) y comprar (agrega al carrito y lleva a pagar).
 export default function BuyButtons({ product, className = "" }: { product: Product; className?: string }) {
   const { add } = useCart();
   const router = useRouter();
@@ -20,16 +18,16 @@ export default function BuyButtons({ product, className = "" }: { product: Produ
 
   return (
     <div className={`flex flex-wrap items-center gap-3 ${className}`}>
-      <a
-        href={TRIAL_MAILTO}
-        className="rounded-md bg-brand px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-dark"
+      <Link
+        href={`/prueba-gratis?product=${product.slug}`}
+        className="rounded-md bg-brand px-6 py-3 text-sm font-semibold text-white shadow-sm shadow-brand/30 transition-all hover:-translate-y-0.5 hover:bg-brand-dark hover:shadow-md"
       >
         Probar 7 días gratis
-      </a>
+      </Link>
       <button
         type="button"
         onClick={handleBuy}
-        className="rounded-md border border-foreground/20 px-6 py-3 text-sm font-semibold text-foreground transition-colors hover:border-foreground/40"
+        className="rounded-md border border-foreground/20 bg-white px-6 py-3 text-sm font-semibold text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:border-foreground/40 hover:shadow-md"
       >
         Comprar ahora
       </button>

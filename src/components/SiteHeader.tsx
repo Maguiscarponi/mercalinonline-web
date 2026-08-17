@@ -6,56 +6,70 @@ import { usePathname } from "next/navigation";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/lib/cart";
 
-const TRIAL_MAILTO =
-  "mailto:magaliscarponi@gmail.com?subject=Quiero%20probar%20Mercalin%20gratis&body=Hola%2C%20quiero%20probar%20Mercalin%207%20d%C3%ADas%20gratis.%0D%0A%0D%0AMi%20mail%3A%20%0D%0AMi%20negocio%3A%20";
-
 const LINKS = [
   { href: "/", label: "Inicio" },
   { href: "/productos", label: "Productos" },
-  { href: "/como-funciona", label: "Cómo funciona" },
-  { href: "/preguntas-frecuentes", label: "Preguntas frecuentes" },
+  { href: "/preguntas-frecuentes", label: "Preguntas" },
 ];
 
 export default function SiteHeader() {
   const pathname = usePathname();
   const { count } = useCart();
 
+  const isActive = (href: string) =>
+    pathname === href || (href !== "/" && pathname.startsWith(href));
+
   return (
-    <header className="sticky top-0 z-20 border-b border-black/10 bg-background/95 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-        <Link href="/">
-          <Image src="/mercalin-logo.svg" alt="Mercalin" width={126} height={38} priority />
+    <header className="sticky top-0 z-20 bg-[#161412] shadow-[0_6px_20px_rgba(0,0,0,0.12)]">
+      <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
+        {/* Marca: isotipo rojo + wordmark en minuscula, como el logo original */}
+        <Link href="/" className="flex items-center gap-2.5" aria-label="Mercalin — inicio">
+          <Image src="/mercalin-isotipo.svg" alt="" width={34} height={34} priority />
+          <span className="text-[26px] font-bold leading-none tracking-[-0.02em]">
+            <span className="text-white">Merca</span>
+            <span className="text-[#ff5b52]">lin</span>
+          </span>
         </Link>
-        <nav className="flex items-center gap-6 text-sm font-semibold">
-          <div className="hidden items-center gap-6 lg:flex">
+
+        <nav className="flex items-center gap-1 sm:gap-2">
+          <div className="hidden items-center lg:flex">
             {LINKS.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
-                className={
-                  pathname === l.href || (l.href !== "/" && pathname.startsWith(l.href))
-                    ? "text-foreground"
-                    : "text-foreground/50 transition-colors hover:text-foreground"
-                }
+                className={`tag-numbered relative px-3.5 py-2 text-[15px] transition-colors ${
+                  isActive(l.href) ? "text-white" : "text-white/60 hover:text-white"
+                }`}
               >
                 {l.label}
+                <span
+                  className={`absolute inset-x-3.5 -bottom-0.5 h-0.5 rounded-full bg-brand transition-opacity ${
+                    isActive(l.href) ? "opacity-100" : "opacity-0"
+                  }`}
+                />
               </Link>
             ))}
           </div>
-          <Link href="/carrito" className="relative text-foreground/70 transition-colors hover:text-foreground" aria-label="Carrito">
-            <ShoppingCart className="h-5 w-5" strokeWidth={2} />
+
+          <Link
+            href="/carrito"
+            aria-label="Carrito"
+            className="relative ml-1 flex h-10 w-10 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            <ShoppingCart className="h-5 w-5" strokeWidth={2.2} />
             {count > 0 && (
-              <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-brand text-[10px] font-bold text-white">
+              <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-brand text-[10px] font-bold text-white">
                 {count}
               </span>
             )}
           </Link>
-          <a
-            href={TRIAL_MAILTO}
-            className="rounded-md bg-brand px-4 py-2 text-white transition-colors hover:bg-brand-dark"
+
+          <Link
+            href="/prueba-gratis"
+            className="tag-numbered ml-1 rounded-full bg-brand px-5 py-2.5 text-[15px] text-white transition-colors hover:bg-brand-dark"
           >
             Probar 7 días
-          </a>
+          </Link>
         </nav>
       </div>
     </header>

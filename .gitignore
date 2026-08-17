@@ -36,6 +36,18 @@ yarn-error.log*
 # vercel
 .vercel
 
+# base de datos local de desarrollo (prod usa Supabase Postgres)
+/dev.db
+/dev.db-journal
+/dev.db-shm
+/dev.db-wal
+
+# imágenes subidas desde el admin en desarrollo local (prod usa Supabase Storage)
+/public/uploads/
+
+# código viejo de landing pages descartadas, no se llegó a borrar del disco
+/_to_delete/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

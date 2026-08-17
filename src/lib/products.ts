@@ -1,6 +1,10 @@
-// Un solo producto existe hoy — la estructura está pensada para poder sumar
-// otros (ej. "Mercalin con ARCA", "Mercalin Ferreterías") sin rediseñar nada,
-// pero NO se crea contenido ficticio para productos que todavía no existen.
+import { randomUUID } from "node:crypto";
+import { getDb } from "./db";
+
+// Antes esto era un array hardcodeado. Ahora vive en SQLite (dev.db) para
+// que el panel admin pueda publicar productos nuevos sin tocar código —
+// pero la forma de los datos (Product, FeatureGroup) no cambió, así que
+// nada que consuma este módulo tuvo que rediseñarse.
 
 export interface FeatureGroup {
   title: string;
@@ -8,6 +12,7 @@ export interface FeatureGroup {
 }
 
 export interface Product {
+  id: string;
   slug: string;
   name: string;
   tagline: string;
@@ -15,76 +20,133 @@ export interface Product {
   priceArs: number;
   idealFor: string[];
   featureGroups: FeatureGroup[];
+  downloadUrl: string | null;
+  imageUrl: string | null;
+  active: boolean;
+  featured: boolean;
 }
 
-export const PRODUCTS: Product[] = [
-  {
-    slug: "mercalin",
-    name: "Mercalin — Sistema de gestión sin ARCA",
-    tagline: "Sistema de gestión para comercios que venden productos.",
-    description:
-      "Ventas, stock, caja, clientes y proveedores, todo en un solo sistema. Se instala en la computadora del negocio y funciona con o sin internet — no depende de un servidor externo. Incluye un motor de recomendaciones que analiza las ventas reales del negocio y avisa antes de que haga falta preguntar.",
-    priceArs: 65000,
-    idealFor: [
-      "Kioscos",
-      "Almacenes",
-      "Minimercados",
-      "Ferreterías",
-      "Indumentaria",
-      "Librerías",
-      "Bazares",
-      "Otros comercios con productos y stock",
-    ],
-    featureGroups: [
-      {
-        title: "Ventas y caja",
-        items: [
-          "Venta por escaneo de código de barras o búsqueda por nombre",
-          "Efectivo, débito, crédito, QR, transferencia, cuenta corriente y pagos mixtos",
-          "Apertura y cierre de caja con efectivo esperado calculado solo",
-          "Devoluciones y cambios sin romper el historial de ventas",
-          "Funciona sin conexión — la base de datos vive en la computadora del negocio",
-        ],
-      },
-      {
-        title: "Stock y productos",
-        items: [
-          "Alertas de stock crítico según la velocidad real de venta de cada producto",
-          "Control de vencimientos y lotes",
-          "Conteo físico de inventario con ajuste masivo",
-          "Impresión de etiquetas con código de barras",
-          "Combos y productos pesables",
-        ],
-      },
-      {
-        title: "Clientes y proveedores",
-        items: [
-          "Cuenta corriente por cliente, con alertas de cuentas vencidas",
-          "Pedidos a proveedores con recepción de mercadería",
-          "Presupuestos que se convierten en venta con un clic",
-        ],
-      },
-      {
-        title: "Informes",
-        items: [
-          "Reportes de ventas, márgenes reales y valor de stock",
-          "Comparación con períodos anteriores",
-          "Motor de consejos: analiza 90 días de ventas propias y recomienda acciones concretas — qué reponer, qué precio ajustar, qué cliente dejó de comprar",
-        ],
-      },
-      {
-        title: "Configuración",
-        items: [
-          "Múltiples usuarios con permisos por rol",
-          "Metas de venta y costos fijos del negocio",
-          "Backup automático — local o a una carpeta sincronizada con OneDrive, Google Drive o Dropbox",
-          "Actualizaciones automáticas",
-        ],
-      },
-    ],
-  },
-];
+interface ProductRow {
+  id: string;
+  slug: string;
+  name: string;
+  tagline: string;
+  description: string;
+  price_ars: number;
+  ideal_for: string;
+  feature_groups: string;
+  download_url: string | null;
+  image_url: string | null;
+  active: number;
+  featured: number;
+}
+
+function rowToProduct(row: ProductRow): Product {
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    tagline: row.tagline,
+    description: row.description,
+    priceArs: row.price_ars,
+    idealFor: JSON.parse(row.ideal_for),
+    featureGroups: JSON.parse(row.feature_groups),
+    downloadUrl: row.download_url,
+    imageUrl: row.image_url,
+    active: row.active === 1,
+    featured: row.featured === 1,
+  };
+}
+
+export function listProducts(): Product[] {
+  const rows = getDb()
+    .prepare("SELECT * FROM products WHERE active = 1 ORDER BY featured DESC, created_at ASC")
+    .all() as ProductRow[];
+  return rows.map(rowToProduct);
+}
+
+export function listAllProductsForAdmin(): Product[] {
+  const rows = getDb()
+    .prepare("SELECT * FROM products ORDER BY featured DESC, created_at ASC")
+    .all() as ProductRow[];
+  return rows.map(rowToProduct);
+}
 
 export function getProduct(slug: string): Product | undefined {
-  return PRODUCTS.find((p) => p.slug === slug);
+  const row = getDb().prepare("SELECT * FROM products WHERE slug = ?").get(slug) as ProductRow | undefined;
+  return row ? rowToProduct(row) : undefined;
+}
+
+export function getProductById(id: string): Product | undefined {
+  const row = getDb().prepare("SELECT * FROM products WHERE id = ?").get(id) as ProductRow | undefined;
+  return row ? rowToProduct(row) : undefined;
+}
+
+export interface ProductInput {
+  slug: string;
+  name: string;
+  tagline: string;
+  description: string;
+  priceArs: number;
+  idealFor: string[];
+  featureGroups: FeatureGroup[];
+  downloadUrl: string | null;
+  imageUrl: string | null;
+  active: boolean;
+}
+
+export function createProduct(input: ProductInput): Product {
+  const id = randomUUID();
+  getDb()
+    .prepare(
+      `INSERT INTO products (id, slug, name, tagline, description, price_ars, ideal_for, feature_groups, download_url, image_url, active)
+       VALUES (@id, @slug, @name, @tagline, @description, @price_ars, @ideal_for, @feature_groups, @download_url, @image_url, @active)`
+    )
+    .run({
+      id,
+      slug: input.slug,
+      name: input.name,
+      tagline: input.tagline,
+      description: input.description,
+      price_ars: input.priceArs,
+      ideal_for: JSON.stringify(input.idealFor),
+      feature_groups: JSON.stringify(input.featureGroups),
+      download_url: input.downloadUrl,
+      image_url: input.imageUrl,
+      active: input.active ? 1 : 0,
+    });
+  return getProductById(id)!;
+}
+
+export function updateProduct(id: string, input: ProductInput): Product {
+  getDb()
+    .prepare(
+      `UPDATE products SET slug = @slug, name = @name, tagline = @tagline, description = @description,
+       price_ars = @price_ars, ideal_for = @ideal_for, feature_groups = @feature_groups,
+       download_url = @download_url, image_url = @image_url, active = @active WHERE id = @id`
+    )
+    .run({
+      id,
+      slug: input.slug,
+      name: input.name,
+      tagline: input.tagline,
+      description: input.description,
+      price_ars: input.priceArs,
+      ideal_for: JSON.stringify(input.idealFor),
+      feature_groups: JSON.stringify(input.featureGroups),
+      download_url: input.downloadUrl,
+      image_url: input.imageUrl,
+      active: input.active ? 1 : 0,
+    });
+  return getProductById(id)!;
+}
+
+export function deleteProduct(id: string): void {
+  getDb().prepare("DELETE FROM products WHERE id = ?").run(id);
+}
+
+export function setProductFeatured(id: string, featured: boolean): void {
+  getDb()
+    .prepare("UPDATE products SET featured = ? WHERE id = ?")
+    .run(featured ? 1 : 0, id);
 }

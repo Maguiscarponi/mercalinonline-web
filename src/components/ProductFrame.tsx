@@ -1,38 +1,45 @@
 import Image from "next/image";
+import { ImageOff } from "lucide-react";
 
-// Marco para capturas reales del sistema. Hoy no hay capturas reales
-// disponibles (se verificó — las únicas imágenes existentes son de otro
-// proyecto, no de esta app), así que sin `src` muestra un placeholder
-// honesto con marcas de registro (estética técnica). El día que haya
-// capturas reales, alcanza con pasar `src` — no hay que rediseñar nada.
+// Sin `src`, no se inventa nada — queda vacío hasta que se cargue una
+// imagen real desde el panel admin.
 export default function ProductFrame({
-  label = "Captura del sistema",
-  note = "Próximamente",
+  label,
   aspect = "aspect-video",
   src,
+  fit = "contain",
+  sizes = "(min-width: 1024px) 480px, 100vw",
+  bordered = true,
 }: {
   label?: string;
-  note?: string;
   aspect?: string;
-  src?: string;
+  src?: string | null;
+  fit?: "contain" | "cover";
+  sizes?: string;
+  bordered?: boolean;
 }) {
   if (src) {
     return (
-      <div className={`relative ${aspect} w-full overflow-hidden border border-foreground/15`}>
-        <Image src={src} alt={label} fill className="object-cover" />
+      <div
+        className={`relative ${aspect} w-full overflow-hidden bg-white ${bordered ? "border border-black/10" : ""}`}
+      >
+        <Image
+          src={src}
+          alt={label ?? ""}
+          fill
+          sizes={sizes}
+          quality={100}
+          className={fit === "cover" ? "object-cover" : "object-contain"}
+        />
       </div>
     );
   }
 
   return (
-    <div className={`relative ${aspect} w-full border border-foreground/15`}>
-      <span className="absolute left-0 top-0 h-3 w-3 border-l border-t border-foreground/30" />
-      <span className="absolute right-0 top-0 h-3 w-3 border-r border-t border-foreground/30" />
-      <span className="absolute bottom-0 left-0 h-3 w-3 border-b border-l border-foreground/30" />
-      <span className="absolute bottom-0 right-0 h-3 w-3 border-b border-r border-foreground/30" />
-      <div className="flex h-full w-full flex-col items-center justify-center gap-1">
-        <span className="tag-numbered text-xs text-foreground/40">{label}</span>
-        <span className="text-[11px] text-foreground/25">{note}</span>
+    <div className={`relative ${aspect} w-full border border-dashed border-black/10 bg-foreground/[0.02]`}>
+      <div className="flex h-full w-full flex-col items-center justify-center gap-1.5 text-foreground/25">
+        <ImageOff className="h-6 w-6" strokeWidth={1.5} />
+        <span className="text-[11px]">Sin imagen</span>
       </div>
     </div>
   );
