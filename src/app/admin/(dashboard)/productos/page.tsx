@@ -6,8 +6,8 @@ import { deleteProductAction, toggleFeaturedAction } from "@/lib/actions/product
 
 export const dynamic = "force-dynamic";
 
-export default function AdminProductos() {
-  const products = listAllProductsForAdmin();
+export default async function AdminProductos() {
+  const products = await listAllProductsForAdmin();
 
   return (
     <div>

@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Mail inválido." }, { status: 400 });
   }
 
-  const product = getProduct(productSlug);
+  const product = await getProduct(productSlug);
   if (!product) {
     return NextResponse.json({ error: "Producto no encontrado." }, { status: 404 });
   }

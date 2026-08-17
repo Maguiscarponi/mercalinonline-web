@@ -1,10 +1,10 @@
 import { randomUUID } from "node:crypto";
 import { getDb } from "./db";
 
-// Antes esto era un array hardcodeado. Ahora vive en SQLite (dev.db) para
-// que el panel admin pueda publicar productos nuevos sin tocar código —
-// pero la forma de los datos (Product, FeatureGroup) no cambió, así que
-// nada que consuma este módulo tuvo que rediseñarse.
+// Vive en Postgres (Supabase) para que el panel admin pueda publicar
+// productos nuevos sin tocar código — pero la forma de los datos (Product,
+// FeatureGroup) no cambió, así que nada que consuma este módulo tuvo que
+// rediseñarse más allá de agregar `await`.
 
 export interface FeatureGroup {
   title: string;
@@ -58,28 +58,32 @@ function rowToProduct(row: ProductRow): Product {
   };
 }
 
-export function listProducts(): Product[] {
-  const rows = getDb()
-    .prepare("SELECT * FROM products WHERE active = 1 ORDER BY featured DESC, created_at ASC")
-    .all() as ProductRow[];
+export async function listProducts(): Promise<Product[]> {
+  const sql = getDb();
+  const rows = (await sql`
+    SELECT * FROM products WHERE active = 1 ORDER BY featured DESC, created_at ASC
+  `) as unknown as ProductRow[];
   return rows.map(rowToProduct);
 }
 
-export function listAllProductsForAdmin(): Product[] {
-  const rows = getDb()
-    .prepare("SELECT * FROM products ORDER BY featured DESC, created_at ASC")
-    .all() as ProductRow[];
+export async function listAllProductsForAdmin(): Promise<Product[]> {
+  const sql = getDb();
+  const rows = (await sql`
+    SELECT * FROM products ORDER BY featured DESC, created_at ASC
+  `) as unknown as ProductRow[];
   return rows.map(rowToProduct);
 }
 
-export function getProduct(slug: string): Product | undefined {
-  const row = getDb().prepare("SELECT * FROM products WHERE slug = ?").get(slug) as ProductRow | undefined;
-  return row ? rowToProduct(row) : undefined;
+export async function getProduct(slug: string): Promise<Product | undefined> {
+  const sql = getDb();
+  const rows = (await sql`SELECT * FROM products WHERE slug = ${slug}`) as unknown as ProductRow[];
+  return rows[0] ? rowToProduct(rows[0]) : undefined;
 }
 
-export function getProductById(id: string): Product | undefined {
-  const row = getDb().prepare("SELECT * FROM products WHERE id = ?").get(id) as ProductRow | undefined;
-  return row ? rowToProduct(row) : undefined;
+export async function getProductById(id: string): Promise<Product | undefined> {
+  const sql = getDb();
+  const rows = (await sql`SELECT * FROM products WHERE id = ${id}`) as unknown as ProductRow[];
+  return rows[0] ? rowToProduct(rows[0]) : undefined;
 }
 
 export interface ProductInput {
@@ -95,58 +99,37 @@ export interface ProductInput {
   active: boolean;
 }
 
-export function createProduct(input: ProductInput): Product {
+export async function createProduct(input: ProductInput): Promise<Product> {
+  const sql = getDb();
   const id = randomUUID();
-  getDb()
-    .prepare(
-      `INSERT INTO products (id, slug, name, tagline, description, price_ars, ideal_for, feature_groups, download_url, image_url, active)
-       VALUES (@id, @slug, @name, @tagline, @description, @price_ars, @ideal_for, @feature_groups, @download_url, @image_url, @active)`
-    )
-    .run({
-      id,
-      slug: input.slug,
-      name: input.name,
-      tagline: input.tagline,
-      description: input.description,
-      price_ars: input.priceArs,
-      ideal_for: JSON.stringify(input.idealFor),
-      feature_groups: JSON.stringify(input.featureGroups),
-      download_url: input.downloadUrl,
-      image_url: input.imageUrl,
-      active: input.active ? 1 : 0,
-    });
-  return getProductById(id)!;
+  await sql`
+    INSERT INTO products (id, slug, name, tagline, description, price_ars, ideal_for, feature_groups, download_url, image_url, active)
+    VALUES (${id}, ${input.slug}, ${input.name}, ${input.tagline}, ${input.description}, ${input.priceArs},
+            ${JSON.stringify(input.idealFor)}, ${JSON.stringify(input.featureGroups)}, ${input.downloadUrl},
+            ${input.imageUrl}, ${input.active ? 1 : 0})
+  `;
+  return (await getProductById(id))!;
 }
 
-export function updateProduct(id: string, input: ProductInput): Product {
-  getDb()
-    .prepare(
-      `UPDATE products SET slug = @slug, name = @name, tagline = @tagline, description = @description,
-       price_ars = @price_ars, ideal_for = @ideal_for, feature_groups = @feature_groups,
-       download_url = @download_url, image_url = @image_url, active = @active WHERE id = @id`
-    )
-    .run({
-      id,
-      slug: input.slug,
-      name: input.name,
-      tagline: input.tagline,
-      description: input.description,
-      price_ars: input.priceArs,
-      ideal_for: JSON.stringify(input.idealFor),
-      feature_groups: JSON.stringify(input.featureGroups),
-      download_url: input.downloadUrl,
-      image_url: input.imageUrl,
-      active: input.active ? 1 : 0,
-    });
-  return getProductById(id)!;
+export async function updateProduct(id: string, input: ProductInput): Promise<Product> {
+  const sql = getDb();
+  await sql`
+    UPDATE products SET
+      slug = ${input.slug}, name = ${input.name}, tagline = ${input.tagline}, description = ${input.description},
+      price_ars = ${input.priceArs}, ideal_for = ${JSON.stringify(input.idealFor)},
+      feature_groups = ${JSON.stringify(input.featureGroups)}, download_url = ${input.downloadUrl},
+      image_url = ${input.imageUrl}, active = ${input.active ? 1 : 0}
+    WHERE id = ${id}
+  `;
+  return (await getProductById(id))!;
 }
 
-export function deleteProduct(id: string): void {
-  getDb().prepare("DELETE FROM products WHERE id = ?").run(id);
+export async function deleteProduct(id: string): Promise<void> {
+  const sql = getDb();
+  await sql`DELETE FROM products WHERE id = ${id}`;
 }
 
-export function setProductFeatured(id: string, featured: boolean): void {
-  getDb()
-    .prepare("UPDATE products SET featured = ? WHERE id = ?")
-    .run(featured ? 1 : 0, id);
+export async function setProductFeatured(id: string, featured: boolean): Promise<void> {
+  const sql = getDb();
+  await sql`UPDATE products SET featured = ${featured ? 1 : 0} WHERE id = ${id}`;
 }

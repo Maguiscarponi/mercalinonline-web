@@ -5,8 +5,8 @@ import { createSlideAction, deleteSlideAction } from "@/lib/actions/slides";
 
 export const dynamic = "force-dynamic";
 
-export default function AdminCarrusel() {
-  const slides = listAllSlidesForAdmin();
+export default async function AdminCarrusel() {
+  const slides = await listAllSlidesForAdmin();
 
   return (
     <div>

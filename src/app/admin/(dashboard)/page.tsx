@@ -4,9 +4,9 @@ import { getActivationStats, listActivations } from "@/lib/activations";
 
 export const dynamic = "force-dynamic";
 
-export default function AdminDashboard() {
-  const stats = getActivationStats();
-  const recent = listActivations().slice(0, 8);
+export default async function AdminDashboard() {
+  const stats = await getActivationStats();
+  const recent = (await listActivations()).slice(0, 8);
 
   const tiles = [
     { icon: ShoppingBag, label: "Ventas", value: stats.totalSales },

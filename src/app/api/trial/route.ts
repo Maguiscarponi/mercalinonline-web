@@ -8,13 +8,13 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
   const email = typeof body?.email === "string" ? body.email.trim() : "";
   const businessName = typeof body?.businessName === "string" ? body.businessName.trim() : "";
-  const productSlug = typeof body?.productSlug === "string" ? body.productSlug : listProducts()[0]?.slug;
+  const productSlug = typeof body?.productSlug === "string" ? body.productSlug : (await listProducts())[0]?.slug;
 
   if (!email || !email.includes("@")) {
     return NextResponse.json({ error: "Mail inválido." }, { status: 400 });
   }
 
-  const product = productSlug ? getProduct(productSlug) : undefined;
+  const product = productSlug ? await getProduct(productSlug) : undefined;
   if (!product) {
     return NextResponse.json({ error: "Producto no encontrado." }, { status: 404 });
   }
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     }),
   });
 
-  createActivation({
+  await createActivation({
     email,
     businessName: businessName || null,
     productSlug: product.slug,

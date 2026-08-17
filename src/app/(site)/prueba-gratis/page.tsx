@@ -15,7 +15,7 @@ export default async function PruebaGratis({
   searchParams: Promise<{ product?: string }>;
 }) {
   const { product } = await searchParams;
-  const products = listProducts();
+  const products = await listProducts();
 
   return (
     <section className="mx-auto max-w-md px-6 py-16 sm:py-20">

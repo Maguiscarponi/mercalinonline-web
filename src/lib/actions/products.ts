@@ -34,7 +34,7 @@ async function parseProductForm(formData: FormData, existingImageUrl: string | n
 export async function createProductAction(formData: FormData) {
   await requireAdmin();
   const input = await parseProductForm(formData, null);
-  createProduct(input);
+  await createProduct(input);
   revalidatePath("/");
   revalidatePath("/productos");
   redirect("/admin/productos");
@@ -44,7 +44,7 @@ export async function updateProductAction(id: string, formData: FormData) {
   await requireAdmin();
   const existingImageUrl = String(formData.get("existingImageUrl") ?? "") || null;
   const input = await parseProductForm(formData, existingImageUrl);
-  updateProduct(id, input);
+  await updateProduct(id, input);
   revalidatePath("/");
   revalidatePath("/productos");
   revalidatePath(`/productos/${input.slug}`);
@@ -53,14 +53,14 @@ export async function updateProductAction(id: string, formData: FormData) {
 
 export async function deleteProductAction(id: string) {
   await requireAdmin();
-  deleteProduct(id);
+  await deleteProduct(id);
   revalidatePath("/");
   revalidatePath("/productos");
 }
 
 export async function toggleFeaturedAction(id: string, featured: boolean) {
   await requireAdmin();
-  setProductFeatured(id, featured);
+  await setProductFeatured(id, featured);
   revalidatePath("/");
   revalidatePath("/admin/productos");
 }

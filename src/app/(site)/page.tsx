@@ -5,7 +5,7 @@ import { listProducts } from "@/lib/products";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const products = listProducts();
+  const products = await listProducts();
 
   // La grilla se adapta a cuántos productos hay: con uno solo, tres columnas
   // dejan la fila vacía a la derecha y la página se ve rota.

@@ -11,7 +11,7 @@ export default async function AdminActivaciones({
 }) {
   const { page: pageParam } = await searchParams;
   const page = Number(pageParam ?? "1") || 1;
-  const { items: activations, page: currentPage, totalPages, total } = listActivationsPage(page);
+  const { items: activations, page: currentPage, totalPages, total } = await listActivationsPage(page);
 
   return (
     <div>

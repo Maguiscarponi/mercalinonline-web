@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   description: "Sistemas de gestión Mercalin.",
 };
 
-export default function Productos() {
-  const products = listProducts();
+export default async function Productos() {
+  const products = await listProducts();
   return (
     <section className="mx-auto max-w-5xl px-6 py-16 sm:py-20">
       <p className="tag-numbered text-xs text-brand">Productos</p>

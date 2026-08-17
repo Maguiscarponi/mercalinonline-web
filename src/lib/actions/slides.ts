@@ -12,14 +12,14 @@ export async function createSlideAction(formData: FormData) {
   const imageUrl = await saveUploadedImage(file);
   if (!imageUrl) return;
 
-  createSlide(imageUrl);
+  await createSlide(imageUrl);
   revalidatePath("/");
   revalidatePath("/admin/carrusel");
 }
 
 export async function deleteSlideAction(id: string) {
   await requireAdmin();
-  deleteSlide(id);
+  await deleteSlide(id);
   revalidatePath("/");
   revalidatePath("/admin/carrusel");
 }

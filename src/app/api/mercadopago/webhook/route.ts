@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     console.warn("[mp:webhook] MP_WEBHOOK_SECRET no configurado — aceptando sin verificar firma (solo dev).");
   }
 
-  const alreadyProcessed = listActivations().some((a) => a.mpPaymentId === dataId);
+  const alreadyProcessed = (await listActivations()).some((a) => a.mpPaymentId === dataId);
   if (alreadyProcessed) {
     return NextResponse.json({ ok: true });
   }
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
   }
 
   const [productSlug, email] = (payment.external_reference ?? "").split("|");
-  const product = productSlug ? getProduct(productSlug) : undefined;
+  const product = productSlug ? await getProduct(productSlug) : undefined;
   if (!product || !email) {
     console.error("[mp:webhook] external_reference inesperado:", payment.external_reference);
     return NextResponse.json({ ok: true });
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
     }),
   });
 
-  createActivation({
+  await createActivation({
     email,
     productSlug: product.slug,
     kind: "full",

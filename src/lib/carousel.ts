@@ -24,34 +24,36 @@ function rowToSlide(row: SlideRow): CarouselSlideRecord {
   };
 }
 
-export function listActiveSlides(): CarouselSlideRecord[] {
-  const rows = getDb()
-    .prepare("SELECT * FROM carousel_slides WHERE active = 1 ORDER BY sort_order ASC")
-    .all() as SlideRow[];
+export async function listActiveSlides(): Promise<CarouselSlideRecord[]> {
+  const sql = getDb();
+  const rows = (await sql`
+    SELECT * FROM carousel_slides WHERE active = 1 ORDER BY sort_order ASC
+  `) as unknown as SlideRow[];
   return rows.map(rowToSlide);
 }
 
-export function listAllSlidesForAdmin(): CarouselSlideRecord[] {
-  const rows = getDb().prepare("SELECT * FROM carousel_slides ORDER BY sort_order ASC").all() as SlideRow[];
+export async function listAllSlidesForAdmin(): Promise<CarouselSlideRecord[]> {
+  const sql = getDb();
+  const rows = (await sql`SELECT * FROM carousel_slides ORDER BY sort_order ASC`) as unknown as SlideRow[];
   return rows.map(rowToSlide);
 }
 
 // Solo imagen — sin título ni nota, se usan en el carrusel tal cual, sin
 // texto encima.
-export function createSlide(imageUrl: string): CarouselSlideRecord {
+export async function createSlide(imageUrl: string): Promise<CarouselSlideRecord> {
+  const sql = getDb();
   const id = randomUUID();
-  const { maxOrder } = getDb()
-    .prepare("SELECT COALESCE(MAX(sort_order), -1) as maxOrder FROM carousel_slides")
-    .get() as { maxOrder: number };
-  getDb()
-    .prepare(
-      `INSERT INTO carousel_slides (id, label, note, image_url, sort_order, active)
-       VALUES (@id, 'Mercalin', NULL, @image_url, @sort_order, 1)`
-    )
-    .run({ id, image_url: imageUrl, sort_order: maxOrder + 1 });
-  return listAllSlidesForAdmin().find((s) => s.id === id)!;
+  const [{ maxOrder }] = (await sql`
+    SELECT COALESCE(MAX(sort_order), -1)::int as "maxOrder" FROM carousel_slides
+  `) as unknown as [{ maxOrder: number }];
+  await sql`
+    INSERT INTO carousel_slides (id, label, note, image_url, sort_order, active)
+    VALUES (${id}, 'Mercalin', NULL, ${imageUrl}, ${maxOrder + 1}, 1)
+  `;
+  return (await listAllSlidesForAdmin()).find((s) => s.id === id)!;
 }
 
-export function deleteSlide(id: string): void {
-  getDb().prepare("DELETE FROM carousel_slides WHERE id = ?").run(id);
+export async function deleteSlide(id: string): Promise<void> {
+  const sql = getDb();
+  await sql`DELETE FROM carousel_slides WHERE id = ${id}`;
 }
