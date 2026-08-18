@@ -1,7 +1,6 @@
-import { MessageCircle, Phone } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 
 // Un solo lugar para el contacto: si cambia el número, se cambia acá.
-export const TELEFONO = "+54 2344 50-2904";
 export const WHATSAPP =
   "https://wa.me/542344502904?text=" +
   encodeURIComponent("Hola! Tengo una consulta sobre Mercalin.");
@@ -31,13 +30,6 @@ export default function ContactoArca() {
           >
             <MessageCircle className="h-4 w-4" strokeWidth={2.5} />
             Contactanos por WhatsApp
-          </a>
-          <a
-            href="tel:+542344502904"
-            className="inline-flex items-center gap-2 rounded-full border border-black/12 px-7 py-3.5 text-[15px] font-semibold text-foreground/70 transition-colors hover:border-black/30 hover:text-foreground"
-          >
-            <Phone className="h-4 w-4" strokeWidth={2.5} />
-            {TELEFONO}
           </a>
         </div>
 
