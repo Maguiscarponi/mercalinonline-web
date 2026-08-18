@@ -142,3 +142,760 @@ body {
 .cta-latido:hover {
   animation-play-state: paused;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   HERO · ventana de la app con módulos rotativos
+   Todo lo de acá abajo está namespaceado con .ha- (hero app) para que no
+   choque con nada del resto del sitio.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.ha-demo {
+  --ha-vio: #6d28d9;
+  --ha-vio-soft: #ede9fe;
+  --ha-grn: #0a7d3e;
+  --ha-grn-soft: #e2f3e9;
+  --ha-amb: #c2830e;
+  --ha-amb-soft: #fbf0d8;
+  --ha-ink: #22201f;
+  --ha-mut: #8b8580;
+  --ha-line: #ece9e5;
+  --ha-panel-h: 424px;
+
+  position: relative;
+  min-width: 0;
+}
+
+.ha {
+  min-width: 0;
+  color: var(--ha-ink);
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 44px 90px -18px rgb(0 0 0 / 0.62), 0 0 0 1px rgb(255 255 255 / 0.13);
+}
+
+/* Etiqueta "Así funciona": va encima de la ventana, no flotando sobre
+   ella, para no taparle el título. */
+.ha-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 10px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ha-ink);
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 8px 22px rgb(0 0 0 / 0.28);
+}
+.ha-live i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand);
+}
+
+/* ── barra de título de la ventana ── */
+.ha-tbar {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 12px;
+  background: #15151a;
+  color: #e8e8ee;
+  font-size: 11px;
+  font-weight: 600;
+}
+.ha-tbar-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: var(--brand);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+}
+.ha-tbar-win {
+  margin-left: auto;
+  display: flex;
+  gap: 12px;
+  color: #8a8a96;
+  font-size: 11px;
+}
+
+.ha-body {
+  display: grid;
+  grid-template-columns: 152px minmax(0, 1fr);
+}
+
+/* ── sidebar con todos los módulos ── */
+.ha-side {
+  position: relative;
+  height: var(--ha-panel-h);
+  overflow: hidden;
+  background: #fcfcfd;
+  border-right: 1px solid var(--ha-line);
+  -webkit-mask-image: linear-gradient(transparent 0, #000 5%, #000 88%, transparent 100%);
+  mask-image: linear-gradient(transparent 0, #000 5%, #000 88%, transparent 100%);
+}
+.ha-side-in {
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ha-store {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 10px 9px;
+}
+.ha-store-ico {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: var(--ha-vio);
+}
+.ha-store b {
+  display: block;
+  font-size: 11px;
+  line-height: 1.2;
+}
+.ha-store span {
+  font-size: 8.5px;
+  color: var(--ha-mut);
+}
+.ha-search {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 9px 9px;
+  padding: 6px 8px;
+  border-radius: 7px;
+  background: #f4f3f6;
+  font-size: 9px;
+  color: #a5a5ae;
+}
+.ha-search em {
+  padding: 1px 4px;
+  border: 1px solid var(--ha-line);
+  border-radius: 3px;
+  background: #fff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 7.5px;
+  font-style: normal;
+}
+.ha-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 12px 4px;
+  font-size: 8px;
+  letter-spacing: 0.13em;
+  color: #a5a5ae;
+}
+.ha-group i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ha-c, #a5a5ae);
+}
+.ha-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 1px 7px;
+  padding: 5px 6px;
+  border-radius: 7px;
+  font-size: 10.5px;
+  color: #3a3a44;
+}
+.ha-item-ico {
+  flex: none;
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 5px;
+  background: var(--ha-c, #a5a5ae);
+  opacity: 0.18;
+}
+.ha-item-badge {
+  margin-left: auto;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: rgb(225 37 27 / 0.1);
+  color: var(--brand);
+  font-size: 8px;
+  font-weight: 700;
+}
+.ha-item[data-on="1"] {
+  background: var(--ha-c, #a5a5ae);
+  color: #fff;
+  font-weight: 600;
+}
+.ha-item[data-on="1"] .ha-item-ico,
+.ha-item[data-on="1"] .ha-item-badge {
+  background: rgb(255 255 255 / 0.28);
+  color: #fff;
+  opacity: 1;
+}
+
+/* ── área de contenido ── */
+.ha-panels {
+  min-width: 0;
+  position: relative;
+  height: var(--ha-panel-h);
+  overflow: hidden;
+  background: #f7f6f8;
+}
+.ha-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  padding: 12px;
+  animation: ha-in 0.4s ease both;
+}
+@keyframes ha-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.ha-mhead {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.ha-mhead h3 {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.ha-mhead .ha-sm {
+  font-size: 9.5px;
+  color: var(--ha-mut);
+}
+.ha-pills {
+  display: flex;
+  gap: 3px;
+  margin-left: auto;
+}
+.ha-pill {
+  padding: 4px 8px;
+  border: 1px solid var(--ha-line);
+  border-radius: 6px;
+  background: #fff;
+  font-size: 8.5px;
+  color: #6a6a74;
+  white-space: nowrap;
+}
+.ha-pill[data-on="1"] {
+  background: var(--ha-vio);
+  border-color: var(--ha-vio);
+  color: #fff;
+}
+.ha-card {
+  border: 1px solid var(--ha-line);
+  border-radius: 9px;
+  background: #fff;
+}
+.ha-pad { padding: 10px 12px; }
+.ha-ch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 8.5px;
+  letter-spacing: 0.13em;
+  color: #a5a5ae;
+}
+.ha-num { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+
+/* Las etiquetas van en mayúsculas como en la app, sin escribirlas así en el
+   componente (para que el texto siga siendo legible en el código). */
+.ha-ch,
+.ha-total-lb,
+.ha-total-un,
+.ha-kc-lb,
+.ha-krow > div,
+.ha-alert b,
+.ha-tip-lv,
+.ha-qacc > span:first-child {
+  text-transform: uppercase;
+}
+
+/* ── módulo CAJA ── */
+.ha-caja {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr);
+  gap: 9px;
+  flex: 1;
+  min-height: 0;
+}
+.ha-caja-left { display: flex; flex-direction: column; min-height: 0; }
+.ha-scan {
+  display: flex;
+  align-items: center;
+  padding: 9px 11px;
+  border: 1.6px solid var(--ha-vio);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgb(109 40 217 / 0.09);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  color: #a5a5ae;
+}
+.ha-caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 11px;
+  margin-left: 1px;
+  background: var(--ha-vio);
+  animation: ha-blink 1.05s steps(1) infinite;
+}
+@keyframes ha-blink { 0%, 50% { opacity: 1 } 51%, 100% { opacity: 0 } }
+.ha-list {
+  flex: 1;
+  margin-top: 7px;
+  border: 1px solid var(--ha-line);
+  border-radius: 9px;
+  background: #fff;
+  overflow: hidden;
+}
+.ha-row {
+  display: flex;
+  align-items: center;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--ha-line);
+  opacity: 0;
+  transform: translateY(6px);
+  animation: ha-pop 0.35s both;
+}
+.ha-row:last-child { border-bottom: 0 }
+@keyframes ha-pop { to { opacity: 1; transform: none } }
+.ha-row-name { flex: 1; min-width: 0 }
+.ha-row-name b {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ha-row-name span { font-size: 8.5px; color: #a5a5ae }
+.ha-step { display: flex; align-items: center; gap: 4px; margin-right: 10px }
+.ha-step i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 5px;
+  background: #f4f3f6;
+  color: #6a6a74;
+  font-size: 9px;
+  font-style: normal;
+}
+.ha-step u { width: 10px; text-align: center; font-size: 9px; text-decoration: none }
+.ha-row-price { width: 54px; text-align: right; font-size: 10.5px; font-weight: 700 }
+.ha-row-x { width: 14px; text-align: right; color: #cfcfd6; font-size: 9px }
+.ha-total {
+  padding: 11px;
+  border: 1px solid var(--ha-line);
+  border-radius: 9px;
+  background: #fff;
+  text-align: center;
+}
+.ha-total-lb { font-size: 8px; letter-spacing: 0.16em; color: #a5a5ae }
+.ha-total-vl {
+  margin-top: 2px;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+.ha-total-un { font-size: 8.5px; color: #a5a5ae }
+.ha-dto {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 7px;
+  padding: 7px 9px;
+  border: 1px solid var(--ha-line);
+  border-radius: 9px;
+  background: #fff;
+  font-size: 8.5px;
+  letter-spacing: 0.09em;
+  color: #a5a5ae;
+}
+.ha-dto-tg { display: flex; gap: 2px }
+.ha-dto-tg i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+  background: #f4f3f6;
+  color: #6a6a74;
+  font-size: 8.5px;
+  font-style: normal;
+}
+.ha-dto-tg i[data-on="1"] { background: var(--ha-ink); color: #fff }
+.ha-dto-in { flex: 1; height: 16px; border-radius: 5px; background: #f7f6f8 }
+.ha-cobrar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 7px;
+  padding: 11px;
+  border-radius: 9px;
+  background: var(--ha-vio);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  animation: ha-beat 1.5s 5.6s 2;
+}
+.ha-cobrar em {
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: rgb(255 255 255 / 0.2);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 8.5px;
+  font-style: normal;
+}
+@keyframes ha-beat {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgb(109 40 217 / 0.5) }
+  40% { transform: scale(1.025); box-shadow: 0 0 0 12px rgb(109 40 217 / 0) }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgb(109 40 217 / 0) }
+}
+.ha-anular {
+  margin-top: 6px;
+  padding: 7px;
+  border: 1px solid rgb(225 37 27 / 0.22);
+  border-radius: 9px;
+  background: rgb(225 37 27 / 0.04);
+  color: var(--brand);
+  text-align: center;
+  font-size: 9.5px;
+}
+.ha-qbtns { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 6px }
+.ha-qb {
+  padding: 6px;
+  border: 1px solid var(--ha-line);
+  border-radius: 7px;
+  background: #fff;
+  text-align: center;
+  font-size: 8.5px;
+  color: #3a3a44;
+}
+.ha-qacc {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+  padding: 6px 8px;
+  border: 1px solid var(--ha-line);
+  border-radius: 7px;
+  background: #fff;
+  font-size: 8.5px;
+  color: #a5a5ae;
+}
+
+/* ── módulo CONSEJOS ── */
+.ha-tips { display: grid; align-content: start; gap: 6px; flex: 1; min-height: 0 }
+.ha-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 11px;
+  border: 1px solid var(--ha-line);
+  border-left: 3px solid var(--brand);
+  border-radius: 9px;
+  background: rgb(225 37 27 / 0.03);
+  opacity: 0;
+  transform: translateY(8px);
+  animation: ha-pop 0.4s both;
+}
+.ha-tip[data-lv="imp"] {
+  border-left-color: var(--ha-amb);
+  background: rgb(194 131 14 / 0.05);
+}
+.ha-tip-lv {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 76px;
+  padding-top: 1px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  color: var(--brand);
+}
+.ha-tip[data-lv="imp"] .ha-tip-lv { color: var(--ha-amb) }
+.ha-tip-lv i { width: 5px; height: 5px; border-radius: 50%; background: currentColor }
+.ha-tip-tx { flex: 1; min-width: 0; font-size: 10.5px; line-height: 1.45 }
+.ha-tip-tx span {
+  display: block;
+  margin-top: 2px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 9px;
+  color: #8b8580;
+}
+.ha-tip-go { flex: none; padding-top: 1px; font-size: 9px; color: var(--ha-vio) }
+
+/* ── módulo DASHBOARD ── */
+.ha-dtop { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); gap: 8px; height: 132px }
+.ha-dbot { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); gap: 8px; flex: 1; min-height: 0 }
+.ha-kbig { margin-top: 1px; font-size: 29px; font-weight: 800; letter-spacing: -0.035em }
+.ha-krow {
+  display: flex;
+  gap: 16px;
+  margin-top: 11px;
+  padding-top: 9px;
+  border-top: 1px solid var(--ha-line);
+}
+.ha-krow > div { font-size: 8px; letter-spacing: 0.11em; color: #a5a5ae }
+.ha-krow b {
+  display: block;
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ha-ink);
+}
+.ha-krow b[data-up="1"] { color: var(--ha-grn) }
+.ha-top { display: flex; align-items: flex-start; gap: 8px; margin-top: 7px; font-size: 9.5px }
+.ha-top-rk { color: #c5c5cc; font-size: 8.5px }
+.ha-top b { display: block; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.ha-top span { font-size: 8.5px; color: #a5a5ae }
+.ha-chart { position: relative; flex: 1; margin-top: 6px }
+.ha-chart svg { display: block; width: 100%; height: 100% }
+.ha-chart-line {
+  fill: none;
+  stroke: var(--ha-vio);
+  stroke-width: 2;
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: ha-draw 1.3s 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes ha-draw { to { stroke-dashoffset: 0 } }
+.ha-chart-area { fill: url(#haGrad); opacity: 0; animation: ha-fade 0.8s 1.1s forwards }
+@keyframes ha-fade { to { opacity: 1 } }
+.ha-xlab { display: flex; margin-top: 2px; font-size: 7.5px; color: #b4b4bc }
+.ha-xlab span { flex: 1; text-align: center }
+.ha-xlab span:last-child { color: var(--ha-vio); font-weight: 700 }
+.ha-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 6px;
+  padding: 6px 8px;
+  border: 1px solid rgb(225 37 27 / 0.14);
+  border-radius: 7px;
+  background: rgb(225 37 27 / 0.035);
+  opacity: 0;
+  transform: translateY(6px);
+  animation: ha-pop 0.4s both;
+}
+.ha-alert-ico {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: rgb(225 37 27 / 0.16);
+}
+.ha-alert b { display: block; font-size: 8px; letter-spacing: 0.09em; color: var(--brand) }
+.ha-alert u {
+  display: block;
+  margin-top: 1px;
+  font-size: 9.5px;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ha-alert span { font-size: 8px; color: #a5a5ae }
+
+/* ── módulo REPORTES ── */
+.ha-tabsrow { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 2px }
+.ha-tb {
+  padding: 4px 7px;
+  border: 1px solid var(--ha-line);
+  border-radius: 6px;
+  background: #fff;
+  font-size: 8.5px;
+  color: #6a6a74;
+  white-space: nowrap;
+}
+.ha-tb[data-on="1"] { background: var(--ha-vio); border-color: var(--ha-vio); color: #fff }
+.ha-kpi4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 7px }
+.ha-kc {
+  padding: 9px 10px;
+  border: 1px solid var(--ha-line);
+  border-radius: 9px;
+  background: #fff;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: ha-pop 0.4s both;
+}
+.ha-kc-lb { font-size: 8px; letter-spacing: 0.12em; color: #a5a5ae }
+.ha-kc-vl { margin-top: 2px; font-size: 17px; font-weight: 800; letter-spacing: -0.03em }
+.ha-kc-dt { margin-top: 1px; font-size: 8px; color: var(--ha-grn) }
+.ha-r2 { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 7px; height: 98px }
+.ha-lrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 9.5px;
+  opacity: 0;
+  transform: translateY(6px);
+  animation: ha-pop 0.35s both;
+}
+.ha-lbar { height: 4px; margin-top: 3px; border-radius: 2px; background: #f2f0f4; overflow: hidden }
+.ha-lbar i {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 2px;
+  background: var(--ha-vio);
+  animation: ha-grow 0.7s 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes ha-grow { to { width: var(--w) } }
+.ha-r3 { flex: 1; min-height: 0 }
+.ha-prow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 9.5px;
+  opacity: 0;
+  transform: translateY(6px);
+  animation: ha-pop 0.35s both;
+}
+.ha-prow-rk { width: 12px; color: #c5c5cc; font-size: 8px }
+.ha-prow-nm { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.ha-prow-un { width: 34px; text-align: right; font-size: 8.5px; color: #a5a5ae }
+.ha-prow-mb { width: 52px; height: 4px; border-radius: 2px; background: #f2f0f4; overflow: hidden }
+.ha-prow-mb i {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 2px;
+  background: var(--ha-vio);
+  animation: ha-grow 0.7s 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.ha-prow-mn { width: 60px; text-align: right; font-weight: 700 }
+
+/* ── pastillas de módulo debajo de la ventana ── */
+.ha-tabs {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.ha-tabs::-webkit-scrollbar { display: none }
+.ha-tab {
+  position: relative;
+  flex: none;
+  overflow: hidden;
+  padding: 8px 13px;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.1);
+  color: rgb(255 255 255 / 0.72);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+.ha-tab[aria-selected="true"] { background: #fff; border-color: #fff; color: var(--ha-ink) }
+.ha-tab-prog {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background: var(--brand);
+}
+.ha-tab[aria-selected="true"] .ha-tab-prog { animation: ha-fill linear forwards }
+@keyframes ha-fill { to { width: 100% } }
+.ha-more { flex: none; padding-left: 4px; font-size: 11px; color: rgb(255 255 255 / 0.5) }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   TABLET · la ventana pasa a ancho completo debajo del texto
+   ───────────────────────────────────────────────────────────────────────── */
+@media (max-width: 1023px) {
+  .ha { --ha-panel-h: 400px }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   MOBILE · el sidebar se reduce a riel de iconos y cada módulo se
+   reordena en una sola columna. Se ocultan los bloques secundarios: en
+   340px de ancho, mostrarlos todos es ilegible y no aporta nada.
+   ───────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .ha { --ha-panel-h: 328px }
+  .ha-body { grid-template-columns: 44px 1fr }
+
+  .ha-side { -webkit-mask-image: linear-gradient(#000 84%, transparent 100%); mask-image: linear-gradient(#000 84%, transparent 100%) }
+  .ha-side-in { transform: none !important }
+  .ha-store, .ha-search, .ha-group, .ha-item-label, .ha-item-badge { display: none }
+  .ha-item { justify-content: center; margin: 3px 6px; padding: 5px 0 }
+  .ha-item-ico { width: 20px; height: 20px; opacity: 0.22 }
+  .ha-item[data-on="1"] { background: transparent; color: inherit }
+  .ha-item[data-on="1"] .ha-item-ico { background: var(--ha-c); opacity: 1 }
+
+  .ha-panel { padding: 10px; gap: 7px }
+  .ha-mhead h3 { font-size: 14px }
+  .ha-mhead .ha-sm, .ha-pills, .ha-tabsrow { display: none }
+
+  /* CAJA */
+  .ha-caja { grid-template-columns: 1fr; gap: 7px }
+  .ha-caja-right { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 7px; align-items: stretch }
+  .ha-dto, .ha-anular, .ha-qbtns, .ha-qacc { display: none }
+  .ha-step { display: none }
+  .ha-row-name b { font-size: 11px }
+  .ha-total { display: flex; flex-direction: column; justify-content: center; padding: 9px }
+  .ha-total-vl { font-size: 22px }
+  .ha-cobrar { margin-top: 0; font-size: 13px }
+  .ha-cobrar em, .ha-row-x { display: none }
+
+  /* CONSEJOS */
+  .ha-tip-go { display: none }
+  .ha-tip-lv { width: auto }
+  .ha-tip-lv span { display: none }
+  .ha-tip-3, .ha-tip-4 { display: none }
+  .ha-tip-tx { font-size: 11px }
+  .ha-tip-tx span { font-size: 9.5px }
+
+  /* DASHBOARD */
+  .ha-dtop { grid-template-columns: 1fr; height: auto }
+  .ha-dbot { grid-template-columns: 1fr }
+  .ha-top-card, .ha-alerts-card { display: none }
+  .ha-kbig { font-size: 26px }
+
+  /* REPORTES */
+  .ha-kpi4 { grid-template-columns: 1fr 1fr }
+  .ha-r2 { grid-template-columns: 1fr; height: auto }
+  .ha-cat-card, .ha-r3 { display: none }
+  .ha-kc-vl { font-size: 16px }
+
+  .ha-tabs { margin-top: 12px }
+  .ha-tab { padding: 7px 12px; font-size: 10.5px }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ha-caret { animation: none }
+}
