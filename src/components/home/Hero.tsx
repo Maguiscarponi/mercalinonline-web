@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { listProducts } from "@/lib/products";
 import AppDemo from "./AppDemo";
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Hero: fondo rojo profundo hacia negro + la ventana de Punto Simple POS
+   Hero: fondo rojo profundo hacia negro + la ventana de Mercalin
    rotando entre módulos. El objetivo es que en los primeros segundos se
    entienda (a) qué hace el sistema y (b) que hay muchos módulos, sin tener
    que leer nada.
@@ -19,7 +20,18 @@ const COPY = {
   micro: "7 días gratis sin tarjeta · pago único · soporte 24/7 · actualizaciones incluidas",
 };
 
-export default function Hero() {
+export default async function Hero() {
+  // "+ 15 módulos más" lleva al detalle del producto destacado. listProducts
+  // ya ordena featured primero. Si la base no responde caemos al listado:
+  // un link roto no puede tirar abajo el hero.
+  let hrefModulos = "/productos";
+  try {
+    const [destacado] = await listProducts();
+    if (destacado) hrefModulos = `/productos/${destacado.slug}`;
+  } catch {
+    /* se queda con /productos */
+  }
+
   return (
     <section
       className="relative flex items-center overflow-hidden text-white lg:min-h-[calc(100svh-76px)]"
@@ -74,7 +86,7 @@ export default function Hero() {
           <p className="mt-5 text-[14px] text-white/45">{COPY.micro}</p>
         </div>
 
-        <AppDemo className="order-2 min-w-0 lg:order-1" />
+        <AppDemo className="order-2 min-w-0 lg:order-1" hrefModulos={hrefModulos} />
       </div>
     </section>
   );

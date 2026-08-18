@@ -307,19 +307,26 @@ body {
   align-items: center;
   gap: 8px;
   margin: 1px 7px;
-  padding: 5px 6px;
+  padding: 4px 6px;
   border-radius: 7px;
-  font-size: 10.5px;
+  font-size: 11px;
+  font-weight: 500;
   color: #3a3a44;
 }
 .ha-item-ico {
   flex: none;
-  display: block;
-  width: 16px;
-  height: 16px;
-  border-radius: 5px;
-  background: var(--ha-c, #a5a5ae);
-  opacity: 0.18;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 21px;
+  height: 21px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ha-c, #a5a5ae) 15%, transparent);
+  color: var(--ha-c, #a5a5ae);
+}
+.ha-item-ico svg {
+  width: 13px;
+  height: 13px;
 }
 .ha-item-badge {
   margin-left: auto;
@@ -337,9 +344,8 @@ body {
 }
 .ha-item[data-on="1"] .ha-item-ico,
 .ha-item[data-on="1"] .ha-item-badge {
-  background: rgb(255 255 255 / 0.28);
+  background: rgb(255 255 255 / 0.24);
   color: #fff;
-  opacity: 1;
 }
 
 /* ── área de contenido ── */
@@ -811,13 +817,16 @@ body {
   position: relative;
   flex: none;
   overflow: hidden;
-  padding: 8px 13px;
+  padding: 9px 16px;
   border: 1px solid rgb(255 255 255 / 0.2);
   border-radius: 999px;
   background: rgb(255 255 255 / 0.1);
-  color: rgb(255 255 255 / 0.72);
-  font-size: 11px;
-  letter-spacing: 0.1em;
+  color: rgb(255 255 255 / 0.78);
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
   cursor: pointer;
 }
 .ha-tab[aria-selected="true"] { background: #fff; border-color: #fff; color: var(--ha-ink) }
@@ -831,7 +840,24 @@ body {
 }
 .ha-tab[aria-selected="true"] .ha-tab-prog { animation: ha-fill linear forwards }
 @keyframes ha-fill { to { width: 100% } }
-.ha-more { flex: none; padding-left: 4px; font-size: 11px; color: rgb(255 255 255 / 0.5) }
+.ha-more {
+  flex: none;
+  padding-left: 6px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgb(255 255 255 / 0.6);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgb(255 255 255 / 0.3);
+  transition: color 0.15s, text-decoration-color 0.15s;
+}
+.ha-more:hover {
+  color: #fff;
+  text-decoration-color: #fff;
+}
 
 /* ─────────────────────────────────────────────────────────────────────────
    TABLET · la ventana pasa a ancho completo debajo del texto
@@ -846,16 +872,24 @@ body {
    340px de ancho, mostrarlos todos es ilegible y no aporta nada.
    ───────────────────────────────────────────────────────────────────────── */
 @media (max-width: 767px) {
-  .ha { --ha-panel-h: 328px }
-  .ha-body { grid-template-columns: 44px 1fr }
+  /* La ventana crece: con 328px los módulos de análisis quedaban cortados y
+     se veía media pantalla vacía. */
+  .ha { --ha-panel-h: 432px }
+  .ha-body { grid-template-columns: 46px minmax(0, 1fr) }
 
-  .ha-side { -webkit-mask-image: linear-gradient(#000 84%, transparent 100%); mask-image: linear-gradient(#000 84%, transparent 100%) }
+  /* El sidebar queda como riel de iconos: sigue mostrando que hay 19
+     módulos, pero ocupa 46px en vez de 152px. */
+  .ha-side {
+    -webkit-mask-image: linear-gradient(#000 86%, transparent 100%);
+    mask-image: linear-gradient(#000 86%, transparent 100%);
+  }
   .ha-side-in { transform: none !important }
   .ha-store, .ha-search, .ha-group, .ha-item-label, .ha-item-badge { display: none }
-  .ha-item { justify-content: center; margin: 3px 6px; padding: 5px 0 }
-  .ha-item-ico { width: 20px; height: 20px; opacity: 0.22 }
-  .ha-item[data-on="1"] { background: transparent; color: inherit }
-  .ha-item[data-on="1"] .ha-item-ico { background: var(--ha-c); opacity: 1 }
+  .ha-item { justify-content: center; margin: 4px 6px; padding: 0 }
+  .ha-item-ico { width: 30px; height: 30px; border-radius: 9px }
+  .ha-item-ico svg { width: 17px; height: 17px }
+  .ha-item[data-on="1"] { background: transparent }
+  .ha-item[data-on="1"] .ha-item-ico { background: var(--ha-c); color: #fff }
 
   .ha-panel { padding: 10px; gap: 7px }
   .ha-mhead h3 { font-size: 14px }
@@ -863,37 +897,49 @@ body {
 
   /* CAJA */
   .ha-caja { grid-template-columns: 1fr; gap: 7px }
-  .ha-caja-right { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 7px; align-items: stretch }
+  .ha-caja-right { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 7px }
   .ha-dto, .ha-anular, .ha-qbtns, .ha-qacc { display: none }
-  .ha-step { display: none }
+  .ha-step, .ha-row-x { display: none }
   .ha-row-name b { font-size: 11px }
   .ha-total { display: flex; flex-direction: column; justify-content: center; padding: 9px }
   .ha-total-vl { font-size: 22px }
   .ha-cobrar { margin-top: 0; font-size: 13px }
-  .ha-cobrar em, .ha-row-x { display: none }
+  .ha-cobrar em { display: none }
 
   /* CONSEJOS */
   .ha-tip-go { display: none }
   .ha-tip-lv { width: auto }
   .ha-tip-lv span { display: none }
-  .ha-tip-3, .ha-tip-4 { display: none }
+  .ha-tip-4 { display: none }
   .ha-tip-tx { font-size: 11px }
   .ha-tip-tx span { font-size: 9.5px }
 
-  /* DASHBOARD */
+  /* DASHBOARD · una columna. Se cae "Top hoy" (se pisa con el ranking de
+     Reportes) y quedan las tres piezas que cuentan la historia: cuánto
+     vendiste, cómo venís y qué se está por acabar. */
   .ha-dtop { grid-template-columns: 1fr; height: auto }
-  .ha-dbot { grid-template-columns: 1fr }
-  .ha-top-card, .ha-alerts-card { display: none }
+  .ha-dbot { grid-template-columns: 1fr; gap: 7px }
+  .ha-top-card { display: none }
+  .ha-alerts-card { display: block }
   .ha-kbig { font-size: 26px }
+  .ha-krow { gap: 12px; margin-top: 8px; padding-top: 7px }
+  .ha-chart { min-height: 88px }
+  .ha-alert-3 { display: none }
 
-  /* REPORTES */
-  .ha-kpi4 { grid-template-columns: 1fr 1fr }
-  .ha-r2 { grid-template-columns: 1fr; height: auto }
-  .ha-cat-card, .ha-r3 { display: none }
+  /* REPORTES · KPIs en 2×2 y las dos tablas que más se miran. */
+  .ha-kpi4 { grid-template-columns: minmax(0,1fr) minmax(0,1fr) }
   .ha-kc-vl { font-size: 16px }
+  .ha-r2 { grid-template-columns: 1fr; height: auto }
+  .ha-cat-card { display: none }
+  .ha-r3 { display: block; flex: none }
+  .ha-prow-un { display: none }
+  .ha-prow-mb { width: 40px }
 
-  .ha-tabs { margin-top: 12px }
-  .ha-tab { padding: 7px 12px; font-size: 10.5px }
+  /* En mobile las pastillas envuelven y el link queda en su propia línea:
+     scrolleando en horizontal, "+ 15 módulos más" nunca se veía. */
+  .ha-tabs { margin-top: 12px; gap: 6px; flex-wrap: wrap; overflow-x: visible }
+  .ha-tab { padding: 8px 14px; font-size: 13px }
+  .ha-more { width: 100%; margin-top: 2px; padding-left: 2px; font-size: 13px }
 }
 
 @media (prefers-reduced-motion: reduce) {

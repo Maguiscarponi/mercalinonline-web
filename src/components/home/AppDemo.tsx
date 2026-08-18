@@ -1,7 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
+import {
+  Bell, ShoppingCart, Wallet, Users, RotateCcw, Package, Truck, Tag, CalendarDays,
+  ClipboardList, Layers, Gift, FileText, Percent, Lock, LayoutGrid, ChartColumn,
+  Search, Settings,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 /* ─────────────────────────────────────────────────────────────────────────
    Maqueta animada de Mercalin para el hero.
@@ -25,38 +32,55 @@ const VIO = "var(--ha-vio)";
 const GRN = "var(--ha-grn)";
 const AMB = "var(--ha-amb)";
 
-type NavItem = { label: string; id?: string; badge?: string };
+type NavItem = { label: string; Icono: LucideIcon; id?: string; badge?: string };
 type NavGrupo = { titulo?: string; color: string; items: NavItem[] };
 
 const NAV: NavGrupo[] = [
-  { color: "var(--brand)", items: [{ label: "Consejos", id: "consejos", badge: "12" }] },
+  { color: "var(--brand)", items: [{ label: "Consejos", Icono: Bell, id: "consejos", badge: "12" }] },
   {
     titulo: "Operación",
     color: VIO,
-    items: [{ label: "Caja", id: "caja" }, { label: "Gestión de caja" }, { label: "Clientes" }, { label: "Devoluciones" }],
+    items: [
+      { label: "Caja", Icono: ShoppingCart, id: "caja" },
+      { label: "Gestión de caja", Icono: Wallet },
+      { label: "Clientes", Icono: Users },
+      { label: "Devoluciones", Icono: RotateCcw },
+    ],
   },
   {
     titulo: "Catálogo",
     color: GRN,
     items: [
-      { label: "Productos" }, { label: "Proveedores" }, { label: "Categorías" }, { label: "Vencimientos" },
-      { label: "Inventario" }, { label: "Etiquetas" }, { label: "Combos" },
+      { label: "Productos", Icono: Package },
+      { label: "Proveedores", Icono: Truck },
+      { label: "Categorías", Icono: Tag },
+      { label: "Vencimientos", Icono: CalendarDays },
+      { label: "Inventario", Icono: ClipboardList },
+      { label: "Etiquetas", Icono: Layers },
+      { label: "Combos", Icono: Gift },
     ],
   },
   {
     titulo: "Gestión",
     color: AMB,
-    items: [{ label: "Presupuestos" }, { label: "Promociones" }, { label: "Usuarios" }],
+    items: [
+      { label: "Presupuestos", Icono: FileText },
+      { label: "Promociones", Icono: Percent },
+      { label: "Usuarios", Icono: Lock },
+    ],
   },
   {
     titulo: "Análisis",
     color: VIO,
-    items: [{ label: "Dashboard", id: "dashboard" }, { label: "Reportes", id: "reportes" }],
+    items: [
+      { label: "Dashboard", Icono: LayoutGrid, id: "dashboard" },
+      { label: "Reportes", Icono: ChartColumn, id: "reportes" },
+    ],
   },
   {
     titulo: "Sistema",
     color: "#a5a5ae",
-    items: [{ label: "Auditoría" }, { label: "Configuración" }],
+    items: [{ label: "Auditoría", Icono: Search }, { label: "Configuración", Icono: Settings }],
   },
 ];
 
@@ -71,27 +95,16 @@ const CAJA_ITEMS: [string, number][] = [
 
 function PanelCaja() {
   const [paso, setPaso] = useState(1);
-  // En mobile entran tres renglones. Cortamos ahí para que el total y el
-  // contador de artículos coincidan con lo que se ve en pantalla.
-  const [tope, setTope] = useState(CAJA_ITEMS.length);
 
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const aplicar = () => setTope(mq.matches ? 3 : CAJA_ITEMS.length);
-    aplicar();
-    mq.addEventListener("change", aplicar);
-    return () => mq.removeEventListener("change", aplicar);
-  }, []);
-
-  useEffect(() => {
-    if (paso >= tope) return;
+    if (paso >= CAJA_ITEMS.length) return;
     const t = setTimeout(() => setPaso((p) => p + 1), 1100);
     return () => clearTimeout(t);
-  }, [paso, tope]);
+  }, [paso]);
 
-  const visibles = CAJA_ITEMS.slice(0, Math.min(paso, tope));
+  const visibles = CAJA_ITEMS.slice(0, paso);
   const total = visibles.reduce((a, [, p]) => a + p, 0);
-  const completa = visibles.length >= tope;
+  const completa = visibles.length >= CAJA_ITEMS.length;
 
   return (
     <div className="ha-panel">
@@ -293,7 +306,7 @@ function PanelDashboard() {
         <div className="ha-card ha-pad ha-alerts-card" style={{ overflow: "hidden" }}>
           <div className="ha-ch"><span>Alertas</span><span>9</span></div>
           {ALERTAS.map(([nombre, dato], i) => (
-            <div className="ha-alert" key={nombre} style={{ animationDelay: `${500 + i * 300}ms` }}>
+            <div className={`ha-alert ha-alert-${i + 1}`} key={nombre} style={{ animationDelay: `${500 + i * 300}ms` }}>
               <span className="ha-alert-ico" />
               <span style={{ minWidth: 0 }}>
                 <b>Stock crítico</b>
@@ -414,7 +427,14 @@ const MODULOS = [
   { id: "reportes", titulo: "Reportes", dur: 6600, Panel: PanelReportes },
 ];
 
-export default function AppDemo({ className = "" }: { className?: string }) {
+export default function AppDemo({
+  className = "",
+  hrefModulos = "/productos",
+}: {
+  className?: string;
+  /** A dónde lleva "+ 15 módulos más": el detalle del producto. */
+  hrefModulos?: string;
+}) {
   const [activo, setActivo] = useState(0);
   const [auto, setAuto] = useState(true);
   const sideRef = useRef<HTMLElement | null>(null);
@@ -484,9 +504,12 @@ export default function AppDemo({ className = "" }: { className?: string }) {
                       key={item.label}
                       ref={item.id ? (el) => { itemsRef.current[item.id!] = el; } : undefined}
                       style={{ ["--ha-c" as string]: grupo.color } as CSSProperties}
+                      title={item.label}
                       {...(item.id === MODULOS[activo].id ? { "data-on": "1" } : {})}
                     >
-                      <span className="ha-item-ico" />
+                      <span className="ha-item-ico">
+                        <item.Icono strokeWidth={2.1} aria-hidden />
+                      </span>
                       <span className="ha-item-label">{item.label}</span>
                       {item.badge && <span className="ha-item-badge">{item.badge}</span>}
                     </div>
@@ -502,7 +525,7 @@ export default function AppDemo({ className = "" }: { className?: string }) {
         </div>
       </div>
 
-      <div className="ha-tabs tag-numbered" role="tablist" aria-label="Módulos de la demo">
+      <div className="ha-tabs" role="tablist" aria-label="Módulos de la demo">
         {MODULOS.map((m, i) => (
           <button
             type="button"
@@ -517,7 +540,9 @@ export default function AppDemo({ className = "" }: { className?: string }) {
             <span className="ha-tab-prog" style={{ animationDuration: auto ? `${m.dur}ms` : "0ms" }} />
           </button>
         ))}
-        <span className="ha-more">+ 15 módulos más</span>
+        <Link href={hrefModulos} className="ha-more">
+          + 15 módulos más
+        </Link>
       </div>
     </div>
   );
