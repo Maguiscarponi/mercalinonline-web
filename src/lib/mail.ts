@@ -46,6 +46,59 @@ export async function sendMail(input: SendMailInput): Promise<{ sent: boolean }>
   return { sent: true };
 }
 
+function fechaAr(d: Date): string {
+  return d.toLocaleDateString("es-AR", { timeZone: "America/Argentina/Buenos_Aires" });
+}
+
+function wrap(bodyHtml: string): string {
+  return `<div style="font-family: sans-serif; max-width: 480px;">${bodyHtml}</div>`;
+}
+
+// Día 3 de la prueba: todavía activa, es solo un empujón para que la instale
+// si no lo hizo, o siga usándola si ya arrancó.
+export function trialDay3EmailHtml(opts: { productName: string; siteUrl: string }): string {
+  const { productName, siteUrl } = opts;
+  return wrap(`
+    <h2>¿Ya instalaste ${productName}?</h2>
+    <p>Van 3 días de tu prueba gratis. Si todavía no la instalaste, es un buen momento — te quedan unos días para probarla con tus productos reales, no con datos de ejemplo.</p>
+    <p>Si te trabaste en algo, respondé este mail o escribinos por WhatsApp: <a href="https://wa.me/542344502904">+54 2344 50-2904</a>.</p>
+    <p><a href="${siteUrl}/preguntas-frecuentes">Preguntas frecuentes</a></p>
+  `);
+}
+
+// Falta ~1 día para que venza: el mensaje con más urgencia real de la
+// secuencia, con el link directo a comprar.
+export function trialExpiringEmailHtml(opts: {
+  productName: string;
+  expiresAt: Date;
+  siteUrl: string;
+  productSlug: string;
+}): string {
+  const { productName, expiresAt, siteUrl, productSlug } = opts;
+  return wrap(`
+    <h2>Tu prueba de ${productName} se vence mañana (${fechaAr(expiresAt)})</h2>
+    <p>Cuando se venza, el sistema se bloquea — pero no se borra nada de lo que cargaste. Si comprás la licencia completa, seguís exactamente donde estabas.</p>
+    <p><a href="${siteUrl}/carrito?product=${productSlug}" style="display:inline-block;background:#c0241b;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:600;">Comprar ahora</a></p>
+    <p>¿Alguna duda antes de decidir? Escribinos por WhatsApp: <a href="https://wa.me/542344502904">+54 2344 50-2904</a>.</p>
+  `);
+}
+
+// Ya venció: sin la presión de la cuenta regresiva, pero recordando que se
+// puede retomar sin perder nada.
+export function trialExpiredEmailHtml(opts: {
+  productName: string;
+  siteUrl: string;
+  productSlug: string;
+}): string {
+  const { productName, siteUrl, productSlug } = opts;
+  return wrap(`
+    <h2>Se venció tu prueba de ${productName}</h2>
+    <p>Nada de lo que cargaste se borró. Cuando quieras seguir, comprás la licencia completa y la activás con el mismo mail — retomás justo donde quedaste.</p>
+    <p><a href="${siteUrl}/carrito?product=${productSlug}" style="display:inline-block;background:#c0241b;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:600;">Comprar la licencia</a></p>
+    <p>Si probaste y no te sirvió, contanos por qué — nos ayuda, y a veces se resuelve con una respuesta. WhatsApp: <a href="https://wa.me/542344502904">+54 2344 50-2904</a>.</p>
+  `);
+}
+
 export function licenseEmailHtml(opts: {
   productName: string;
   kind: "trial" | "full";
@@ -56,7 +109,7 @@ export function licenseEmailHtml(opts: {
   const { productName, kind, licenseKey, downloadUrl, expiresAt } = opts;
   const intro =
     kind === "trial"
-      ? `Tu prueba gratis de ${productName} está lista. Tenés 7 días para usarla, hasta el ${expiresAt?.toLocaleDateString("es-AR")}.`
+      ? `Tu prueba gratis de ${productName} está lista. Tenés 7 días para usarla, hasta el ${expiresAt?.toLocaleDateString("es-AR", { timeZone: "America/Argentina/Buenos_Aires" })}.`
       : `Gracias por tu compra de ${productName}. Tu licencia no vence.`;
 
   return `

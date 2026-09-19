@@ -3,8 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShoppingCart } from "lucide-react";
-import { useCart } from "@/lib/cart";
 
 const LINKS = [
   { href: "/", label: "Inicio" },
@@ -14,7 +12,6 @@ const LINKS = [
 
 export default function SiteHeader() {
   const pathname = usePathname();
-  const { count } = useCart();
 
   const isActive = (href: string) =>
     pathname === href || (href !== "/" && pathname.startsWith(href));
@@ -50,19 +47,6 @@ export default function SiteHeader() {
               </Link>
             ))}
           </div>
-
-          <Link
-            href="/carrito"
-            aria-label="Carrito"
-            className="relative ml-1 flex h-10 w-10 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white"
-          >
-            <ShoppingCart className="h-5 w-5" strokeWidth={2.2} />
-            {count > 0 && (
-              <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-brand text-[10px] font-bold text-white">
-                {count}
-              </span>
-            )}
-          </Link>
 
           <Link
             href="/prueba-gratis"

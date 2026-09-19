@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { MapPin } from "lucide-react";
+import { whatsappHref } from "@/lib/whatsapp";
 
 /* ─────────────────────────────────────────────────────────────────────────
    Footer: tarjeta de contacto roja montada sobre el cierre oscuro.
@@ -14,9 +15,6 @@ import { MapPin } from "lucide-react";
    ───────────────────────────────────────────────────────────────────────── */
 
 const CONTACTO = {
-  // El teléfono no se muestra en ningún lado: sólo se usa para armar el
-  // link de WhatsApp, así nadie lo puede copiar de la página.
-  whatsapp: "542344502904",
   mail: "onlinemercalin@gmail.com",
   ciudad: "Buenos Aires, Argentina",
   horario: "Soporte 24/7 · respondemos todos los días",
@@ -29,7 +27,7 @@ const NAVEGACION = [
 ];
 
 const COMPRA = [
-  { href: "/carrito", label: "Carrito" },
+  { href: "/carrito", label: "Comprar" },
   { href: "/prueba-gratis", label: "Probar 7 días gratis" },
 ];
 
@@ -82,7 +80,7 @@ export default function SiteFooter() {
 
             <div className="flex w-full flex-col gap-2.5 sm:w-auto sm:flex-row">
               <a
-                href={`https://wa.me/${CONTACTO.whatsapp}`}
+                href={whatsappHref("Hola, tengo una consulta sobre Mercalin.")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-white px-5 py-3 text-[15px] font-semibold text-foreground transition-colors hover:bg-white/90"

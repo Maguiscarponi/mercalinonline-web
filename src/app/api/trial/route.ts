@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getProduct, listProducts } from "@/lib/products";
 import { generateLicenseKey, isLicensingConfigured } from "@/lib/license";
-import { createActivation } from "@/lib/activations";
+import { createActivation, findActiveTrialActivation } from "@/lib/activations";
 import { sendMail, licenseEmailHtml, ADMIN_NOTIFY_EMAIL } from "@/lib/mail";
 
 export async function POST(req: NextRequest) {
@@ -24,6 +24,25 @@ export async function POST(req: NextRequest) {
       { error: "El sistema de licencias todavía no está configurado (falta LICENSE_SECRET)." },
       { status: 503 }
     );
+  }
+
+  // Si ya tiene una prueba de este producto sin vencer, se le reenvía esa
+  // misma licencia en vez de generar una nueva: sin esto, cualquiera podía
+  // pedir "otros 7 días" las veces que quisiera con el mismo mail.
+  const existing = await findActiveTrialActivation(email, product.slug);
+  if (existing) {
+    await sendMail({
+      to: email,
+      subject: `Tu prueba gratis de ${product.name}`,
+      html: licenseEmailHtml({
+        productName: product.name,
+        kind: "trial",
+        licenseKey: existing.licenseKey,
+        downloadUrl: product.downloadUrl,
+        expiresAt: existing.expiresAt ? new Date(existing.expiresAt) : null,
+      }),
+    });
+    return NextResponse.json({ ok: true });
   }
 
   const license = generateLicenseKey(email, "trial");

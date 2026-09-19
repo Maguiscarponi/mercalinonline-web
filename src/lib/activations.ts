@@ -14,6 +14,9 @@ export interface Activation {
   mpPaymentId: string | null;
   amountArs: number | null;
   emailSent: boolean;
+  reminder3Sent: boolean;
+  reminderExpirySent: boolean;
+  expiredSent: boolean;
   createdAt: string;
 }
 
@@ -28,6 +31,9 @@ interface ActivationRow {
   mp_payment_id: string | null;
   amount_ars: number | null;
   email_sent: number;
+  reminder3_sent: number;
+  reminder_expiry_sent: number;
+  expired_sent: number;
   created_at: string;
 }
 
@@ -43,6 +49,9 @@ function rowToActivation(row: ActivationRow): Activation {
     mpPaymentId: row.mp_payment_id,
     amountArs: row.amount_ars,
     emailSent: row.email_sent === 1,
+    reminder3Sent: row.reminder3_sent === 1,
+    reminderExpirySent: row.reminder_expiry_sent === 1,
+    expiredSent: row.expired_sent === 1,
     createdAt: row.created_at,
   };
 }
@@ -72,6 +81,32 @@ export async function createActivation(input: CreateActivationInput): Promise<Ac
   return rowToActivation(rows[0]);
 }
 
+export async function setActivationEmailSent(id: string, sent: boolean): Promise<void> {
+  const sql = getDb();
+  await sql`UPDATE activations SET email_sent = ${sent ? 1 : 0} WHERE id = ${id}`;
+}
+
+// Evita que un mismo mail junte pruebas gratis infinitas: si ya tiene una
+// activación "trial" de este producto que todavía no venció, se reusa esa
+// en vez de generar una licencia nueva (ver src/app/api/trial/route.ts).
+export async function findActiveTrialActivation(
+  email: string,
+  productSlug: string
+): Promise<Activation | null> {
+  const sql = getDb();
+  const rows = (await sql`
+    SELECT * FROM activations
+    WHERE lower(email) = ${email.trim().toLowerCase()}
+      AND product_slug = ${productSlug}
+      AND kind = 'trial'
+      AND expires_at IS NOT NULL
+      AND expires_at > now()
+    ORDER BY created_at DESC
+    LIMIT 1
+  `) as unknown as ActivationRow[];
+  return rows[0] ? rowToActivation(rows[0]) : null;
+}
+
 export async function listActivations(): Promise<Activation[]> {
   const sql = getDb();
   const rows = (await sql`SELECT * FROM activations ORDER BY created_at DESC`) as unknown as ActivationRow[];
@@ -97,6 +132,60 @@ export async function listActivationsPage(page: number): Promise<ActivationsPage
     LIMIT ${ACTIVATIONS_PAGE_SIZE} OFFSET ${(safePage - 1) * ACTIVATIONS_PAGE_SIZE}
   `) as unknown as ActivationRow[];
   return { items: rows.map(rowToActivation), page: safePage, totalPages, total };
+}
+
+// ── Secuencia de emails del trial (ver src/app/api/cron/trial-emails/route.ts) ──
+// Cada consulta trae solo lo que todavía no recibió ESE email puntual, así el
+// cron puede correr todos los días sin mandar nada duplicado.
+
+export async function listTrialsNeedingDay3Reminder(): Promise<Activation[]> {
+  const sql = getDb();
+  const rows = (await sql`
+    SELECT * FROM activations
+    WHERE kind = 'trial'
+      AND reminder3_sent = 0
+      AND expires_at > now()
+      AND created_at <= now() - interval '3 days'
+  `) as unknown as ActivationRow[];
+  return rows.map(rowToActivation);
+}
+
+export async function listTrialsNeedingExpiryReminder(): Promise<Activation[]> {
+  const sql = getDb();
+  const rows = (await sql`
+    SELECT * FROM activations
+    WHERE kind = 'trial'
+      AND reminder_expiry_sent = 0
+      AND expires_at > now()
+      AND expires_at <= now() + interval '1 day'
+  `) as unknown as ActivationRow[];
+  return rows.map(rowToActivation);
+}
+
+export async function listTrialsNeedingExpiredEmail(): Promise<Activation[]> {
+  const sql = getDb();
+  const rows = (await sql`
+    SELECT * FROM activations
+    WHERE kind = 'trial'
+      AND expired_sent = 0
+      AND expires_at <= now()
+  `) as unknown as ActivationRow[];
+  return rows.map(rowToActivation);
+}
+
+export async function markReminder3Sent(id: string): Promise<void> {
+  const sql = getDb();
+  await sql`UPDATE activations SET reminder3_sent = 1 WHERE id = ${id}`;
+}
+
+export async function markReminderExpirySent(id: string): Promise<void> {
+  const sql = getDb();
+  await sql`UPDATE activations SET reminder_expiry_sent = 1 WHERE id = ${id}`;
+}
+
+export async function markExpiredSent(id: string): Promise<void> {
+  const sql = getDb();
+  await sql`UPDATE activations SET expired_sent = 1 WHERE id = ${id}`;
 }
 
 export interface ActivationStats {

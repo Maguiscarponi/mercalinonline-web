@@ -1,7 +1,7 @@
 import { MercadoPagoConfig, Preference, Payment, WebhookSignatureValidator } from "mercadopago";
 
 // Sin MP_ACCESS_TOKEN configurado (fase de credenciales), el checkout no se
-// arma y el carrito lo muestra honestamente en vez de fallar en silencio.
+// arma y la página de compra lo muestra honestamente en vez de fallar en silencio.
 
 export function isPaymentsConfigured(): boolean {
   return Boolean(process.env.MP_ACCESS_TOKEN);

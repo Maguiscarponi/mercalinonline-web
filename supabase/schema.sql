@@ -45,10 +45,20 @@ CREATE TABLE IF NOT EXISTS activations (
   mp_payment_id TEXT,
   amount_ars INTEGER,
   email_sent INTEGER NOT NULL DEFAULT 0,
+  -- Recordatorios del trial (ver src/app/api/cron/trial-emails/route.ts):
+  -- un flag por email de la secuencia para que el cron sea idempotente aunque
+  -- corra más de una vez por día o se reintente.
+  reminder3_sent INTEGER NOT NULL DEFAULT 0,
+  reminder_expiry_sent INTEGER NOT NULL DEFAULT 0,
+  expired_sent INTEGER NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- El webhook de MP busca duplicados por mp_payment_id (ver
--- src/app/api/mercadopago/webhook/route.ts) -- este índice lo hace rápido
--- incluso con muchas activaciones.
-CREATE INDEX IF NOT EXISTS idx_activations_mp_payment_id ON activations (mp_payment_id);
+-- UNIQUE, no solo índice: el webhook de MP puede reintentar/duplicar
+-- notificaciones para el mismo pago (ver src/app/api/mercadopago/webhook/
+-- route.ts), y sin esta restricción dos notificaciones casi simultáneas
+-- podían colarse antes de que la primera terminara de insertar y generar
+-- dos licencias + dos ventas contadas para el mismo pago. NULL (pruebas
+-- gratis, que no tienen pago) no cuenta como duplicado para Postgres, así
+-- que esto no afecta a los trials.
+CREATE UNIQUE INDEX IF NOT EXISTS idx_activations_mp_payment_id ON activations (mp_payment_id);

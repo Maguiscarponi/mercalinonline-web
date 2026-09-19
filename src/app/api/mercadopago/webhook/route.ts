@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getPayment, isWebhookConfigured, verifyWebhookSignature } from "@/lib/mercadopago";
 import { getProduct } from "@/lib/products";
 import { generateLicenseKey, isLicensingConfigured } from "@/lib/license";
-import { createActivation, listActivations } from "@/lib/activations";
+import { createActivation, listActivations, setActivationEmailSent } from "@/lib/activations";
 import { sendMail, licenseEmailHtml, ADMIN_NOTIFY_EMAIL } from "@/lib/mail";
 
 // Mercado Pago llama a esta URL cuando un pago cambia de estado. Ver
@@ -56,6 +56,32 @@ export async function POST(req: NextRequest) {
 
   const license = generateLicenseKey(email, "full");
 
+  // Se inserta ANTES de mandar el mail, y con mp_payment_id ahora UNIQUE en
+  // la base (supabase/schema.sql): si Mercado Pago manda dos notificaciones
+  // casi juntas para el mismo pago, la segunda pierde la carrera acá y no
+  // llega a mandar un mail duplicado ni a contar la venta dos veces.
+  let activation;
+  try {
+    activation = await createActivation({
+      email,
+      productSlug: product.slug,
+      kind: "full",
+      licenseKey: license.key,
+      expiresAt: null,
+      mpPaymentId: dataId,
+      amountArs: payment.transaction_amount ?? product.priceArs,
+      emailSent: false,
+    });
+  } catch (err) {
+    const code = (err as { code?: string })?.code;
+    if (code === "23505") {
+      // Unique violation en mp_payment_id: otra notificación de este mismo
+      // pago ya lo procesó justo antes. Nada más que hacer.
+      return NextResponse.json({ ok: true });
+    }
+    throw err;
+  }
+
   const { sent } = await sendMail({
     to: email,
     subject: `Tu compra de ${product.name}`,
@@ -67,17 +93,7 @@ export async function POST(req: NextRequest) {
       expiresAt: null,
     }),
   });
-
-  await createActivation({
-    email,
-    productSlug: product.slug,
-    kind: "full",
-    licenseKey: license.key,
-    expiresAt: null,
-    mpPaymentId: dataId,
-    amountArs: payment.transaction_amount ?? product.priceArs,
-    emailSent: sent,
-  });
+  if (sent) await setActivationEmailSent(activation.id, true);
 
   await sendMail({
     to: ADMIN_NOTIFY_EMAIL,

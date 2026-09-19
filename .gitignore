@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# configuración local de Claude Code (rutas de máquina, no del proyecto)
+/.claude/
+
 # base de datos local de desarrollo (prod usa Supabase Postgres)
 /dev.db
 /dev.db-journal

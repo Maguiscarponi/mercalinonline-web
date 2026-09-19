@@ -1,12 +1,7 @@
 import { MessageCircle } from "lucide-react";
+import { whatsappHref } from "@/lib/whatsapp";
 
-// Un solo lugar para el contacto: si cambia el número, se cambia acá.
-export const WHATSAPP =
-  "https://wa.me/542344502904?text=" +
-  encodeURIComponent("Hola! Tengo una consulta sobre Mercalin.");
-export const WHATSAPP_ARCA =
-  "https://wa.me/542344502904?text=" +
-  encodeURIComponent("Hola! Necesito facturación con ARCA. ¿Me pasás info?");
+const WHATSAPP_ARCA = whatsappHref("Hola! Necesito facturación con ARCA. ¿Me pasás info?");
 
 export default function ContactoArca() {
   return (
