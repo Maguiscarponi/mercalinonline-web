@@ -3,8 +3,15 @@ import { listProducts } from "@/lib/products";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://mercalinonline.com";
 
+// Dinámico: se arma en cada request (cacheado por la plataforma), no en el
+// build. Así el build no necesita la base, y un producto nuevo aparece sin
+// tener que redeployar.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const products = await listProducts();
+  // Si la base no responde, el sitemap sigue sirviendo las páginas fijas en
+  // vez de romperse.
+  const products = await listProducts().catch(() => []);
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: SITE_URL, changeFrequency: "weekly", priority: 1 },

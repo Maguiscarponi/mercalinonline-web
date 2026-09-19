@@ -14,7 +14,19 @@ const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://mercalinonline.com";
+// Si la variable viniera sin "https://" (o mal escrita), new URL() tiraría
+// abajo el build entero: se cae al dominio real en vez de romper.
+function resolveSiteUrl(): string {
+  const raw = process.env.NEXT_PUBLIC_SITE_URL || "https://mercalinonline.com";
+  try {
+    new URL(raw);
+    return raw;
+  } catch {
+    return "https://mercalinonline.com";
+  }
+}
+
+const SITE_URL = resolveSiteUrl();
 const TITLE = "Mercalin — Sistema de gestión para comercios";
 const DESCRIPTION =
   "Sistema de gestión para comercios que venden productos: ventas, stock, caja, clientes y proveedores. Funciona sin internet. Pago único, $65.000 ARS. Probá 7 días gratis.";
