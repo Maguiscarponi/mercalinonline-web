@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Link from "next/link";
 import type { Product } from "@/lib/products";
 import { getAttribution, getVisitorId, track } from "@/lib/track";
 
@@ -8,6 +9,8 @@ export default function TrialForm({ products, defaultSlug }: { products: Product
   const started = useRef(false);
   const [email, setEmail] = useState("");
   const [businessName, setBusinessName] = useState("");
+  // Campo señuelo anti-bots: una persona nunca lo ve ni lo completa.
+  const [website, setWebsite] = useState("");
   const [productSlug, setProductSlug] = useState(defaultSlug ?? products[0]?.slug ?? "");
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -20,7 +23,7 @@ export default function TrialForm({ products, defaultSlug }: { products: Product
       const res = await fetch("/api/trial", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, businessName, productSlug, visitorId: getVisitorId(), ...getAttribution() }),
+        body: JSON.stringify({ email, businessName, productSlug, website, visitorId: getVisitorId(), ...getAttribution() }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -42,6 +45,9 @@ export default function TrialForm({ products, defaultSlug }: { products: Product
         <h2 className="mt-3 text-2xl font-bold tracking-tight text-foreground">Revisá tu mail.</h2>
         <p className="mt-3 text-[15px] text-foreground/60">
           Te mandamos el instalador y el código de activación a <strong>{email}</strong>.
+        </p>
+        <p className="mt-3 text-[13.5px] text-foreground/45">
+          Si en unos minutos no aparece, mirá la carpeta de spam o escribinos por WhatsApp.
         </p>
       </div>
     );
@@ -103,6 +109,18 @@ export default function TrialForm({ products, defaultSlug }: { products: Product
           placeholder="Kiosco Don José"
         />
       </div>
+      <div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+        <label htmlFor="mc_verif">Dejar vacío</label>
+        <input
+          id="mc_verif"
+          type="text"
+          name="mc_verif"
+          tabIndex={-1}
+          autoComplete="off"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+        />
+      </div>
       {status === "error" && <p className="mb-4 text-sm text-brand">{errorMsg}</p>}
       <button
         type="submit"
@@ -111,6 +129,12 @@ export default function TrialForm({ products, defaultSlug }: { products: Product
       >
         {status === "loading" ? "Enviando…" : "Empezar prueba de 7 días"}
       </button>
+      <p className="mt-4 text-center text-[12.5px] leading-relaxed text-foreground/45">
+        Usamos tu mail solo para enviarte la clave y avisarte de tu prueba.{" "}
+        <Link href="/privacidad" className="underline underline-offset-2 hover:text-foreground">
+          Política de privacidad
+        </Link>
+      </p>
     </form>
   );
 }

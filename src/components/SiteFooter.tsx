@@ -126,7 +126,12 @@ export default function SiteFooter() {
 
         <div className="mx-auto flex max-w-5xl flex-wrap justify-between gap-3 border-t border-white/10 px-6 py-6 text-[13px] text-white/35">
           <span>{CONTACTO.horario}</span>
-          <span>© {new Date().getFullYear()} Mercalin. Hecho en Argentina.</span>
+          <span>
+            <Link href="/privacidad" className="mr-4 underline underline-offset-2 transition-colors hover:text-white/70">
+              Privacidad
+            </Link>
+            © {new Date().getFullYear()} Mercalin. Hecho en Argentina.
+          </span>
         </div>
       </div>
     </footer>

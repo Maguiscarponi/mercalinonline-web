@@ -5,6 +5,7 @@ import { generateLicenseKey, isLicensingConfigured } from "@/lib/license";
 import { createActivation, listActivations, setActivationEmailSent } from "@/lib/activations";
 import { sendMail, licenseEmailHtml, ADMIN_NOTIFY_EMAIL } from "@/lib/mail";
 import { recordEvent } from "@/lib/events";
+import { escapeHtml } from "@/lib/validate";
 
 // Mercado Pago llama a esta URL cuando un pago cambia de estado. Ver
 // notification_url en src/lib/mercadopago.ts. Reintenta si no respondemos
@@ -119,7 +120,7 @@ export async function POST(req: NextRequest) {
   await sendMail({
     to: ADMIN_NOTIFY_EMAIL,
     subject: `Nueva venta: ${email}`,
-    html: `<p>${email} compró ${product.name} por $${payment.transaction_amount ?? product.priceArs}.</p>`,
+    html: `<p>${escapeHtml(email)} compró ${escapeHtml(product.name)} por $${payment.transaction_amount ?? product.priceArs}.</p>`,
   });
 
   return NextResponse.json({ ok: true });

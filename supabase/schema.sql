@@ -59,6 +59,16 @@ CREATE TABLE IF NOT EXISTS activations (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Límites de intentos (login del admin, formularios públicos). La clave es un
+-- hash de la IP, nunca la IP. Ver src/lib/rate-limit.ts.
+CREATE TABLE IF NOT EXISTS rate_events (
+  id BIGSERIAL PRIMARY KEY,
+  bucket TEXT NOT NULL,
+  key TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_rate_events_lookup ON rate_events (bucket, key, created_at);
+
 -- Analítica propia (sin terceros, sin cookies): un evento por fila. Los
 -- eventos del navegador entran por /api/track; los de negocio (prueba
 -- iniciada, pago aprobado, mails enviados) los registra el servidor. Ver

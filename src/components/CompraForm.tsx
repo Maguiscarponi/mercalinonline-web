@@ -1,12 +1,15 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Link from "next/link";
 import type { Product } from "@/lib/products";
 import { getAttribution, getVisitorId, track } from "@/lib/track";
 
 export default function CompraForm({ product }: { product: Product }) {
   const started = useRef(false);
   const [email, setEmail] = useState("");
+  // Campo señuelo anti-bots: una persona nunca lo ve ni lo completa.
+  const [website, setWebsite] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "not-configured" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -23,7 +26,7 @@ export default function CompraForm({ product }: { product: Product }) {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, productSlug: product.slug, visitorId: getVisitorId(), ...getAttribution() }),
+        body: JSON.stringify({ email, productSlug: product.slug, website, visitorId: getVisitorId(), ...getAttribution() }),
       });
       const data = await res.json();
       if (res.status === 503) {
@@ -79,6 +82,19 @@ export default function CompraForm({ product }: { product: Product }) {
         placeholder="vos@tunegocio.com"
       />
 
+      <div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+        <label htmlFor="mc_verif">Dejar vacío</label>
+        <input
+          id="mc_verif"
+          type="text"
+          name="mc_verif"
+          tabIndex={-1}
+          autoComplete="off"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+        />
+      </div>
+
       {status === "error" && <p className="mt-4 text-sm text-brand">{errorMsg}</p>}
 
       <button
@@ -88,6 +104,12 @@ export default function CompraForm({ product }: { product: Product }) {
       >
         {status === "loading" ? "Redirigiendo…" : "Continuar al pago"}
       </button>
+      <p className="mt-4 text-center text-[12.5px] leading-relaxed text-foreground/45">
+        El pago lo procesa Mercado Pago: nosotros no vemos ni guardamos los datos de tu tarjeta.{" "}
+        <Link href="/privacidad" className="underline underline-offset-2 hover:text-foreground">
+          Política de privacidad
+        </Link>
+      </p>
     </form>
   );
 }

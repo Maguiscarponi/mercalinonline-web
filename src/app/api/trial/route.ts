@@ -4,18 +4,34 @@ import { generateLicenseKey, isLicensingConfigured } from "@/lib/license";
 import { createActivation, findActiveTrialActivation } from "@/lib/activations";
 import { sendMail, licenseEmailHtml, ADMIN_NOTIFY_EMAIL } from "@/lib/mail";
 import { clip, recordEvent } from "@/lib/events";
+import { escapeHtml, isHoneypotFilled, isValidEmail } from "@/lib/validate";
+import { tooManyRequests } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
+
+  // Un bot completó el campo señuelo: se le responde "ok" y no se hace nada,
+  // así no sabe que fue detectado.
+  if (isHoneypotFilled(body)) return NextResponse.json({ ok: true });
+
   const email = typeof body?.email === "string" ? body.email.trim() : "";
-  const businessName = typeof body?.businessName === "string" ? body.businessName.trim() : "";
+  const businessName = clip(body?.businessName, 100) ?? "";
   const visitorId = clip(body?.visitorId, 64);
   const source = clip(body?.source, 100);
   const campaign = clip(body?.campaign, 100);
   const productSlug = typeof body?.productSlug === "string" ? body.productSlug : (await listProducts())[0]?.slug;
 
-  if (!email || !email.includes("@")) {
+  if (!isValidEmail(email)) {
     return NextResponse.json({ error: "Mail inválido." }, { status: 400 });
+  }
+
+  // Tope de pedidos por persona: 6 por hora alcanza de sobra para quien se
+  // equivoca de mail, y corta a quien automatiza pedidos.
+  if (await tooManyRequests("trial", req.headers, 6, 3600)) {
+    return NextResponse.json(
+      { error: "Hiciste varios pedidos seguidos. Probá de nuevo en un rato o escribinos por WhatsApp." },
+      { status: 429 }
+    );
   }
 
   const product = productSlug ? await getProduct(productSlug) : undefined;
@@ -81,7 +97,7 @@ export async function POST(req: NextRequest) {
   await sendMail({
     to: ADMIN_NOTIFY_EMAIL,
     subject: `Nueva prueba gratis: ${email}`,
-    html: `<p>${email} (${businessName || "sin nombre de negocio"}) pidió probar ${product.name}.</p>`,
+    html: `<p>${escapeHtml(email)} (${escapeHtml(businessName || "sin nombre de negocio")}) pidió probar ${escapeHtml(product.name)}.</p>`,
   });
 
   return NextResponse.json({ ok: true });

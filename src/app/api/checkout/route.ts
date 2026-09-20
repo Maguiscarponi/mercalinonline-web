@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getProduct } from "@/lib/products";
 import { createCheckoutPreference, isPaymentsConfigured } from "@/lib/mercadopago";
 import { clip, recordEvent } from "@/lib/events";
+import { isHoneypotFilled, isValidEmail } from "@/lib/validate";
+import { tooManyRequests } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   if (!isPaymentsConfigured()) {
@@ -12,14 +14,27 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json().catch(() => null);
+  if (isHoneypotFilled(body)) {
+    return NextResponse.json({ error: "No se pudo iniciar el pago." }, { status: 400 });
+  }
+
   const email = typeof body?.email === "string" ? body.email.trim() : "";
   const productSlug = typeof body?.productSlug === "string" ? body.productSlug : "";
   const visitorId = clip(body?.visitorId, 64);
   const source = clip(body?.source, 100);
   const campaign = clip(body?.campaign, 100);
 
-  if (!email || !email.includes("@")) {
+  if (!isValidEmail(email)) {
     return NextResponse.json({ error: "Mail inválido." }, { status: 400 });
+  }
+
+  // Cada intento crea una preferencia en Mercado Pago: se limita para que
+  // nadie pueda llenarla de intentos falsos.
+  if (await tooManyRequests("checkout", req.headers, 20, 3600)) {
+    return NextResponse.json(
+      { error: "Hiciste muchos intentos seguidos. Probá de nuevo en un rato." },
+      { status: 429 }
+    );
   }
 
   const product = await getProduct(productSlug);

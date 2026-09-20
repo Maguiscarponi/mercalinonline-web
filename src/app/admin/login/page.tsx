@@ -22,7 +22,7 @@ export default function AdminLogin() {
   return (
     <section className="flex min-h-screen items-center justify-center bg-dark-section px-6">
       <div className="w-full max-w-[420px] bg-white p-9 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] sm:p-11">
-        <Image src="/mercalin-logo.svg" alt="Mercalin" width={140} height={44} style={{ height: "auto" }} priority />
+        <Image src="/mercalin-logo.svg" alt="Mercalin" width={140} height={44} style={{ width: 140, height: "auto" }} priority />
         <p className="tag-numbered mt-3 text-[12px] text-foreground/45">Panel de administración</p>
         <form action={handleSubmit} className="mt-9">
           <label className="tag-numbered block text-[12px] text-foreground/60" htmlFor="password">
