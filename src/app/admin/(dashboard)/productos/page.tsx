@@ -3,6 +3,7 @@ import { Star, Pencil, Trash2 } from "lucide-react";
 import ProductFrame from "@/components/ProductFrame";
 import { listAllProductsForAdmin } from "@/lib/products";
 import { deleteProductAction, toggleFeaturedAction } from "@/lib/actions/products";
+import { PageHeader } from "@/components/admin/stats";
 
 export const dynamic = "force-dynamic";
 
@@ -10,13 +11,16 @@ export default async function AdminProductos() {
   const products = await listAllProductsForAdmin();
 
   return (
-    <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Productos</h1>
-        <Link href="/admin/productos/nuevo" className="admin-btn admin-btn-primary">
-          + Nuevo producto
-        </Link>
-      </div>
+    <div className="max-w-5xl">
+      <PageHeader
+        title="Productos"
+        subtitle="Lo que se muestra y se vende en el sitio."
+        action={
+          <Link href="/admin/productos/nuevo" className="admin-btn admin-btn-primary">
+            + Nuevo producto
+          </Link>
+        }
+      />
 
       <div className="mt-6 space-y-3">
         {products.length === 0 && (
@@ -24,7 +28,7 @@ export default async function AdminProductos() {
         )}
         {products.map((p) => (
           <div key={p.id} className="admin-card flex items-center gap-4 p-3">
-            <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg">
+            <div className="h-20 w-20 shrink-0 overflow-hidden">
               <ProductFrame label={p.name} src={p.imageUrl} aspect="aspect-square" />
             </div>
 
@@ -32,12 +36,12 @@ export default async function AdminProductos() {
               <div className="flex flex-wrap items-center gap-2">
                 <p className="truncate font-bold text-foreground">{p.name}</p>
                 {p.featured && (
-                  <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand">
+                  <span className="tag-numbered border border-brand/30 bg-brand/10 px-2 py-0.5 text-[11px] text-brand">
                     Destacado
                   </span>
                 )}
                 {!p.active && (
-                  <span className="rounded-full bg-foreground/8 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-foreground/45">
+                  <span className="tag-numbered border border-foreground/20 bg-foreground/5 px-2 py-0.5 text-[11px] text-foreground/55">
                     Oculto
                   </span>
                 )}

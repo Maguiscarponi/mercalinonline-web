@@ -50,6 +50,8 @@ export default function SiteHeader() {
 
           <Link
             href="/prueba-gratis"
+            data-track="cta_trial_clicked"
+            data-track-loc="navbar"
             className="tag-numbered ml-1 rounded-full bg-brand px-5 py-2.5 text-[15px] text-white transition-colors hover:bg-brand-dark"
           >
             Probar 7 días

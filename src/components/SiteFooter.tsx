@@ -81,6 +81,8 @@ export default function SiteFooter() {
             <div className="flex w-full flex-col gap-2.5 sm:w-auto sm:flex-row">
               <a
                 href={whatsappHref("Hola, tengo una consulta sobre Mercalin.")}
+                data-track="whatsapp_clicked"
+                data-track-loc="footer"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-white px-5 py-3 text-[15px] font-semibold text-foreground transition-colors hover:bg-white/90"

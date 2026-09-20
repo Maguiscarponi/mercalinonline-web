@@ -2,18 +2,28 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, GalleryHorizontal, ListChecks } from "lucide-react";
+import { LayoutDashboard, Package, GalleryHorizontal, Users } from "lucide-react";
 
 const ICONS = {
   dashboard: LayoutDashboard,
+  users: Users,
   package: Package,
   gallery: GalleryHorizontal,
-  list: ListChecks,
 };
 
 export type AdminNavIcon = keyof typeof ICONS;
 
-export default function AdminNavLink({ href, label, icon }: { href: string; label: string; icon: AdminNavIcon }) {
+export default function AdminNavLink({
+  href,
+  label,
+  icon,
+  badge,
+}: {
+  href: string;
+  label: string;
+  icon: AdminNavIcon;
+  badge?: number;
+}) {
   const pathname = usePathname();
   const Icon = ICONS[icon];
   const active = href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
@@ -21,12 +31,17 @@ export default function AdminNavLink({ href, label, icon }: { href: string; labe
   return (
     <Link
       href={href}
-      className={`flex items-center gap-2.5 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${
-        active ? "bg-brand/10 text-brand" : "text-foreground/60 hover:bg-foreground/5 hover:text-foreground"
+      className={`flex shrink-0 items-center gap-3 px-5 py-3 text-[15px] font-medium transition-colors ${
+        active ? "bg-white text-foreground" : "text-white/75 hover:bg-white/[0.06] hover:text-white"
       }`}
     >
-      <Icon className="h-4 w-4" strokeWidth={1.8} />
-      {label}
+      <Icon className="h-4 w-4" strokeWidth={1.9} />
+      <span className="flex-1">{label}</span>
+      {!!badge && badge > 0 && (
+        <span className="flex h-[22px] min-w-[22px] items-center justify-center rounded-full bg-amber-600 px-1.5 text-[12px] font-bold text-white">
+          {badge}
+        </span>
+      )}
     </Link>
   );
 }

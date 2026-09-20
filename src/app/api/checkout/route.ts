@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getProduct } from "@/lib/products";
 import { createCheckoutPreference, isPaymentsConfigured } from "@/lib/mercadopago";
+import { clip, recordEvent } from "@/lib/events";
 
 export async function POST(req: NextRequest) {
   if (!isPaymentsConfigured()) {
@@ -13,6 +14,9 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
   const email = typeof body?.email === "string" ? body.email.trim() : "";
   const productSlug = typeof body?.productSlug === "string" ? body.productSlug : "";
+  const visitorId = clip(body?.visitorId, 64);
+  const source = clip(body?.source, 100);
+  const campaign = clip(body?.campaign, 100);
 
   if (!email || !email.includes("@")) {
     return NextResponse.json({ error: "Mail inválido." }, { status: 400 });
@@ -32,6 +36,16 @@ export async function POST(req: NextRequest) {
       priceArs: product.priceArs,
       email,
       siteUrl,
+      visitorId,
+      source,
+    });
+    await recordEvent({
+      name: "checkout_started",
+      email,
+      visitorId,
+      source,
+      campaign,
+      props: { product: product.slug, amount: product.priceArs },
     });
     return NextResponse.json({ url: initPoint });
   } catch (err) {

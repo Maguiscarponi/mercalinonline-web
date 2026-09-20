@@ -2,6 +2,7 @@ import Image from "next/image";
 import { X } from "lucide-react";
 import { listAllSlidesForAdmin } from "@/lib/carousel";
 import { createSlideAction, deleteSlideAction } from "@/lib/actions/slides";
+import { PageHeader } from "@/components/admin/stats";
 
 export const dynamic = "force-dynamic";
 
@@ -9,12 +10,11 @@ export default async function AdminCarrusel() {
   const slides = await listAllSlidesForAdmin();
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold tracking-tight text-foreground">Carrusel del home</h1>
-      <p className="mt-2 text-sm text-foreground/50">
-        Imagen recomendada: horizontal, relación 3:1 (ej. 1800×600, 1920×640). Sin ninguna cargada, el carrusel no
-        aparece en el sitio.
-      </p>
+    <div className="max-w-5xl">
+      <PageHeader
+        title="Carrusel"
+        subtitle="Imagen recomendada: horizontal, relación 3:1 (ej. 1800×600, 1920×640). Sin ninguna cargada, el carrusel no aparece en el sitio."
+      />
 
       <form action={createSlideAction} className="admin-card mt-6 flex flex-wrap items-center gap-3 p-5">
         <input type="file" name="image" accept="image/*" required className="admin-input flex-1" />

@@ -35,51 +35,75 @@ body {
   text-transform: uppercase;
 }
 
+/* ── Panel admin: estética plana y editorial ──
+   Sin bordes redondeados ni sombras, líneas finas, etiquetas en mayúsculas
+   espaciadas y una línea de color arriba de cada tarjeta de métrica. */
+
 .admin-input {
   width: 100%;
-  border: 1px solid rgb(0 0 0 / 0.12);
-  border-radius: 0.5rem;
-  padding: 0.625rem 0.75rem;
-  font-size: 0.875rem;
+  border: 1px solid rgb(28 25 23 / 0.22);
+  border-radius: 0;
+  padding: 0.65rem 0.8rem;
+  font-size: 0.9rem;
   background: #fff;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 .admin-input:focus {
   outline: none;
-  border-color: var(--brand);
-  box-shadow: 0 0 0 3px rgb(225 37 27 / 0.12);
+  border-color: var(--foreground);
+  box-shadow: 0 0 0 3px rgb(28 25 23 / 0.08);
 }
 
 .admin-card {
   background: #fff;
-  border-radius: 0.875rem;
-  border: 1px solid rgb(0 0 0 / 0.07);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
-  transition: box-shadow 0.15s, border-color 0.15s;
+  border: 1px solid rgb(28 25 23 / 0.13);
+  border-radius: 0;
 }
-.admin-card:hover {
-  box-shadow: 0 4px 16px rgb(0 0 0 / 0.07);
-  border-color: rgb(0 0 0 / 0.1);
+
+/* Tarjeta de métrica: la línea de arriba lleva el color del significado
+   (verde = plata, rojo = ojo, ámbar = pronto, tinta = neutro). */
+.admin-tile {
+  background: #fff;
+  border: 1px solid rgb(28 25 23 / 0.13);
+  border-top: 3px solid var(--tile, var(--foreground));
 }
 
 .admin-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  border-radius: 0.55rem;
+  border-radius: 0;
+  font-family: var(--font-condensed);
   font-weight: 600;
   font-size: 0.8125rem;
-  padding: 0.5rem 0.9rem;
-  transition: background-color 0.15s, color 0.15s, box-shadow 0.15s, border-color 0.15s;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.6rem 1rem;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
   cursor: pointer;
 }
 .admin-btn-primary {
   background: var(--brand);
   color: #fff;
-  box-shadow: 0 1px 2px rgb(225 37 27 / 0.25);
 }
 .admin-btn-primary:hover {
   background: var(--brand-dark);
+}
+.admin-btn-dark {
+  background: var(--dark-section);
+  color: #fff;
+}
+.admin-btn-dark:hover {
+  background: var(--brand);
+}
+.admin-btn-outline {
+  background: #fff;
+  color: var(--foreground);
+  border: 1px solid var(--foreground);
+}
+.admin-btn-outline:hover {
+  background: var(--foreground);
+  color: #fff;
 }
 .admin-btn-ghost {
   color: rgb(28 25 23 / 0.55);
@@ -99,7 +123,7 @@ body {
   justify-content: center;
   height: 2rem;
   width: 2rem;
-  border-radius: 999px;
+  border-radius: 0;
   color: rgb(28 25 23 / 0.45);
   transition: background-color 0.15s, color 0.15s;
   cursor: pointer;

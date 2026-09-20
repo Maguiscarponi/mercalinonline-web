@@ -19,6 +19,18 @@ export interface CreatePreferenceInput {
   priceArs: number;
   email: string;
   siteUrl: string; // base URL, ej. https://mercalin.online
+  visitorId?: string | null;
+  source?: string | null;
+}
+
+// external_reference = "slug|mail" (formato original) + "|visitorId|canal" al
+// final cuando hay atribución. El webhook lee por posición, así que las
+// preferencias viejas (solo slug|mail) siguen funcionando igual.
+function buildExternalReference(input: CreatePreferenceInput): string {
+  const clean = (s: string | null | undefined) => (s ?? "").replace(/\|/g, "").slice(0, 64);
+  const base = `${input.productSlug}|${input.email}`;
+  if (!input.visitorId) return base;
+  return `${base}|${clean(input.visitorId)}|${clean(input.source)}`;
 }
 
 // Mercado Pago valida que back_urls y notification_url sean alcanzables desde
@@ -45,7 +57,7 @@ export async function createCheckoutPreference(input: CreatePreferenceInput): Pr
         },
       ],
       payer: { email: input.email },
-      external_reference: `${input.productSlug}|${input.email}`,
+      external_reference: buildExternalReference(input),
       back_urls: {
         success: `${input.siteUrl}/gracias`,
         pending: `${input.siteUrl}/gracias`,

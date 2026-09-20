@@ -9,6 +9,7 @@ import {
   Search, Settings,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { track } from "@/lib/track";
 
 /* ─────────────────────────────────────────────────────────────────────────
    Maqueta animada de Mercalin para el hero.
@@ -534,13 +535,13 @@ export default function AppDemo({
             aria-selected={i === activo}
             aria-controls={`ha-panel-${m.id}`}
             className="ha-tab"
-            onClick={() => { setAuto(false); setActivo(i); }}
+            onClick={() => { setAuto(false); setActivo(i); track("hero_demo_tab_clicked", { module: m.id }); }}
           >
             {m.titulo}
             <span className="ha-tab-prog" style={{ animationDuration: auto ? `${m.dur}ms` : "0ms" }} />
           </button>
         ))}
-        <Link href={hrefModulos} className="ha-more">
+        <Link href={hrefModulos} className="ha-more" data-track="cta_detail_clicked" data-track-loc="hero_more_modules">
           + 15 módulos más
         </Link>
       </div>

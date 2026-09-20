@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { Product } from "@/lib/products";
+import { getAttribution, getVisitorId, track } from "@/lib/track";
 
 export default function TrialForm({ products, defaultSlug }: { products: Product[]; defaultSlug?: string }) {
+  const started = useRef(false);
   const [email, setEmail] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [productSlug, setProductSlug] = useState(defaultSlug ?? products[0]?.slug ?? "");
@@ -18,7 +20,7 @@ export default function TrialForm({ products, defaultSlug }: { products: Product
       const res = await fetch("/api/trial", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, businessName, productSlug }),
+        body: JSON.stringify({ email, businessName, productSlug, visitorId: getVisitorId(), ...getAttribution() }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -46,7 +48,15 @@ export default function TrialForm({ products, defaultSlug }: { products: Product
   }
 
   return (
-    <form onSubmit={handleSubmit} className="border border-black/10 p-8">
+    <form
+      onSubmit={handleSubmit}
+      onFocus={() => {
+        if (started.current) return;
+        started.current = true;
+        track("trial_form_started");
+      }}
+      className="border border-black/10 p-8"
+    >
       {products.length > 1 && (
         <div className="mb-5">
           <label className="tag-numbered block text-xs text-foreground/40" htmlFor="product">

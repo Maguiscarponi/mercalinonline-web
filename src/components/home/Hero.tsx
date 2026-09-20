@@ -70,6 +70,8 @@ export default async function Hero() {
           <div className="mt-6 flex flex-wrap gap-3 sm:mt-7">
             <Link
               href="/prueba-gratis"
+              data-track="cta_trial_clicked"
+              data-track-loc="hero"
               className="cta-latido tag-numbered inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 text-[15px] text-foreground transition-colors hover:bg-white/90 sm:w-auto"
             >
               Probar 7 días gratis
@@ -77,6 +79,8 @@ export default async function Hero() {
             </Link>
             <Link
               href="/productos"
+              data-track="cta_detail_clicked"
+              data-track-loc="hero"
               className="tag-numbered inline-flex w-full items-center justify-center rounded-full border border-white/25 px-7 py-3.5 text-[15px] text-white/85 transition-colors hover:border-white/50 hover:text-white sm:w-auto"
             >
               Ver precio y detalle

@@ -1,4 +1,5 @@
 import { ACENTO, GRUPOS, medidas } from "@/lib/modulos-data";
+import TrackView from "@/components/TrackView";
 import ModuloShowcaseClient, { type GrupoConMedidas } from "./ModuloShowcaseClient";
 
 // Server Component: mide las capturas en disco (medidas() usa node:fs) y le
@@ -26,6 +27,7 @@ export default function ModuloShowcase() {
 
   return (
     <section className="mx-auto max-w-5xl px-6 py-16 sm:py-24">
+      <TrackView name="demo_section_viewed" />
       <div className="max-w-2xl">
         <p className="tag-numbered text-xs text-brand">Así es Mercalin por dentro</p>
         <h2 className="font-condensed mt-3 text-[32px] font-extrabold leading-[1.06] tracking-tight sm:text-[40px]">

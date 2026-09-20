@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { loginAction } from "@/lib/actions/adminAuth";
 
 export default function AdminLogin() {
@@ -19,12 +20,12 @@ export default function AdminLogin() {
   }
 
   return (
-    <section className="mx-auto flex min-h-[70vh] max-w-sm items-center px-6">
-      <div className="w-full border border-black/10 p-8">
-        <p className="tag-numbered text-xs text-brand">Admin</p>
-        <h1 className="mt-2 text-2xl font-bold tracking-tight text-foreground">Entrar</h1>
-        <form action={handleSubmit} className="mt-6">
-          <label className="tag-numbered block text-xs text-foreground/40" htmlFor="password">
+    <section className="flex min-h-screen items-center justify-center bg-dark-section px-6">
+      <div className="w-full max-w-[420px] bg-white p-9 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] sm:p-11">
+        <Image src="/mercalin-logo.svg" alt="Mercalin" width={140} height={44} style={{ height: "auto" }} priority />
+        <p className="tag-numbered mt-3 text-[12px] text-foreground/45">Panel de administración</p>
+        <form action={handleSubmit} className="mt-9">
+          <label className="tag-numbered block text-[12px] text-foreground/60" htmlFor="password">
             Contraseña
           </label>
           <input
@@ -33,15 +34,15 @@ export default function AdminLogin() {
             type="password"
             required
             autoFocus
-            className="mt-2 w-full border border-black/15 px-3 py-2.5 text-sm"
+            className="admin-input mt-2"
           />
-          {error && <p className="mt-3 text-sm text-brand">{error}</p>}
+          {error && <p className="mt-3 text-[14px] text-brand">{error}</p>}
           <button
             type="submit"
             disabled={loading}
-            className="mt-6 w-full rounded-md bg-brand px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-dark disabled:opacity-50"
+            className="admin-btn admin-btn-dark mt-6 w-full justify-center py-3.5 disabled:opacity-50"
           >
-            {loading ? "Entrando…" : "Entrar"}
+            {loading ? "Entrando…" : "Ingresar"}
           </button>
         </form>
       </div>

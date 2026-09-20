@@ -3,11 +3,15 @@ import { getProduct, listProducts } from "@/lib/products";
 import { generateLicenseKey, isLicensingConfigured } from "@/lib/license";
 import { createActivation, findActiveTrialActivation } from "@/lib/activations";
 import { sendMail, licenseEmailHtml, ADMIN_NOTIFY_EMAIL } from "@/lib/mail";
+import { clip, recordEvent } from "@/lib/events";
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
   const email = typeof body?.email === "string" ? body.email.trim() : "";
   const businessName = typeof body?.businessName === "string" ? body.businessName.trim() : "";
+  const visitorId = clip(body?.visitorId, 64);
+  const source = clip(body?.source, 100);
+  const campaign = clip(body?.campaign, 100);
   const productSlug = typeof body?.productSlug === "string" ? body.productSlug : (await listProducts())[0]?.slug;
 
   if (!email || !email.includes("@")) {
@@ -42,6 +46,7 @@ export async function POST(req: NextRequest) {
         expiresAt: existing.expiresAt ? new Date(existing.expiresAt) : null,
       }),
     });
+    await recordEvent({ name: "trial_resent", email, visitorId, source, campaign, props: { product: product.slug } });
     return NextResponse.json({ ok: true });
   }
 
@@ -67,7 +72,11 @@ export async function POST(req: NextRequest) {
     licenseKey: license.key,
     expiresAt: license.expiresAt,
     emailSent: sent,
+    visitorId,
+    source,
+    campaign,
   });
+  await recordEvent({ name: "trial_started", email, visitorId, source, campaign, props: { product: product.slug } });
 
   await sendMail({
     to: ADMIN_NOTIFY_EMAIL,

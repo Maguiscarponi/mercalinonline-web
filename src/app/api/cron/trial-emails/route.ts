@@ -9,6 +9,7 @@ import {
   markExpiredSent,
 } from "@/lib/activations";
 import { sendMail, trialDay3EmailHtml, trialExpiringEmailHtml, trialExpiredEmailHtml } from "@/lib/mail";
+import { recordEvent } from "@/lib/events";
 
 // Vercel Cron llama esto una vez por día (ver vercel.json). Manda los tres
 // avisos de la Fase 12: día 3, "se vence mañana" y "se venció" — cada uno
@@ -38,6 +39,7 @@ export async function GET(req: NextRequest) {
       html: trialDay3EmailHtml({ productName: product.name, siteUrl }),
     });
     await markReminder3Sent(a.id);
+    await recordEvent({ name: "email_day3_sent", email: a.email, visitorId: a.visitorId, source: a.source });
     counts.day3++;
   }
 
@@ -56,6 +58,7 @@ export async function GET(req: NextRequest) {
       }),
     });
     await markReminderExpirySent(a.id);
+    await recordEvent({ name: "email_expiring_sent", email: a.email, visitorId: a.visitorId, source: a.source });
     counts.expiring++;
   }
 
@@ -69,6 +72,7 @@ export async function GET(req: NextRequest) {
       html: trialExpiredEmailHtml({ productName: product.name, siteUrl, productSlug: product.slug }),
     });
     await markExpiredSent(a.id);
+    await recordEvent({ name: "email_expired_sent", email: a.email, visitorId: a.visitorId, source: a.source });
     counts.expired++;
   }
 

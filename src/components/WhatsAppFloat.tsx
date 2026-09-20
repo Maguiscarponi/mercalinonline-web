@@ -23,6 +23,8 @@ export default function WhatsAppFloat() {
   return (
     <a
       href={href}
+      data-track="whatsapp_clicked"
+      data-track-loc="float"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Escribinos por WhatsApp"

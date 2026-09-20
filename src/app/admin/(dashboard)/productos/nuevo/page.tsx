@@ -1,10 +1,11 @@
 import ProductForm from "@/components/admin/ProductForm";
 import { createProductAction } from "@/lib/actions/products";
+import { PageHeader } from "@/components/admin/stats";
 
 export default function NuevoProducto() {
   return (
-    <div>
-      <h1 className="text-2xl font-bold tracking-tight text-foreground">Nuevo producto</h1>
+    <div className="max-w-5xl">
+      <PageHeader title="Nuevo producto" />
       <ProductForm action={createProductAction} />
     </div>
   );

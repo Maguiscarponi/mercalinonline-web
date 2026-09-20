@@ -19,6 +19,8 @@ export default function ContactoArca() {
         <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
           <a
             href={WHATSAPP_ARCA}
+            data-track="whatsapp_clicked"
+            data-track-loc="arca"
             target="_blank"
             rel="noopener noreferrer"
             className="tag-numbered inline-flex items-center gap-2 rounded-full bg-brand px-7 py-3.5 text-[15px] text-white transition-colors hover:bg-brand-dark"

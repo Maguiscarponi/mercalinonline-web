@@ -66,7 +66,7 @@ export default async function ProductoDetalle({ params }: { params: Promise<{ sl
               </span>
               <span className="tag-numbered text-xs text-foreground/40">ARS</span>
             </div>
-            <BuyButtons product={product} className="mt-5" />
+            <BuyButtons product={product} className="mt-5" location="product_top" />
 
             <div className="mt-8 border-t border-black/10 pt-5">
               <p className="tag-numbered text-xs text-foreground/40">Ideal para</p>
@@ -106,7 +106,7 @@ export default async function ProductoDetalle({ params }: { params: Promise<{ sl
               Ver preguntas frecuentes
             </Link>
           </p>
-          <BuyButtons product={product} className="mt-7 justify-center" />
+          <BuyButtons product={product} className="mt-7 justify-center" location="product_bottom" />
         </div>
       </section>
     </>

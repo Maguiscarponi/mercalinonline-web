@@ -17,6 +17,9 @@ export interface Activation {
   reminder3Sent: boolean;
   reminderExpirySent: boolean;
   expiredSent: boolean;
+  visitorId: string | null;
+  source: string | null;
+  campaign: string | null;
   createdAt: string;
 }
 
@@ -34,6 +37,9 @@ interface ActivationRow {
   reminder3_sent: number;
   reminder_expiry_sent: number;
   expired_sent: number;
+  visitor_id: string | null;
+  source: string | null;
+  campaign: string | null;
   created_at: string;
 }
 
@@ -52,6 +58,9 @@ function rowToActivation(row: ActivationRow): Activation {
     reminder3Sent: row.reminder3_sent === 1,
     reminderExpirySent: row.reminder_expiry_sent === 1,
     expiredSent: row.expired_sent === 1,
+    visitorId: row.visitor_id,
+    source: row.source,
+    campaign: row.campaign,
     createdAt: row.created_at,
   };
 }
@@ -66,16 +75,20 @@ export interface CreateActivationInput {
   mpPaymentId?: string | null;
   amountArs?: number | null;
   emailSent: boolean;
+  visitorId?: string | null;
+  source?: string | null;
+  campaign?: string | null;
 }
 
 export async function createActivation(input: CreateActivationInput): Promise<Activation> {
   const sql = getDb();
   const id = randomUUID();
   await sql`
-    INSERT INTO activations (id, email, business_name, product_slug, kind, license_key, expires_at, mp_payment_id, amount_ars, email_sent)
+    INSERT INTO activations (id, email, business_name, product_slug, kind, license_key, expires_at, mp_payment_id, amount_ars, email_sent, visitor_id, source, campaign)
     VALUES (${id}, ${input.email}, ${input.businessName ?? null}, ${input.productSlug}, ${input.kind},
             ${input.licenseKey}, ${input.expiresAt ? input.expiresAt.toISOString() : null},
-            ${input.mpPaymentId ?? null}, ${input.amountArs ?? null}, ${input.emailSent ? 1 : 0})
+            ${input.mpPaymentId ?? null}, ${input.amountArs ?? null}, ${input.emailSent ? 1 : 0},
+            ${input.visitorId ?? null}, ${input.source ?? null}, ${input.campaign ?? null})
   `;
   const rows = (await sql`SELECT * FROM activations WHERE id = ${id}`) as unknown as ActivationRow[];
   return rowToActivation(rows[0]);
@@ -111,27 +124,6 @@ export async function listActivations(): Promise<Activation[]> {
   const sql = getDb();
   const rows = (await sql`SELECT * FROM activations ORDER BY created_at DESC`) as unknown as ActivationRow[];
   return rows.map(rowToActivation);
-}
-
-export const ACTIVATIONS_PAGE_SIZE = 20;
-
-export interface ActivationsPage {
-  items: Activation[];
-  page: number;
-  totalPages: number;
-  total: number;
-}
-
-export async function listActivationsPage(page: number): Promise<ActivationsPage> {
-  const sql = getDb();
-  const [{ total }] = (await sql`SELECT COUNT(*)::int as total FROM activations`) as unknown as [{ total: number }];
-  const totalPages = Math.max(1, Math.ceil(total / ACTIVATIONS_PAGE_SIZE));
-  const safePage = Math.min(Math.max(1, page), totalPages);
-  const rows = (await sql`
-    SELECT * FROM activations ORDER BY created_at DESC
-    LIMIT ${ACTIVATIONS_PAGE_SIZE} OFFSET ${(safePage - 1) * ACTIVATIONS_PAGE_SIZE}
-  `) as unknown as ActivationRow[];
-  return { items: rows.map(rowToActivation), page: safePage, totalPages, total };
 }
 
 // ── Secuencia de emails del trial (ver src/app/api/cron/trial-emails/route.ts) ──
@@ -188,26 +180,3 @@ export async function markExpiredSent(id: string): Promise<void> {
   await sql`UPDATE activations SET expired_sent = 1 WHERE id = ${id}`;
 }
 
-export interface ActivationStats {
-  totalTrials: number;
-  totalSales: number;
-  revenueArs: number;
-  last30DaysActivations: number;
-}
-
-export async function getActivationStats(): Promise<ActivationStats> {
-  const sql = getDb();
-  const [{ totalTrials }] = (await sql`
-    SELECT COUNT(*)::int as "totalTrials" FROM activations WHERE kind = 'trial'
-  `) as unknown as [{ totalTrials: number }];
-  const [{ totalSales }] = (await sql`
-    SELECT COUNT(*)::int as "totalSales" FROM activations WHERE kind = 'full'
-  `) as unknown as [{ totalSales: number }];
-  const [{ revenueArs }] = (await sql`
-    SELECT COALESCE(SUM(amount_ars), 0)::int as "revenueArs" FROM activations WHERE kind = 'full'
-  `) as unknown as [{ revenueArs: number }];
-  const [{ last30DaysActivations }] = (await sql`
-    SELECT COUNT(*)::int as "last30DaysActivations" FROM activations WHERE created_at >= now() - interval '30 days'
-  `) as unknown as [{ last30DaysActivations: number }];
-  return { totalTrials, totalSales, revenueArs, last30DaysActivations };
-}

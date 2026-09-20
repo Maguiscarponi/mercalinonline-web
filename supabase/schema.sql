@@ -51,8 +51,36 @@ CREATE TABLE IF NOT EXISTS activations (
   reminder3_sent INTEGER NOT NULL DEFAULT 0,
   reminder_expiry_sent INTEGER NOT NULL DEFAULT 0,
   expired_sent INTEGER NOT NULL DEFAULT 0,
+  -- Atribución: de qué visitante y de qué canal vino esta prueba/compra
+  -- (ver src/lib/track.ts). NULL en las activaciones anteriores a la Etapa 4.
+  visitor_id TEXT,
+  source TEXT,
+  campaign TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Analítica propia (sin terceros, sin cookies): un evento por fila. Los
+-- eventos del navegador entran por /api/track; los de negocio (prueba
+-- iniciada, pago aprobado, mails enviados) los registra el servidor. Ver
+-- src/lib/events.ts para la lista de nombres válidos.
+CREATE TABLE IF NOT EXISTS events (
+  id BIGSERIAL PRIMARY KEY,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  name TEXT NOT NULL,
+  visitor_id TEXT,
+  session_id TEXT,
+  email TEXT,
+  path TEXT,
+  referrer TEXT,
+  source TEXT,
+  medium TEXT,
+  campaign TEXT,
+  device TEXT,
+  props JSONB
+);
+CREATE INDEX IF NOT EXISTS idx_events_created_at ON events (created_at);
+CREATE INDEX IF NOT EXISTS idx_events_name_created_at ON events (name, created_at);
+CREATE INDEX IF NOT EXISTS idx_events_visitor_id ON events (visitor_id);
 
 -- UNIQUE, no solo índice: el webhook de MP puede reintentar/duplicar
 -- notificaciones para el mismo pago (ver src/app/api/mercadopago/webhook/

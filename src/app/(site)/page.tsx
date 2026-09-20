@@ -1,6 +1,7 @@
 import Hero from "@/components/home/Hero";
 import ModuloShowcase from "@/components/home/ModuloShowcase";
 import Confianza from "@/components/home/Confianza";
+import TrackView from "@/components/TrackView";
 import ProductCard from "@/components/ProductCard";
 import { listProducts } from "@/lib/products";
 
@@ -26,6 +27,7 @@ export default async function Home() {
       <ModuloShowcase />
 
       <section className="mx-auto max-w-5xl px-6 py-16 sm:py-24">
+        <TrackView name="pricing_viewed" />
         <div className="text-center">
           <h2 className="font-condensed text-[38px] font-extrabold leading-[1.05] tracking-tight sm:text-[48px]">
             {titulo}

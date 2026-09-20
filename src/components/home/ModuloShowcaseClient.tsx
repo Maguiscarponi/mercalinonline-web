@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Check } from "lucide-react";
 import type { ACENTO } from "@/lib/modulos-data";
+import { track } from "@/lib/track";
 
 type Acento = (typeof ACENTO)[keyof typeof ACENTO];
 
@@ -33,6 +34,12 @@ export default function ModuloShowcaseClient({ grupos }: { grupos: GrupoConMedid
   function elegirGrupo(i: number) {
     setGrupoIdx(i);
     setModuloIdx(0);
+    track("demo_module_viewed", { group: grupos[i].label, module: grupos[i].modulos[0].nombre });
+  }
+
+  function elegirModulo(i: number) {
+    setModuloIdx(i);
+    track("demo_module_viewed", { group: grupo.label, module: grupo.modulos[i].nombre });
   }
 
   return (
@@ -63,7 +70,7 @@ export default function ModuloShowcaseClient({ grupos }: { grupos: GrupoConMedid
             <button
               key={m.nombre}
               type="button"
-              onClick={() => setModuloIdx(i)}
+              onClick={() => elegirModulo(i)}
               className={`rounded-full px-3 py-1.5 text-[12.5px] font-medium transition-colors ${
                 i === moduloIdx
                   ? "bg-foreground text-white"

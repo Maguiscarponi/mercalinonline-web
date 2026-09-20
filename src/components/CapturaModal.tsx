@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { Expand, X } from "lucide-react";
+import { track } from "@/lib/track";
 
 /**
  * Abre la captura del módulo en grande. El contenedor NO tiene medida fija:
@@ -41,7 +42,10 @@ export default function CapturaModal({
     <>
       <button
         type="button"
-        onClick={() => setAbierto(true)}
+        onClick={() => {
+          setAbierto(true);
+          track("demo_capture_opened", { module: titulo });
+        }}
         className="tag-numbered mt-5 inline-flex items-center gap-2 self-start rounded-full border border-black/12 px-4 py-2 text-[12px] text-foreground/60 transition-colors hover:border-black/30 hover:text-foreground"
       >
         <Expand className="h-3.5 w-3.5" strokeWidth={2.5} />

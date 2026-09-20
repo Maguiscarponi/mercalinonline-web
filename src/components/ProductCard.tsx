@@ -12,6 +12,8 @@ export default function ProductCard({ product }: { product: Product }) {
           dos <a>, que es inválido y rompe lectores de pantalla. */}
       <Link
         href={`/productos/${product.slug}`}
+        data-track="cta_detail_clicked"
+        data-track-loc="product_card"
         className="absolute inset-0 z-20 rounded-xl outline-none"
         aria-label={`Ver detalle de ${product.name}`}
       />

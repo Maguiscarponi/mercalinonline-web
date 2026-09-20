@@ -4,6 +4,7 @@ import { getProduct } from "@/lib/products";
 import { generateLicenseKey, isLicensingConfigured } from "@/lib/license";
 import { createActivation, listActivations, setActivationEmailSent } from "@/lib/activations";
 import { sendMail, licenseEmailHtml, ADMIN_NOTIFY_EMAIL } from "@/lib/mail";
+import { recordEvent } from "@/lib/events";
 
 // Mercado Pago llama a esta URL cuando un pago cambia de estado. Ver
 // notification_url en src/lib/mercadopago.ts. Reintenta si no respondemos
@@ -38,11 +39,21 @@ export async function POST(req: NextRequest) {
   }
 
   const payment = await getPayment(dataId);
+  const [productSlug, email, visitorId, source] = (payment.external_reference ?? "").split("|");
+
   if (payment.status !== "approved") {
+    if (payment.status === "rejected" || payment.status === "cancelled") {
+      await recordEvent({
+        name: "payment_failed",
+        email: email || null,
+        visitorId: visitorId || null,
+        source: source || null,
+        props: { status: payment.status, detail: payment.status_detail ?? "", payment: dataId },
+      });
+    }
     return NextResponse.json({ ok: true });
   }
 
-  const [productSlug, email] = (payment.external_reference ?? "").split("|");
   const product = productSlug ? await getProduct(productSlug) : undefined;
   if (!product || !email) {
     console.error("[mp:webhook] external_reference inesperado:", payment.external_reference);
@@ -71,6 +82,8 @@ export async function POST(req: NextRequest) {
       mpPaymentId: dataId,
       amountArs: payment.transaction_amount ?? product.priceArs,
       emailSent: false,
+      visitorId: visitorId || null,
+      source: source || null,
     });
   } catch (err) {
     const code = (err as { code?: string })?.code;
@@ -81,6 +94,14 @@ export async function POST(req: NextRequest) {
     }
     throw err;
   }
+
+  await recordEvent({
+    name: "payment_approved",
+    email,
+    visitorId: visitorId || null,
+    source: source || null,
+    props: { product: product.slug, amount: payment.transaction_amount ?? product.priceArs, payment: dataId },
+  });
 
   const { sent } = await sendMail({
     to: email,

@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { Product } from "@/lib/products";
+import { getAttribution, getVisitorId, track } from "@/lib/track";
 
 export default function CompraForm({ product }: { product: Product }) {
+  const started = useRef(false);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "not-configured" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -21,7 +23,7 @@ export default function CompraForm({ product }: { product: Product }) {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, productSlug: product.slug }),
+        body: JSON.stringify({ email, productSlug: product.slug, visitorId: getVisitorId(), ...getAttribution() }),
       });
       const data = await res.json();
       if (res.status === 503) {
@@ -55,7 +57,15 @@ export default function CompraForm({ product }: { product: Product }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="border border-black/10 p-8">
+    <form
+      onSubmit={handleSubmit}
+      onFocus={() => {
+        if (started.current) return;
+        started.current = true;
+        track("buy_form_started");
+      }}
+      className="border border-black/10 p-8"
+    >
       <label className="tag-numbered block text-xs text-foreground/40" htmlFor="checkout-email">
         Tu mail (ahí te mandamos el código de activación)
       </label>
