@@ -89,8 +89,7 @@ const SECCIONES: { titulo: string; contenido: React.ReactNode }[] = [
     contenido: (
       <p>
         Los datos se conservan mientras el usuario mantenga una prueba o una licencia vigente y, luego, durante el tiempo
-        necesario para brindar asistencia y cumplir con las obligaciones legales aplicables. El usuario puede solicitar su
-        supresión en cualquier momento.
+        necesario para brindar asistencia y cumplir con las obligaciones legales aplicables.
       </p>
     ),
   },

@@ -5,7 +5,11 @@
    Cada franja es UN solo trazado (cuerpo + curva), no un rectángulo más una
    curva: al dibujarlos por separado quedaba una línea finita en la unión. La
    curva termina un píxel antes del borde del patrón para que tampoco se marque
-   ahí. */
+   ahí.
+
+   El patrón es más alto que el dibujo (alto + 24): si no, con zoom o pantallas
+   de escala fraccionaria (125 %, 150 %) se asoma la primera fila de la repetición
+   siguiente y aparece una línea roja fina debajo de cada curva roja. */
 
 function Franja({ id, franja, alto, feston }: { id: string; franja: number; alto: number; feston: number }) {
   const cuerpo = alto - feston;
@@ -15,7 +19,7 @@ function Franja({ id, franja, alto, feston }: { id: string; franja: number; alto
   return (
     <svg aria-hidden width="100%" height={alto} className="block">
       <defs>
-        <pattern id={id} width={franja * 2} height={alto} patternUnits="userSpaceOnUse">
+        <pattern id={id} width={franja * 2} height={alto + 24} patternUnits="userSpaceOnUse">
           <path d={trazo(0)} fill="#e1251b" />
           <path d={trazo(franja)} fill="#fffdf7" />
         </pattern>
