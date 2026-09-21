@@ -23,7 +23,7 @@ const ITEMS = [
   ["1 x Alfajor de dulce de leche", "$2.000"],
 ];
 
-const GARANTIAS = ["Pago único", "Funciona sin internet", "Actualizaciones incluidas", "Soporte por WhatsApp"];
+const GARANTIAS = ["Pago único", "Actualizaciones incluidas", "Soporte por WhatsApp"];
 
 export default function Hero() {
   return (

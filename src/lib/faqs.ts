@@ -21,11 +21,7 @@ export const FAQS: Faq[] = [
   },
   {
     q: "¿Cómo se activa?",
-    a: "Con tu mail y la clave que recibís. La activación se valida en tu propia computadora, sin necesitar conexión a internet en ese momento.",
-  },
-  {
-    q: "¿Necesito internet para usarlo?",
-    a: "Solo para descargarlo e instalarlo la primera vez. Después de instalado, funciona sin conexión — toda la información vive en tu computadora, no en un servidor externo.",
+    a: "Con tu mail y la clave que recibís. La activación se valida en tu propia computadora.",
   },
   {
     q: "¿Qué incluye?",

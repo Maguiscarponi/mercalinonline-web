@@ -10,7 +10,7 @@ import type { Product } from "@/lib/products";
    sale del producto en la base, no está escrito acá. Las dos puertas de
    conversión (probar y comprar) llevan los mismos data-track que antes. */
 
-const INCLUYE = ["Actualizaciones incluidas", "Funciona sin internet", "Soporte por WhatsApp", "Windows"];
+const INCLUYE = ["Actualizaciones incluidas", "Soporte por WhatsApp", "Windows"];
 
 const PASOS = [
   ["1", "Pedís la prueba. Tu mail y listo."],

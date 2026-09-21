@@ -47,8 +47,7 @@ const SECCIONES: { titulo: string; contenido: React.ReactNode }[] = [
         </li>
         <li>
           <strong>Información cargada en Mercalin</strong> (ventas, productos, clientes y proveedores): permanece en el
-          equipo del usuario. La aplicación funciona sin conexión a internet y esa información no se transmite a los
-          servidores de Mercalin.
+          equipo del usuario y no se transmite a los servidores de Mercalin.
         </li>
       </ul>
     ),

@@ -41,7 +41,7 @@ function resolveSiteUrl(): string {
 const SITE_URL = resolveSiteUrl();
 const TITLE = "Mercalin — Sistema de gestión para comercios";
 const DESCRIPTION =
-  "Sistema de gestión para comercios que venden productos: ventas, stock, caja, clientes y proveedores. Funciona sin internet. Pago único, $65.000 ARS. Probá 7 días gratis.";
+  "Sistema de gestión para comercios que venden productos: ventas, stock, caja, clientes y proveedores. Pago único, $65.000 ARS. Probá 7 días gratis.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
