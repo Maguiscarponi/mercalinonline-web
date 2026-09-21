@@ -18,13 +18,13 @@ export default async function PruebaGratis({
   const products = await listProducts();
 
   return (
-    <section className="mx-auto max-w-md px-6 py-16 sm:py-20">
-      <p className="tag-numbered text-xs text-brand">Prueba gratis</p>
-      <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground">7 días, sin costo.</h1>
-      <p className="mt-3 text-[15px] text-foreground/60">
+    <section className="mx-auto max-w-lg px-5 py-14 sm:px-6 sm:py-20">
+      <p className="rt-label">Prueba gratis</p>
+      <h1 className="mt-3 text-[clamp(38px,6vw,54px)] leading-[1.05] text-ink">7 días, sin costo.</h1>
+      <p className="mt-4 text-[18px] leading-relaxed text-ink-soft">
         Te mandamos el instalador y una clave que funciona por 7 días. Sin tarjeta, sin crear cuenta.
       </p>
-      <div className="mt-8">
+      <div className="mt-9 pr-2.5">
         <TrialForm products={products} defaultSlug={product} />
       </div>
     </section>

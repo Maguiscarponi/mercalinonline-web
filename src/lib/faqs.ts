@@ -1,7 +1,7 @@
 export type Faq = { q: string; a: string };
 
 // Fuente única: la usan preguntas-frecuentes/page.tsx (todas) y el teaser de
-// la home (una selección chica, ver home/FaqTeaser.tsx).
+// la sección de preguntas de la home (home/Preguntas.tsx, con todas).
 export const FAQS: Faq[] = [
   {
     q: "¿Cómo funciona la prueba de 7 días?",
@@ -45,7 +45,7 @@ export const FAQS: Faq[] = [
   },
   {
     q: "¿Con quién hablo si tengo una duda?",
-    a: "Con nosotros, por WhatsApp al +54 2344 50-2904. Soporte 24/7: te responde la persona que hizo el sistema, no un call center.",
+    a: "Con nosotros, por WhatsApp al +54 2344 50-2904. Te responde la persona que hizo el sistema, no un call center.",
   },
   {
     q: "¿Las actualizaciones se pagan aparte?",

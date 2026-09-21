@@ -2,62 +2,90 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import Awning from "@/components/retro/Awning";
+import IconoWhatsApp from "@/components/retro/IconoWhatsApp";
+import { whatsappHref, whatsappMessageForPath } from "@/lib/whatsapp";
 import { usePathname } from "next/navigation";
 
+// Las secciones de la home se alcanzan con ancla; "Preguntas" y "Precio"
+// también existen como sección dentro de la home, así que en cualquier otra
+// página estos links llevan de vuelta a esa sección.
 const LINKS = [
   { href: "/", label: "Inicio" },
-  { href: "/productos", label: "Productos" },
-  { href: "/preguntas-frecuentes", label: "Preguntas" },
+  { href: "/#modulos", label: "Módulos" },
+  { href: "/#precio", label: "Precio" },
+  { href: "/#preguntas", label: "Preguntas" },
 ];
 
 export default function SiteHeader() {
   const pathname = usePathname();
-
-  const isActive = (href: string) =>
-    pathname === href || (href !== "/" && pathname.startsWith(href));
+  const wa = whatsappHref(whatsappMessageForPath(pathname));
 
   return (
-    <header className="sticky top-0 z-20 bg-[#161412] shadow-[0_6px_20px_rgba(0,0,0,0.12)]">
-      <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
-        {/* Marca: isotipo rojo + wordmark en minuscula, como el logo original */}
-        <Link href="/" className="flex items-center gap-2.5" aria-label="Mercalin — inicio">
-          <Image src="/mercalin-isotipo.svg" alt="" width={34} height={34} priority />
-          <span className="text-[26px] font-bold leading-none tracking-[-0.02em]">
-            <span className="text-white">Merca</span>
-            <span className="text-[#ff5b52]">lin</span>
-          </span>
-        </Link>
-
-        <nav className="flex items-center gap-1 sm:gap-2">
-          <div className="hidden items-center lg:flex">
-            {LINKS.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className={`tag-numbered relative px-3.5 py-2 text-[15px] transition-colors ${
-                  isActive(l.href) ? "text-white" : "text-white/60 hover:text-white"
-                }`}
-              >
-                {l.label}
-                <span
-                  className={`absolute inset-x-3.5 -bottom-0.5 h-0.5 rounded-full bg-brand transition-opacity ${
-                    isActive(l.href) ? "opacity-100" : "opacity-0"
-                  }`}
-                />
-              </Link>
-            ))}
-          </div>
-
-          <Link
-            href="/prueba-gratis"
-            data-track="cta_trial_clicked"
-            data-track-loc="navbar"
-            className="tag-numbered ml-1 rounded-full bg-brand px-5 py-2.5 text-[15px] text-white transition-colors hover:bg-brand-dark"
-          >
-            Probar 7 días
+    <>
+      {/* El toldo se va con el scroll; la barra de abajo queda fija. */}
+      <Awning id="toldo-nav" />
+      <header className="sticky top-0 z-30 border-b-2 border-ink bg-cream">
+        <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-3 px-5 py-3.5 sm:px-8 lg:px-0 lg:py-4">
+          <Link href="/" className="flex items-center gap-2.5" aria-label="Mercalin — inicio">
+            <Image src="/mercalin-isotipo.svg" alt="" width={40} height={40} priority className="h-8 w-8 sm:h-10 sm:w-10" />
+            <span className="font-slab text-[26px] leading-none tracking-[-0.01em] text-ink sm:text-[34px]">
+              Merca<span className="text-brand">lin</span>
+            </span>
           </Link>
-        </nav>
-      </div>
-    </header>
+
+          <nav className="flex items-center gap-4 lg:gap-7">
+            <div className="tag-numbered hidden items-center gap-6 text-[13px] uppercase text-ink lg:flex">
+              {LINKS.map((l) => (
+                <Link key={l.href} href={l.href} className="underline-offset-[6px] transition-colors hover:text-brand hover:underline">
+                  {l.label}
+                </Link>
+              ))}
+              <a
+                href={wa}
+                data-track="whatsapp_clicked"
+                data-track-loc="navbar"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 underline-offset-[6px] transition-colors hover:text-brand hover:underline"
+              >
+                <span aria-hidden className="rt-punto-vivo h-2 w-2 rounded-full bg-[#25D366]" />
+                Soporte
+              </a>
+            </div>
+
+            <Link
+              href="/prueba-gratis"
+              data-track="cta_trial_clicked"
+              data-track-loc="navbar"
+              className="rt-btn rt-btn-red !px-3.5 !py-2.5 !text-[12px] sm:!px-5 sm:!py-3 sm:!text-[13px]"
+            >
+              <span className="sm:hidden">Probar gratis</span>
+              <span className="hidden sm:inline">Probar 7 días gratis</span>
+            </Link>
+          </nav>
+        </div>
+
+        {/* En celular no entran todos los links en la barra: van en una segunda fila. */}
+        <div className="tag-numbered flex items-center gap-5 overflow-x-auto border-t border-ink/15 px-5 py-2 text-[12px] uppercase text-ink sm:px-8 lg:hidden">
+          {LINKS.map((l) => (
+            <Link key={l.href} href={l.href} className="shrink-0 hover:text-brand">
+              {l.label}
+            </Link>
+          ))}
+          <a
+            href={wa}
+            data-track="whatsapp_clicked"
+            data-track-loc="navbar"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex shrink-0 items-center gap-1.5 hover:text-brand"
+          >
+            <IconoWhatsApp className="h-3.5 w-3.5 text-[#128c4a]" />
+            Soporte
+          </a>
+        </div>
+      </header>
+    </>
   );
 }

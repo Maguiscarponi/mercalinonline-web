@@ -6,7 +6,7 @@ import type { Product } from "@/lib/products";
 // cambios de estructura.
 export default function ProductCard({ product }: { product: Product }) {
   return (
-    <div className="group relative flex cursor-pointer flex-col overflow-hidden rounded-xl border border-black/10 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-xl focus-within:ring-2 focus-within:ring-brand/40">
+    <div className="rt-card group relative flex cursor-pointer flex-col overflow-hidden transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5 focus-within:outline focus-within:outline-[3px] focus-within:outline-brand">
       {/* Un solo link que cubre la tarjeta entera. El botón de abajo queda
           decorativo: así se puede clickear en cualquier parte sin anidar
           dos <a>, que es inválido y rompe lectores de pantalla. */}
@@ -14,45 +14,40 @@ export default function ProductCard({ product }: { product: Product }) {
         href={`/productos/${product.slug}`}
         data-track="cta_detail_clicked"
         data-track-loc="product_card"
-        className="absolute inset-0 z-20 rounded-xl outline-none"
+        className="absolute inset-0 z-20 outline-none"
         aria-label={`Ver detalle de ${product.name}`}
       />
       {product.featured && (
-        <span className="absolute left-3 top-3 z-10 rounded-full bg-brand px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow">
+        <span className="tag-numbered absolute left-3 top-3 z-10 border-2 border-ink bg-brand px-2.5 py-1 text-[10px] uppercase text-white">
           Destacado
         </span>
       )}
 
-      <div className="overflow-hidden">
-        <div className="transition-transform duration-300 group-hover:scale-105">
-          <ProductFrame label={product.name} src={product.imageUrl} aspect="aspect-[4/3]" />
-        </div>
+      <div className="overflow-hidden border-b-[3px] border-ink">
+        <ProductFrame label={product.name} src={product.imageUrl} aspect="aspect-[4/3]" bordered={false} />
       </div>
 
-      <div className="flex flex-1 flex-col p-4">
-        <p className="text-xs font-semibold uppercase tracking-wide text-foreground/40">Sistema de gestión</p>
-        <h2 className="mt-1 text-base font-bold leading-snug text-foreground">{product.name}</h2>
-        <p className="mt-1 line-clamp-2 text-[13px] leading-relaxed text-foreground/55">{product.tagline}</p>
+      <div className="flex flex-1 flex-col p-5">
+        <p className="tag-numbered text-[11px] uppercase text-ink-mute">Sistema de gestión</p>
+        <h2 className="mt-1 text-[24px] leading-tight text-ink">{product.name}</h2>
+        <p className="mt-2 line-clamp-2 text-[15px] leading-relaxed text-ink-soft">{product.tagline}</p>
 
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand">
-            Pago único
+        <div className="tag-numbered mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[11px] uppercase">
+          <span>
+            <span className="text-brand">✦</span> Pago único
           </span>
-          <span className="rounded-full bg-accent-green-bg px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent-green">
-            7 días gratis
+          <span>
+            <span className="text-brand">✦</span> 7 días gratis
           </span>
         </div>
 
-        <div className="mt-3 text-xl font-bold tracking-tight text-foreground">
+        <div className="font-slab mt-4 text-[28px] leading-none text-ink">
           ${product.priceArs.toLocaleString("es-AR")}
-          <span className="ml-1 text-[11px] font-semibold text-foreground/40">ARS</span>
+          <span className="tag-numbered ml-1.5 text-[11px] text-ink-mute">ARS</span>
         </div>
 
-        <span
-          aria-hidden
-          className="mt-4 block rounded-md bg-brand px-4 py-2.5 text-center text-sm font-semibold text-white shadow-sm transition-colors group-hover:bg-brand-dark"
-        >
-          VER DETALLE
+        <span aria-hidden className="rt-btn rt-btn-red mt-5 w-full">
+          Ver detalle
         </span>
       </div>
     </div>

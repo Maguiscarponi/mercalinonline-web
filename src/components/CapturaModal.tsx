@@ -46,7 +46,7 @@ export default function CapturaModal({
           setAbierto(true);
           track("demo_capture_opened", { module: titulo });
         }}
-        className="tag-numbered mt-5 inline-flex items-center gap-2 self-start rounded-full border border-black/12 px-4 py-2 text-[12px] text-foreground/60 transition-colors hover:border-black/30 hover:text-foreground"
+        className="rt-btn rt-btn-line mt-5 self-start !px-4 !py-2.5 !text-[12px]"
       >
         <Expand className="h-3.5 w-3.5" strokeWidth={2.5} />
         Abrir vista previa
@@ -58,13 +58,13 @@ export default function CapturaModal({
           aria-modal="true"
           aria-label={`Vista previa de ${titulo}`}
           onClick={cerrar}
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-black/85 p-4 backdrop-blur-sm sm:p-6"
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-ink/90 p-4 sm:p-6"
         >
           <button
             type="button"
             onClick={cerrar}
             aria-label="Cerrar"
-            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/30 sm:right-6 sm:top-6"
+            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center border-2 border-cream bg-ink text-cream transition-colors hover:bg-brand sm:right-6 sm:top-6"
           >
             <X className="h-5 w-5" />
           </button>
@@ -78,12 +78,12 @@ export default function CapturaModal({
               height={alto}
               quality={100}
               priority
-              className="h-auto max-h-[82vh] w-auto max-w-[94vw] rounded-lg shadow-2xl"
+              className="h-auto max-h-[82vh] w-auto max-w-[94vw] border-[3px] border-ink bg-white shadow-[10px_10px_0_#e1251b]"
             />
-            <p className="font-condensed mt-3 text-center text-[20px] font-bold text-white">{titulo}</p>
+            <p className="font-slab mt-5 text-center text-[22px] text-cream">{titulo}</p>
           </div>
 
-          <p className="text-[13px] text-white/45">Clic afuera o Esc para cerrar</p>
+          <p className="tag-numbered text-[12px] uppercase text-cream/55">Clic afuera o Esc para cerrar</p>
         </div>
       )}
     </>

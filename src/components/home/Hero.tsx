@@ -1,96 +1,128 @@
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { listProducts } from "@/lib/products";
-import AppDemo from "./AppDemo";
+import Barcode from "@/components/retro/Barcode";
+import Stamp from "@/components/retro/Stamp";
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Hero: fondo rojo profundo hacia negro + la ventana de Mercalin
-   rotando entre módulos. El objetivo es que en los primeros segundos se
-   entienda (a) qué hace el sistema y (b) que hay muchos módulos, sin tener
-   que leer nada.
-
-   Todo el copy está acá arriba para que lo puedas tocar sin bajar al markup.
+   Hero: el toldo está en el header; acá va el mensaje y un ticket de caja.
+   El ticket es un ejemplo ilustrativo (un kiosco inventado), no una venta
+   real. Todo el copy está en COPY para tocarlo sin bajar al markup.
    ───────────────────────────────────────────────────────────────────────── */
 const COPY = {
-  kicker: "7.500+ productos precargados",
-  h1a: "Escaneá y vendé.",
-  h1b: "El catálogo ya viene cargado.",
-  destacado: "Más de 7.500 productos argentinos",
-  parrafo: "con código de barras, listos para usar. Solo les ponés el precio.",
-  micro: "7 días gratis sin tarjeta · pago único · soporte 24/7 · actualizaciones incluidas",
+  etiqueta: "Sistema de gestión para comercios",
+  h1: ["Escaneá", "y vendé."],
+  h1b: ["El catálogo ya", "viene cargado."],
+  parrafo:
+    "Más de 7.500 productos argentinos con código de barras, listos para usar. Vos cargás tu costo y tu precio.",
 };
 
-export default async function Hero() {
-  // "+ 15 módulos más" lleva al detalle del producto destacado. listProducts
-  // ya ordena featured primero. Si la base no responde caemos al listado:
-  // un link roto no puede tirar abajo el hero.
-  let hrefModulos = "/productos";
-  try {
-    const [destacado] = await listProducts();
-    if (destacado) hrefModulos = `/productos/${destacado.slug}`;
-  } catch {
-    /* se queda con /productos */
-  }
+const ITEMS = [
+  ["1 x Agua Mineral Villa San Remo (1,5 L)", "$1.200"],
+  ["2 x Alfajor Havanna (25 g)", "$3.000"],
+  ["1 x Fernet Branca (750 ml)", "$12.400"],
+  ["1 x Alfajor de dulce de leche", "$2.000"],
+];
 
+const GARANTIAS = ["Pago único", "Funciona sin internet", "Actualizaciones incluidas", "Soporte por WhatsApp"];
+
+export default function Hero() {
   return (
-    <section
-      className="relative flex items-center overflow-hidden text-white lg:min-h-[calc(100svh-76px)]"
-      style={{
-        background: "linear-gradient(118deg,#8e1a13 0%,#c0241b 30%,#1a1013 76%,#111113 100%)",
-      }}
-    >
-      {/* trama de puntos: le saca el plano al degradado */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-60"
-        style={{
-          backgroundImage: "radial-gradient(rgb(255 255 255 / 0.085) 1px, transparent 1px)",
-          backgroundSize: "26px 26px",
-        }}
-      />
+    <section className="relative overflow-hidden lg:min-h-[calc(100svh-150px)]">
+      <div className="mx-auto grid max-w-[1200px] items-center gap-12 px-5 pb-14 pt-10 sm:px-8 lg:grid-cols-[1.15fr_1fr] lg:gap-6 lg:px-0 lg:pb-16 lg:pt-12">
+        <div className="min-w-0">
+          <span className="rt-label-box">{COPY.etiqueta}</span>
 
-      <div className="relative z-[1] mx-auto grid w-full max-w-[1460px] items-center gap-8 px-5 py-9 sm:px-8 sm:py-12 lg:grid-cols-[1.35fr_1fr] lg:gap-12 lg:px-12 lg:py-16 xl:px-20">
-        {/* En mobile primero el mensaje; en desktop la ventana va a la izquierda. */}
-        <div className="order-1 min-w-0 lg:order-2">
-          <p className="tag-numbered inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-2 text-[12px] sm:text-[13px]">
-            <span aria-hidden className="h-[7px] w-[7px] rounded-full bg-white" />
-            {COPY.kicker}
-          </p>
-
-          <h1 className="font-condensed mt-4 text-[clamp(29px,8.4vw,40px)] font-extrabold leading-[1.0] tracking-tight sm:text-[46px] lg:text-[52px]">
-            {COPY.h1a}
+          <h1 className="mt-6 text-[clamp(56px,8.6vw,112px)] leading-[0.98] text-ink">
+            {COPY.h1[0]}
             <br />
-            {COPY.h1b}
+            {COPY.h1[1]}
           </h1>
-
-          <p className="mt-4 max-w-[44ch] text-[16px] leading-relaxed text-white/70 sm:mt-5 sm:text-[18px]">
-            <strong className="font-semibold text-white">{COPY.destacado}</strong> {COPY.parrafo}
+          <p className="font-slab mt-3 text-[clamp(30px,4.1vw,58px)] leading-[1.03] text-brand">
+            {COPY.h1b[0]}
+            <br />
+            {COPY.h1b[1]}
           </p>
 
-          <div className="mt-6 flex flex-wrap gap-3 sm:mt-7">
+          <p className="mt-7 max-w-[26rem] text-[19px] leading-relaxed text-ink-soft sm:text-[20px]">{COPY.parrafo}</p>
+
+          <div className="mt-8 flex flex-wrap gap-4">
             <Link
               href="/prueba-gratis"
               data-track="cta_trial_clicked"
               data-track-loc="hero"
-              className="cta-latido tag-numbered inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 text-[15px] text-foreground transition-colors hover:bg-white/90 sm:w-auto"
+              className="rt-btn rt-btn-red w-full !px-7 !py-4 sm:w-auto"
             >
               Probar 7 días gratis
-              <ArrowRight className="h-4 w-4" strokeWidth={3} />
             </Link>
             <Link
-              href="/productos"
+              href="/#precio"
               data-track="cta_detail_clicked"
               data-track-loc="hero"
-              className="tag-numbered inline-flex w-full items-center justify-center rounded-full border border-white/25 px-7 py-3.5 text-[15px] text-white/85 transition-colors hover:border-white/50 hover:text-white sm:w-auto"
+              className="rt-btn rt-btn-line w-full !px-7 !py-4 sm:w-auto"
             >
-              Ver precio y detalle
+              Ver precio
             </Link>
           </div>
 
-          <p className="mt-5 text-[14px] text-white/45">{COPY.micro}</p>
+          <ul className="tag-numbered mt-9 flex flex-wrap gap-x-7 gap-y-2 text-[12.5px] uppercase text-ink-soft">
+            {GARANTIAS.map((g) => (
+              <li key={g}>
+                <span className="text-brand">✦</span> {g}
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <AppDemo className="order-2 min-w-0 lg:order-1" hrefModulos={hrefModulos} />
+        {/* Ticket + sello */}
+        <div className="relative mx-auto w-full max-w-[380px] lg:mx-0 lg:ml-auto">
+          <div className="rt-ticket rotate-[2.6deg] px-6 pb-8 pt-8 font-typewriter">
+            <div className="flex flex-col items-center">
+              <Image src="/mercalin-isotipo.svg" alt="" width={46} height={46} />
+              <p className="font-slab mt-2 text-[30px] leading-none tracking-[0.02em]">MERCALIN</p>
+              <p className="mt-3 text-[11.5px] tracking-[0.06em] text-ink-mute">KIOSCO DON JORGE · CAJA 1</p>
+              <p className="text-[11.5px] tracking-[0.06em] text-ink-mute">18/08/2026 · 19:42</p>
+            </div>
+
+            <div className="rt-dashed my-4" />
+            <div className="space-y-2.5 text-[13.5px] leading-snug">
+              {ITEMS.map(([d, p]) => (
+                <div key={d} className="flex justify-between gap-3">
+                  <span>{d}</span>
+                  <span className="shrink-0">{p}</span>
+                </div>
+              ))}
+            </div>
+            <div className="rt-dashed my-4" />
+
+            <div className="flex justify-between text-[17px] font-bold">
+              <span>TOTAL</span>
+              <span>$18.600</span>
+            </div>
+            <div className="mt-3 flex justify-between text-[12.5px] text-ink-mute">
+              <span>Efectivo</span>
+              <span>$20.000</span>
+            </div>
+            <div className="mt-1 flex justify-between text-[12.5px] text-ink-mute">
+              <span>Vuelto</span>
+              <span>$1.400</span>
+            </div>
+
+            <div className="mt-5">
+              <Barcode width={320} height={62} />
+            </div>
+            <p className="mt-1.5 text-center text-[11px] tracking-[0.2em]">7 790895 000102</p>
+            <p className="mt-3 text-center text-[12.5px] tracking-[0.06em]">¡GRACIAS POR SU COMPRA!</p>
+          </div>
+
+          <Stamp
+            id="sello-hero"
+            arriba="PROBALO"
+            centro="7 DÍAS"
+            abajo="GRATIS"
+            size={170}
+            className="absolute -bottom-8 -left-4 -rotate-12 sm:-bottom-10 sm:-left-20"
+          />
+        </div>
       </div>
     </section>
   );

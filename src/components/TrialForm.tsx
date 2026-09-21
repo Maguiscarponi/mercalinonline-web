@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import type { Product } from "@/lib/products";
+import Ventana from "@/components/retro/Ventana";
 import { getAttribution, getVisitorId, track } from "@/lib/track";
 
 export default function TrialForm({ products, defaultSlug }: { products: Product[]; defaultSlug?: string }) {
@@ -40,16 +41,18 @@ export default function TrialForm({ products, defaultSlug }: { products: Product
 
   if (status === "done") {
     return (
-      <div className="border border-black/10 p-8 text-center">
-        <p className="tag-numbered text-xs text-brand">Listo</p>
-        <h2 className="mt-3 text-2xl font-bold tracking-tight text-foreground">Revisá tu mail.</h2>
-        <p className="mt-3 text-[15px] text-foreground/60">
-          Te mandamos el instalador y el código de activación a <strong>{email}</strong>.
-        </p>
-        <p className="mt-3 text-[13.5px] text-foreground/45">
-          Si en unos minutos no aparece, mirá la carpeta de spam o escribinos por WhatsApp.
-        </p>
-      </div>
+      <Ventana titulo="Mercalin — Prueba gratis">
+        <div className="p-8 text-center">
+          <p className="rt-label">Listo</p>
+          <h2 className="mt-3 text-3xl leading-tight text-ink">Revisá tu mail.</h2>
+          <p className="mt-3 text-[16px] text-ink-soft">
+            Te mandamos el instalador y el código de activación a <strong className="break-all text-ink">{email}</strong>.
+          </p>
+          <p className="mt-3 text-[14px] text-ink-mute">
+            Si en unos minutos no aparece, mirá la carpeta de spam o escribinos por WhatsApp.
+          </p>
+        </div>
+      </Ventana>
     );
   }
 
@@ -61,18 +64,24 @@ export default function TrialForm({ products, defaultSlug }: { products: Product
         started.current = true;
         track("trial_form_started");
       }}
-      className="border border-black/10 p-8"
+      className="rt-window"
+      style={{ "--sh": "10px" } as React.CSSProperties}
     >
+      <div className="rt-window-bar">
+        <span>Mercalin — Prueba gratis</span>
+        <span aria-hidden className="opacity-80">✕</span>
+      </div>
+      <div className="p-6 sm:p-8">
       {products.length > 1 && (
         <div className="mb-5">
-          <label className="tag-numbered block text-xs text-foreground/40" htmlFor="product">
+          <label className="tag-numbered block text-xs uppercase text-ink-soft" htmlFor="product">
             Producto
           </label>
           <select
             id="product"
             value={productSlug}
             onChange={(e) => setProductSlug(e.target.value)}
-            className="mt-2 w-full border border-black/15 px-3 py-2.5 text-sm"
+            className="rt-input mt-2"
           >
             {products.map((p) => (
               <option key={p.slug} value={p.slug}>
@@ -83,7 +92,7 @@ export default function TrialForm({ products, defaultSlug }: { products: Product
         </div>
       )}
       <div className="mb-5">
-        <label className="tag-numbered block text-xs text-foreground/40" htmlFor="email">
+        <label className="tag-numbered block text-xs uppercase text-ink-soft" htmlFor="email">
           Tu mail
         </label>
         <input
@@ -92,12 +101,12 @@ export default function TrialForm({ products, defaultSlug }: { products: Product
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="mt-2 w-full border border-black/15 px-3 py-2.5 text-sm"
+          className="rt-input mt-2"
           placeholder="vos@tunegocio.com"
         />
       </div>
       <div className="mb-6">
-        <label className="tag-numbered block text-xs text-foreground/40" htmlFor="businessName">
+        <label className="tag-numbered block text-xs uppercase text-ink-soft" htmlFor="businessName">
           Nombre del negocio (opcional)
         </label>
         <input
@@ -105,7 +114,7 @@ export default function TrialForm({ products, defaultSlug }: { products: Product
           type="text"
           value={businessName}
           onChange={(e) => setBusinessName(e.target.value)}
-          className="mt-2 w-full border border-black/15 px-3 py-2.5 text-sm"
+          className="rt-input mt-2"
           placeholder="Kiosco Don José"
         />
       </div>
@@ -121,20 +130,21 @@ export default function TrialForm({ products, defaultSlug }: { products: Product
           onChange={(e) => setWebsite(e.target.value)}
         />
       </div>
-      {status === "error" && <p className="mb-4 text-sm text-brand">{errorMsg}</p>}
+      {status === "error" && <p className="mb-4 text-sm font-semibold text-brand">{errorMsg}</p>}
       <button
         type="submit"
         disabled={status === "loading"}
-        className="w-full rounded-md bg-brand px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-dark disabled:opacity-50"
+        className="rt-btn rt-btn-red w-full"
       >
         {status === "loading" ? "Enviando…" : "Empezar prueba de 7 días"}
       </button>
-      <p className="mt-4 text-center text-[12.5px] leading-relaxed text-foreground/45">
+      <p className="mt-4 text-center text-[13px] leading-relaxed text-ink-mute">
         Usamos tu mail solo para enviarte la clave y avisarte de tu prueba.{" "}
         <Link href="/privacidad" className="underline underline-offset-2 hover:text-foreground">
           Política de privacidad
         </Link>
       </p>
+      </div>
     </form>
   );
 }

@@ -5,16 +5,18 @@ import path from "node:path";
  * Los 18 módulos del sistema, agrupados y con el mismo color que tienen en
  * la app (ver GROUP_ACCENT en kiosco-pos/src/components/Layout.tsx).
  *
+ * `corta` es la línea de la carpeta en la home; `desc` e `items` son el detalle.
+ *
  * Cada módulo busca su captura en /public/capturas/<archivo>. Si el archivo
  * todavía no está, el módulo se muestra igual pero sin imagen — así se puede
  * ir subiendo de a una.
  *
  * Fuente única: la usan tanto Modulos.tsx (ficha del producto) como
- * ModuloShowcase.tsx (demo grande de la home) para no mantener el mismo
+ * home/Carpetas.tsx (las carpetas de la home) para no mantener el mismo
  * contenido en dos lugares.
  */
 
-export type Modulo = { nombre: string; archivo: string; desc: string; items: string[] };
+export type Modulo = { nombre: string; archivo: string; corta: string; desc: string; items: string[] };
 export type Grupo = { label: string; color: keyof typeof ACENTO; modulos: Modulo[] };
 
 export const ACENTO = {
@@ -33,6 +35,7 @@ export const GRUPOS: Grupo[] = [
       {
         nombre: "Caja",
         archivo: "caja.png",
+        corta: "La pantalla donde se vende. Enter o F2 para cobrar.",
         desc: "La pantalla donde se vende. Pensada para que el cajero no toque el mouse.",
         items: [
           "Buscar por código de barras o por nombre",
@@ -46,6 +49,7 @@ export const GRUPOS: Grupo[] = [
       {
         nombre: "Gestión de caja",
         archivo: "caja-gestion.png",
+        corta: "Apertura, cierre y control del efectivo del turno.",
         desc: "Apertura, cierre y control del efectivo del turno.",
         items: [
           "Abrir caja con fondo inicial",
@@ -57,6 +61,7 @@ export const GRUPOS: Grupo[] = [
       {
         nombre: "Clientes",
         archivo: "clientes.png",
+        corta: "Cuenta corriente y fiado, sin el cuaderno.",
         desc: "Cuenta corriente y fiado, sin el cuaderno.",
         items: [
           "Ficha con teléfono y DNI",
@@ -69,6 +74,7 @@ export const GRUPOS: Grupo[] = [
       {
         nombre: "Devoluciones",
         archivo: "devoluciones.png",
+        corta: "Contra la venta original. El stock vuelve solo.",
         desc: "Devolver contra la venta original, sin inventar números.",
         items: [
           "Buscar la venta por número o por cliente",
@@ -86,6 +92,7 @@ export const GRUPOS: Grupo[] = [
       {
         nombre: "Productos",
         archivo: "productos.png",
+        corta: "Más de 7.500 ya cargados, con costo, precio y margen.",
         desc: "El corazón del sistema. Más de 7.500 productos ya vienen cargados.",
         items: [
           "Catálogo argentino precargado con código de barras",
@@ -99,6 +106,7 @@ export const GRUPOS: Grupo[] = [
       {
         nombre: "Proveedores",
         archivo: "proveedores.png",
+        corta: "Órdenes de compra y proyección de necesidad a 7 días.",
         desc: "No solo la agenda: también cómo se comporta cada uno.",
         items: [
           "Ficha con CUIT y contacto",
@@ -112,6 +120,7 @@ export const GRUPOS: Grupo[] = [
       {
         nombre: "Categorías y marcas",
         archivo: "categorias.png",
+        corta: "Ordená el catálogo para que los reportes sirvan.",
         desc: "Ordenar el catálogo para que los reportes sirvan.",
         items: [
           "Crear y renombrar categorías",
@@ -123,6 +132,7 @@ export const GRUPOS: Grupo[] = [
       {
         nombre: "Vencimientos",
         archivo: "vencimientos.png",
+        corta: "Control por lote, con orden FEFO.",
         desc: "Control por lote, no por producto. Cada lote con su fecha.",
         items: [
           "Orden FEFO: primero lo que vence antes",
@@ -134,6 +144,7 @@ export const GRUPOS: Grupo[] = [
       {
         nombre: "Inventario",
         archivo: "inventario.png",
+        corta: "El conteo físico, sin planilla aparte.",
         desc: "El conteo físico, sin planilla aparte.",
         items: [
           "Carga todos los productos activos",
@@ -144,6 +155,7 @@ export const GRUPOS: Grupo[] = [
       {
         nombre: "Etiquetas",
         archivo: "etiquetas.png",
+        corta: "De góndola, con código de barras, listas para imprimir.",
         desc: "Etiquetas de góndola con código de barras, listas para imprimir.",
         items: [
           "Cuatro plantillas: góndola, precio, completa, código",
@@ -157,6 +169,7 @@ export const GRUPOS: Grupo[] = [
       {
         nombre: "Combos",
         archivo: "combos.png",
+        corta: "Packs a precio fijo que descuentan cada componente.",
         desc: "Packs a precio fijo que descuentan stock de cada componente.",
         items: [
           "Precio propio para el combo",
@@ -174,6 +187,7 @@ export const GRUPOS: Grupo[] = [
       {
         nombre: "Presupuestos",
         archivo: "presupuestos.png",
+        corta: "Para el cliente que pregunta antes de comprar.",
         desc: "Para el cliente que pregunta antes de comprar.",
         items: [
           "Con o sin cliente asociado",
@@ -186,6 +200,7 @@ export const GRUPOS: Grupo[] = [
       {
         nombre: "Promociones",
         archivo: "promociones.png",
+        corta: "Porcentaje, monto fijo, 2x1 y 3x2, aplicados en la caja.",
         desc: "Descuentos que se aplican solos en la caja.",
         items: [
           "Porcentaje, monto fijo, 2x1 y 3x2",
@@ -197,6 +212,7 @@ export const GRUPOS: Grupo[] = [
       {
         nombre: "Usuarios y permisos",
         archivo: "usuarios.png",
+        corta: "Administrador, supervisor y cajero.",
         desc: "Tres roles, para que el cajero vea solo lo que tiene que ver.",
         items: [
           "Administrador: acceso completo",
@@ -214,6 +230,7 @@ export const GRUPOS: Grupo[] = [
       {
         nombre: "Dashboard",
         archivo: "dashboard.png",
+        corta: "No muestra gráficos: te dice qué hacer hoy.",
         desc: "No muestra gráficos: te dice qué hacer hoy.",
         items: [
           "Ventas, transacciones, ticket promedio y ganancia bruta",
@@ -227,6 +244,7 @@ export const GRUPOS: Grupo[] = [
       {
         nombre: "Reportes",
         archivo: "reportes.png",
+        corta: "Ventas, márgenes y Libro IVA. Excel o PDF.",
         desc: "Los números que te pide el contador y los que necesitás vos.",
         items: [
           "Hoy, ayer, 7 días, este mes o rango propio",
@@ -246,6 +264,7 @@ export const GRUPOS: Grupo[] = [
       {
         nombre: "Auditoría",
         archivo: "auditoria.png",
+        corta: "Quién hizo qué y cuándo.",
         desc: "Quién hizo qué y cuándo. Importante si tenés empleados.",
         items: [
           "Registro de acciones críticas",
@@ -256,6 +275,7 @@ export const GRUPOS: Grupo[] = [
       {
         nombre: "Configuración",
         archivo: "configuracion.png",
+        corta: "Datos del negocio y funciones para prender o apagar.",
         desc: "Los datos del negocio y las funciones que querés prender o apagar.",
         items: [
           "Nombre, dirección, teléfono y CUIT",

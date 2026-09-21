@@ -23,23 +23,21 @@ export default async function Comprar({
   if (!product) notFound();
 
   return (
-    <section className="mx-auto max-w-md px-6 py-16 sm:py-20">
-      <p className="tag-numbered text-xs text-brand">Comprar</p>
-      <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground">{product.name}</h1>
-      <p className="mt-2 flex items-baseline gap-1.5">
-        <span className="text-2xl font-bold tracking-tight text-foreground">
-          ${product.priceArs.toLocaleString("es-AR")}
-        </span>
-        <span className="tag-numbered text-xs text-foreground/40">ARS · pago único</span>
+    <section className="mx-auto max-w-lg px-5 py-14 sm:px-6 sm:py-20">
+      <p className="rt-label">Comprar</p>
+      <h1 className="mt-3 text-[clamp(34px,5.4vw,48px)] leading-[1.05] text-ink">{product.name}</h1>
+      <p className="mt-3 flex items-baseline gap-2">
+        <span className="font-slab text-[34px] leading-none text-ink">${product.priceArs.toLocaleString("es-AR")}</span>
+        <span className="tag-numbered text-xs uppercase text-ink-soft">ARS · pago único</span>
       </p>
-      <p className="mt-3 text-[15px] text-foreground/60">
+      <p className="mt-4 text-[18px] leading-relaxed text-ink-soft">
         Pagás con Mercado Pago y te llega el código de activación por mail.
       </p>
-      <div className="mt-8">
+      <div className="mt-9 pr-2.5">
         <CompraForm product={product} />
       </div>
-      <p className="mt-6 text-center text-[13px] text-foreground/40">
-        <Link href={`/productos/${product.slug}`} className="hover:text-foreground">
+      <p className="tag-numbered mt-8 text-[12.5px] uppercase text-ink-soft">
+        <Link href={`/productos/${product.slug}`} className="hover:text-brand">
           ← Volver al detalle del producto
         </Link>
       </p>

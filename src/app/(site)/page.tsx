@@ -1,50 +1,32 @@
 import Hero from "@/components/home/Hero";
-import ModuloShowcase from "@/components/home/ModuloShowcase";
-import Confianza from "@/components/home/Confianza";
-import TrackView from "@/components/TrackView";
-import ProductCard from "@/components/ProductCard";
+import Rubros from "@/components/home/Rubros";
+import Carpetas from "@/components/home/Carpetas";
+import VideoSlot from "@/components/home/VideoSlot";
+import { DemoCaja, DemoConsejosEtiquetas } from "@/components/home/Demos";
+import Preguntas from "@/components/home/Preguntas";
+import Precio from "@/components/home/Precio";
 import { listProducts } from "@/lib/products";
 
 export const dynamic = "force-dynamic";
 
+// Orden de la página: hero → rubros → módulos (carpetas) → video → pantallas
+// reales → preguntas → precio. El pie (mostaza + oscuro) lo pone el layout.
 export default async function Home() {
-  const products = await listProducts();
-
-  // La grilla se adapta a cuántos productos hay: con uno solo, tres columnas
-  // dejan la fila vacía a la derecha y la página se ve rota.
-  const n = products.length;
-  // Con un solo producto no hay nada que elegir: el titulo cambia solo.
-  const titulo = n === 1 ? "Empezá AHORA" : "Elegí tu sistema";
-  const grilla =
-    n >= 3 ? "max-w-5xl sm:grid-cols-2 lg:grid-cols-3"
-    : n === 2 ? "max-w-3xl sm:grid-cols-2"
-    : "max-w-[320px] grid-cols-1";
+  // El precio y los links de compra salen del producto destacado (listProducts
+  // ya lo ordena primero). Si no hay productos cargados no hay nada que vender:
+  // la home igual muestra todo lo demás.
+  const [producto] = await listProducts();
 
   return (
     <>
       <Hero />
-
-      <ModuloShowcase />
-
-      <section className="mx-auto max-w-5xl px-6 py-16 sm:py-24">
-        <TrackView name="pricing_viewed" />
-        <div className="text-center">
-          <h2 className="font-condensed text-[38px] font-extrabold leading-[1.05] tracking-tight sm:text-[48px]">
-            {titulo}
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-[17px] leading-relaxed text-foreground/55 sm:text-[19px]">
-            Un solo pago, sin cuotas mensuales. Soporte 24/7 y actualizaciones incluidas. Probalo 7 días gratis, sin tarjeta.
-          </p>
-        </div>
-
-        <div className={`mx-auto mt-9 grid gap-6 ${grilla}`}>
-          {products.map((p) => (
-            <ProductCard key={p.slug} product={p} />
-          ))}
-        </div>
-      </section>
-
-      <Confianza />
+      <Rubros />
+      <Carpetas />
+      <VideoSlot />
+      <DemoCaja />
+      <DemoConsejosEtiquetas />
+      <Preguntas />
+      {producto && <Precio product={producto} />}
     </>
   );
 }

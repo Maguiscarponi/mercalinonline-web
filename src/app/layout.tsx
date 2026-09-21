@@ -1,17 +1,29 @@
 import type { Metadata } from "next";
-import { Barlow, Barlow_Condensed } from "next/font/google";
+import { Alfa_Slab_One, Barlow, Barlow_Condensed, Caprasimo, Courier_Prime, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 
+// Fuentes del sitio público: titulares en slab pesada, texto en Source Sans,
+// etiquetas y precios en máquina de escribir, y Caprasimo solo para el
+// wordmark gigante del pie.
+const alfa = Alfa_Slab_One({ variable: "--font-alfa", weight: "400", subsets: ["latin"] });
+const source = Source_Sans_3({ variable: "--font-source", weight: ["400", "600", "700"], subsets: ["latin"] });
+const courier = Courier_Prime({ variable: "--font-courier", weight: ["400", "700"], subsets: ["latin"] });
+const caprasimo = Caprasimo({ variable: "--font-caprasimo", weight: "400", subsets: ["latin"] });
+
+// Barlow es de la tipografía del panel admin. Sin preload para que el sitio
+// público no las descargue: solo se bajan si una página las usa.
 const barlow = Barlow({
   variable: "--font-barlow",
   weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
+  preload: false,
 });
 
 const barlowCondensed = Barlow_Condensed({
   variable: "--font-barlow-condensed",
   weight: ["500", "600", "700", "800"],
   subsets: ["latin"],
+  preload: false,
 });
 
 // Si la variable viniera sin "https://" (o mal escrita), new URL() tiraría
@@ -42,7 +54,7 @@ export const metadata: Metadata = {
     siteName: "Mercalin",
     locale: "es_AR",
     type: "website",
-    images: [{ url: "/capturas/dashboard.png", width: 1919, height: 1014, alt: "Dashboard de Mercalin" }],
+    images: [{ url: "/capturas/dashboard.png", width: 1919, height: 985, alt: "Dashboard de Mercalin" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -54,7 +66,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="es" className={`${barlow.variable} ${barlowCondensed.variable} h-full antialiased`}>
+    <html lang="es" className={`${alfa.variable} ${source.variable} ${courier.variable} ${caprasimo.variable} ${barlow.variable} ${barlowCondensed.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
