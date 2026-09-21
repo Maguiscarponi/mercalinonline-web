@@ -1,5 +1,6 @@
 import { getDb } from "./db";
 import { listActivations, type Activation } from "./activations";
+import { listOptedOutEmails } from "./optout";
 
 // Un "cliente" es una persona (mail), no una fila de activación: puede haber
 // pedido la prueba, vuelto a pedirla y después comprado. El estado se calcula
@@ -25,7 +26,11 @@ export interface Cliente {
   visitorIds: string[];
   // Cuándo apareció por primera vez y si algún mail no salió
   firstSeenAt: string;
+  // El mail con su clave no salió (no se pudo enviar) o rebotó (no llegó)
   mailProblem: boolean;
+  mailBounced: boolean;
+  // Pidió no recibir más los avisos de la prueba
+  optedOut: boolean;
   activations: Activation[];
   // Última vez que su navegador vio la web (solo si hay visitor_id)
   lastWebVisit: string | null;
@@ -75,6 +80,8 @@ export function buildClientes(activations: Activation[], now = new Date()): Clie
       visitorIds: [...new Set(acts.map((a) => a.visitorId).filter((v): v is string => !!v))],
       firstSeenAt: acts[acts.length - 1].createdAt,
       mailProblem: acts.some((a) => !a.emailSent),
+      mailBounced: false,
+      optedOut: false,
       activations: acts,
       lastWebVisit: null,
     });
@@ -100,9 +107,36 @@ async function attachLastWebVisit(clientes: Cliente[]): Promise<void> {
   }
 }
 
+// Mails con la clave que rebotaron y todavía no se reemplazaron por uno
+// entregado, y personas que se dieron de baja de los avisos.
+async function attachMailStatus(clientes: Cliente[]): Promise<void> {
+  const sql = getDb();
+  const bounced = (await sql`
+    SELECT lower(b.email) AS email FROM events b
+    WHERE b.name IN ('email_bounced','email_failed')
+      AND b.props->>'type' IN ('trial_license','purchase_license')
+      AND COALESCE(b.props->>'dev','') <> 'true'
+      AND NOT EXISTS (
+        SELECT 1 FROM events d
+        WHERE d.name = 'email_delivered' AND lower(d.email) = lower(b.email)
+          AND d.props->>'type' IN ('trial_license','purchase_license')
+          AND d.created_at > b.created_at
+          AND COALESCE(d.props->>'dev','') <> 'true'
+      )
+    GROUP BY 1
+  `) as unknown as { email: string }[];
+  const bouncedSet = new Set(bounced.map((r) => r.email));
+  const optedOut = await listOptedOutEmails();
+  for (const c of clientes) {
+    c.mailBounced = bouncedSet.has(c.email);
+    c.optedOut = optedOut.has(c.email);
+    if (c.mailBounced) c.mailProblem = true;
+  }
+}
+
 export async function listClientes(): Promise<Cliente[]> {
   const clientes = buildClientes(await listActivations());
-  await attachLastWebVisit(clientes);
+  await Promise.all([attachLastWebVisit(clientes), attachMailStatus(clientes)]);
   return clientes;
 }
 
@@ -115,7 +149,7 @@ export const SEGMENTOS = [
   { id: "vencidas", label: "Probaron y no compraron" },
   { id: "semana", label: "Nuevos esta semana" },
   { id: "pagos", label: "Clientes que pagaron" },
-  { id: "sinmail", label: "Mail no enviado" },
+  { id: "sinmail", label: "Mail con problemas" },
 ] as const;
 
 export type SegmentoId = (typeof SEGMENTOS)[number]["id"];

@@ -62,7 +62,12 @@ export default async function AdminClienteDetalle({ searchParams }: { searchPara
       <div className="mt-6 flex items-center gap-3">
         <EstadoBadge estado={cliente.estado} />
         {cliente.mailProblem && (
-          <span className="tag-numbered text-[12.5px] text-brand">El mail con su clave no salió</span>
+          <span className="tag-numbered text-[12.5px] text-brand">
+            {cliente.mailBounced ? "El mail con su clave rebotó: no le llegó" : "El mail con su clave no salió"}
+          </span>
+        )}
+        {cliente.optedOut && (
+          <span className="tag-numbered text-[12.5px] text-foreground/55">Pidió no recibir más avisos</span>
         )}
       </div>
 

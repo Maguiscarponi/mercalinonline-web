@@ -52,6 +52,7 @@ export async function POST(req: NextRequest) {
   const existing = await findActiveTrialActivation(email, product.slug);
   if (existing) {
     await sendMail({
+      type: "trial_license",
       to: email,
       subject: `Tu prueba gratis de ${product.name}`,
       html: licenseEmailHtml({
@@ -69,6 +70,7 @@ export async function POST(req: NextRequest) {
   const license = generateLicenseKey(email, "trial");
 
   const { sent } = await sendMail({
+    type: "trial_license",
     to: email,
     subject: `Tu prueba gratis de ${product.name}`,
     html: licenseEmailHtml({
@@ -95,6 +97,7 @@ export async function POST(req: NextRequest) {
   await recordEvent({ name: "trial_started", email, visitorId, source, campaign, props: { product: product.slug } });
 
   await sendMail({
+    type: "admin_notify",
     to: ADMIN_NOTIFY_EMAIL,
     subject: `Nueva prueba gratis: ${email}`,
     html: `<p>${escapeHtml(email)} (${escapeHtml(businessName || "sin nombre de negocio")}) pidió probar ${escapeHtml(product.name)}.</p>`,

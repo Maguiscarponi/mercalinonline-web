@@ -40,6 +40,8 @@ export interface Overview {
   devices: { device: string; visitors: number }[];
   cartsAbandoned: { email: string; at: string }[];
   paymentsFailed: number;
+  mails: { type: string; delivered: number; bounced: number; opened: number; clicked: number }[];
+  bouncedLicenses: { email: string; at: string }[];
   trialToPurchase: { trials: number; converted: number };
   recent: { at: string; name: string; email: string | null; source: string | null; path: string | null; props: Record<string, unknown> | null }[];
 }
@@ -158,6 +160,36 @@ export async function getOverview(dias: number): Promise<Overview> {
     WHERE name = 'payment_failed' AND created_at >= now() - interval '7 days' AND ${notDev}
   `) as unknown as { c: number }[];
 
+  // Qué pasó con cada tipo de mail (lo informa Resend por webhook).
+  const mails = (await sql`
+    SELECT COALESCE(props->>'type', 'otro') AS type,
+           COUNT(*) FILTER (WHERE name = 'email_delivered')::int AS delivered,
+           COUNT(*) FILTER (WHERE name IN ('email_bounced','email_failed'))::int AS bounced,
+           COUNT(DISTINCT props->>'email_id') FILTER (WHERE name = 'email_opened')::int AS opened,
+           COUNT(DISTINCT props->>'email_id') FILTER (WHERE name = 'email_clicked')::int AS clicked
+    FROM events
+    WHERE name IN ('email_delivered','email_bounced','email_failed','email_opened','email_clicked')
+      AND created_at >= ${since} AND ${notDev}
+    GROUP BY 1 ORDER BY delivered DESC
+  `) as unknown as Overview["mails"];
+
+  // Gente cuyo mail con la clave rebotó y todavía no recibió uno entregado:
+  // sin escribirles no pueden activar Mercalin.
+  const bouncedLicenses = (await sql`
+    SELECT lower(b.email) AS email, MAX(b.created_at) AS at
+    FROM events b
+    WHERE b.name IN ('email_bounced','email_failed') AND b.email IS NOT NULL
+      AND b.props->>'type' IN ('trial_license','purchase_license')
+      AND b.created_at >= now() - interval '14 days' AND COALESCE(b.props->>'dev','') <> 'true'
+      AND NOT EXISTS (
+        SELECT 1 FROM events d
+        WHERE d.name = 'email_delivered' AND lower(d.email) = lower(b.email)
+          AND d.props->>'type' IN ('trial_license','purchase_license') AND d.created_at > b.created_at
+          AND COALESCE(d.props->>'dev','') <> 'true'
+      )
+    GROUP BY 1 ORDER BY MAX(b.created_at) DESC LIMIT 8
+  `) as unknown as { email: string; at: Date }[];
+
   // De las personas que pidieron prueba en el período, cuántas terminaron comprando (en cualquier momento).
   const [conv] = (await sql`
     SELECT COUNT(DISTINCT lower(t.email))::int AS trials,
@@ -196,6 +228,8 @@ export async function getOverview(dias: number): Promise<Overview> {
     devices,
     cartsAbandoned: cartsAbandoned.map((c) => ({ email: c.email, at: new Date(c.at).toISOString() })),
     paymentsFailed: failed.c,
+    mails,
+    bouncedLicenses: bouncedLicenses.map((b) => ({ email: b.email, at: new Date(b.at).toISOString() })),
     trialToPurchase: conv,
     recent: recent.map((r) => ({ ...r, at: new Date(r.at).toISOString() })),
   };

@@ -105,6 +105,7 @@ export async function POST(req: NextRequest) {
   });
 
   const { sent } = await sendMail({
+    type: "purchase_license",
     to: email,
     subject: `Tu compra de ${product.name}`,
     html: licenseEmailHtml({
@@ -118,6 +119,7 @@ export async function POST(req: NextRequest) {
   if (sent) await setActivationEmailSent(activation.id, true);
 
   await sendMail({
+    type: "admin_notify",
     to: ADMIN_NOTIFY_EMAIL,
     subject: `Nueva venta: ${email}`,
     html: `<p>${escapeHtml(email)} compró ${escapeHtml(product.name)} por $${payment.transaction_amount ?? product.priceArs}.</p>`,

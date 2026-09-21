@@ -172,7 +172,12 @@ export default async function AdminClientes({ searchParams }: { searchParams: Pr
                       {c.email}
                     </Link>
                     <p className="text-[12.5px] text-foreground/50">{c.businessName ?? "sin nombre de negocio"}</p>
-                    {c.mailProblem && <p className="text-[12px] font-medium text-brand">el mail con su clave no salió</p>}
+                    {c.mailProblem && (
+                      <p className="text-[12px] font-medium text-brand">
+                        {c.mailBounced ? "el mail con su clave rebotó (no le llegó)" : "el mail con su clave no salió"}
+                      </p>
+                    )}
+                    {c.optedOut && <p className="text-[12px] text-foreground/50">pidió no recibir avisos</p>}
                   </td>
                   <td className="py-3.5 pr-4">
                     <EstadoBadge estado={c.estado} />

@@ -39,6 +39,10 @@ const SECCIONES: { titulo: string; contenido: React.ReactNode }[] = [
           relacionar ese código con tu mail para saber cómo llegaste a Mercalin.
         </li>
         <li>
+          <strong>Información de los mails que te enviamos:</strong> nuestro servicio de envío nos informa si cada mail fue
+          entregado, rebotó, se marcó como spam o se abrió, para saber si recibiste tu clave.
+        </li>
+        <li>
           <strong>Lo que cargues en Mercalin</strong> (ventas, productos, clientes, proveedores) queda en tu computadora.
           La app funciona sin internet y no lo enviamos a nuestros servidores.
         </li>
@@ -52,7 +56,7 @@ const SECCIONES: { titulo: string; contenido: React.ReactNode }[] = [
         <li>Enviarte el instalador y la clave de activación.</li>
         <li>
           Avisarte durante tu prueba: un recordatorio a los 3 días, otro cuando falta poco para que venza y otro cuando
-          venció. Si no querés recibirlos, escribinos y dejamos de enviártelos.
+          venció. Cada uno trae un link para darte de baja con un clic, y también podés escribirnos.
         </li>
         <li>Procesar tu compra y darte soporte.</li>
         <li>Entender cómo se usa el sitio para mejorarlo.</li>

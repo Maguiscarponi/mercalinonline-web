@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { CSSProperties } from "react";
 import {
   Bell, ShoppingCart, Wallet, Users, RotateCcw, Package, Truck, Tag, CalendarDays,
@@ -437,15 +437,22 @@ export default function AppDemo({
   hrefModulos?: string;
 }) {
   const [activo, setActivo] = useState(0);
-  const [auto, setAuto] = useState(true);
+  const [parada, setParada] = useState(false);
   const sideRef = useRef<HTMLElement | null>(null);
   const innerRef = useRef<HTMLDivElement | null>(null);
   const itemsRef = useRef<Record<string, HTMLDivElement | null>>({});
 
   // Quien pidió menos movimiento no necesita una demo girando sola.
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) setAuto(false);
-  }, []);
+  const reducirMovimiento = useSyncExternalStore(
+    (cb) => {
+      const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+      mq.addEventListener("change", cb);
+      return () => mq.removeEventListener("change", cb);
+    },
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () => false
+  );
+  const auto = !parada && !reducirMovimiento;
 
   // Rotación automática. Se corta apenas alguien toca una pastilla.
   useEffect(() => {
@@ -535,7 +542,7 @@ export default function AppDemo({
             aria-selected={i === activo}
             aria-controls={`ha-panel-${m.id}`}
             className="ha-tab"
-            onClick={() => { setAuto(false); setActivo(i); track("hero_demo_tab_clicked", { module: m.id }); }}
+            onClick={() => { setParada(true); setActivo(i); track("hero_demo_tab_clicked", { module: m.id }); }}
           >
             {m.titulo}
             <span className="ha-tab-prog" style={{ animationDuration: auto ? `${m.dur}ms` : "0ms" }} />

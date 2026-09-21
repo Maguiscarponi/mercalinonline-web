@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Código viejo de landings descartadas: no está en git ni se usa.
+    "_to_delete/**",
   ]),
 ]);
 

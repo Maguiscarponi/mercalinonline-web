@@ -59,6 +59,14 @@ CREATE TABLE IF NOT EXISTS activations (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Personas que pidieron no recibir más los avisos de la prueba (link "darte
+-- de baja" de los mails). No afecta al mail con la clave ni al de compra.
+-- Ver src/lib/optout.ts.
+CREATE TABLE IF NOT EXISTS email_optouts (
+  email TEXT PRIMARY KEY,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 -- Límites de intentos (login del admin, formularios públicos). La clave es un
 -- hash de la IP, nunca la IP. Ver src/lib/rate-limit.ts.
 CREATE TABLE IF NOT EXISTS rate_events (

@@ -22,7 +22,28 @@ export const EVENT_LABELS: Record<string, string> = {
   email_day3_sent: "Mail de día 3 enviado",
   email_expiring_sent: "Mail de \"vence mañana\" enviado",
   email_expired_sent: "Mail de \"venció\" enviado",
+  email_delivered: "Mail entregado",
+  email_bounced: "Mail rebotado (no llegó)",
+  email_complained: "Marcó un mail como spam",
+  email_opened: "Abrió un mail",
+  email_clicked: "Hizo clic en un mail",
+  email_failed: "Mail que no se pudo enviar",
+  email_delayed: "Mail demorado",
+  unsubscribed: "Pidió no recibir más avisos",
 };
+
+export const MAIL_TYPE_LABELS: Record<string, string> = {
+  trial_license: "Clave de la prueba",
+  purchase_license: "Clave de la compra",
+  trial_day3: "Aviso de día 3",
+  trial_expiring: "Aviso de \"vence mañana\"",
+  trial_expired: "Aviso de \"venció\"",
+};
+
+export function mailTypeLabel(t: string | null | undefined): string {
+  if (!t) return "Otro";
+  return MAIL_TYPE_LABELS[t] ?? t;
+}
 
 export const LOCATION_LABELS: Record<string, string> = {
   hero: "Portada",
@@ -34,6 +55,7 @@ export const LOCATION_LABELS: Record<string, string> = {
   float: "Botón flotante",
   footer: "Pie de página",
   arca: "Sección ARCA",
+  gracias: "Página de gracias",
 };
 
 export function eventLabel(name: string): string {
@@ -62,6 +84,15 @@ export function eventDetail(name: string, props: Props, path: string | null): st
       return p.amount ? `$${Number(p.amount).toLocaleString("es-AR")}` : "";
     case "payment_failed":
       return [p.status, p.detail].filter(Boolean).join(" · ");
+    case "email_delivered":
+    case "email_opened":
+    case "email_clicked":
+    case "email_failed":
+    case "email_delayed":
+    case "email_complained":
+      return mailTypeLabel(p.type as string | null);
+    case "email_bounced":
+      return [mailTypeLabel(p.type as string | null), p.bounce].filter(Boolean).join(" · ");
     case "checkout_started":
       return p.amount ? `$${Number(p.amount).toLocaleString("es-AR")}` : "";
     default:

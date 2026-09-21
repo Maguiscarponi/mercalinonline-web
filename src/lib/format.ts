@@ -30,8 +30,11 @@ export function fmtArs(n: number | null | undefined): string {
   return "$" + n.toLocaleString("es-AR");
 }
 
+// Un porcentaje mayor a 100% en estas cuentas (visita → prueba, paso anterior
+// → paso siguiente) no tiene sentido: pasa cuando hay más pruebas que visitas
+// medidas porque las visitas se empezaron a medir hace poco. Se muestra "—".
 export function fmtPct(part: number, total: number): string {
-  if (!total) return "—";
+  if (!total || part > total) return "—";
   const p = (part / total) * 100;
   return (p >= 10 ? p.toFixed(0) : p.toFixed(1).replace(".", ",")) + "%";
 }

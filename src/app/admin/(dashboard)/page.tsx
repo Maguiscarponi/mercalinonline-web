@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getOverview, parsePeriodo, PERIODOS } from "@/lib/admin-stats";
 import { listClientes, countBy } from "@/lib/clientes";
-import { eventDetail, eventLabel, locationLabel } from "@/lib/event-labels";
+import { eventDetail, eventLabel, locationLabel, mailTypeLabel } from "@/lib/event-labels";
 import { fmtArs, fmtDate, fmtDateTime, fmtPct, timeAgo } from "@/lib/format";
 import { Alerta, Aviso, BarRow, Columnas, PageHeader, SectionTitle, Tile } from "@/components/admin/stats";
 
@@ -55,6 +55,7 @@ export default async function AdminResumen({ searchParams }: { searchParams: Pro
     porVencer.length > 0 ||
     o.paymentsFailed > 0 ||
     o.cartsAbandoned.length > 0 ||
+    o.bouncedLicenses.length > 0 ||
     seg.sinmail > 0 ||
     vencieronSemana > 0;
 
@@ -113,7 +114,14 @@ export default async function AdminResumen({ searchParams }: { searchParams: Pro
             {vencieronSemana} {vencieronSemana === 1 ? "prueba venció" : "pruebas vencieron"} esta semana sin compra.
           </Aviso>
         )}
-        {seg.sinmail > 0 && (
+        {o.bouncedLicenses.length > 0 && (
+          <Aviso kicker="Mail rebotado" tone="red" href="/admin/clientes?segmento=sinmail" cta="Ver quiénes">
+            {o.bouncedLicenses.length === 1 ? "Una persona no recibió" : `${o.bouncedLicenses.length} personas no recibieron`}{" "}
+            su clave porque el mail rebotó: {o.bouncedLicenses.map((b) => b.email).join(", ")}. Escribiles por WhatsApp para
+            pasársela.
+          </Aviso>
+        )}
+        {seg.sinmail > 0 && o.bouncedLicenses.length === 0 && (
           <Aviso kicker="Mails" tone="red" href="/admin/clientes?segmento=sinmail" cta="Ver quiénes">
             {seg.sinmail} {seg.sinmail === 1 ? "persona no recibió" : "personas no recibieron"} el mail con su clave.
           </Aviso>
@@ -143,7 +151,13 @@ export default async function AdminResumen({ searchParams }: { searchParams: Pro
         <Tile
           label="De visita a prueba"
           value={sinMedicion ? "—" : fmtPct(f.trials, f.visitors)}
-          hint={sinMedicion ? undefined : `${f.trials} de ${f.visitors} visitantes`}
+          hint={
+            sinMedicion
+              ? undefined
+              : f.trials > f.visitors
+                ? "Hay más pruebas que visitas medidas: la medición es reciente"
+                : `${f.trials} de ${f.visitors} visitantes`
+          }
         />
         <Tile
           label="De prueba a compra"
@@ -298,6 +312,48 @@ export default async function AdminResumen({ searchParams }: { searchParams: Pro
             </tbody>
           </table>
         </div>
+      )}
+
+      {/* Mails */}
+      <SectionTitle note="Lo informa Resend, el servicio que envía los mails">Qué pasó con los mails</SectionTitle>
+      {o.mails.length === 0 ? (
+        <p className="text-[14.5px] leading-relaxed text-foreground/60">
+          Todavía no hay datos de entrega. Aparecen cuando se conecta Resend con el sitio (un paso de una sola vez) y sale el
+          próximo mail.
+        </p>
+      ) : (
+        <>
+          <div className="admin-card overflow-x-auto">
+            <table className="w-full min-w-[520px] text-left text-[14px]">
+              <thead>
+                <tr className="tag-numbered border-b border-foreground/15 text-[12px] text-foreground/55">
+                  <th className="px-5 py-3">Mail</th>
+                  <th className="py-3 pr-4 text-right">Entregados</th>
+                  <th className="py-3 pr-4 text-right">Rebotados</th>
+                  <th className="py-3 pr-4 text-right">Abiertos</th>
+                  <th className="py-3 pr-5 text-right">Con clic</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-black/[0.07]">
+                {o.mails.map((m) => (
+                  <tr key={m.type}>
+                    <td className="px-5 py-3 font-medium">{mailTypeLabel(m.type)}</td>
+                    <td className="py-3 pr-4 text-right tabular-nums">{m.delivered}</td>
+                    <td className={`py-3 pr-4 text-right tabular-nums ${m.bounced > 0 ? "font-semibold text-brand" : ""}`}>
+                      {m.bounced}
+                    </td>
+                    <td className="py-3 pr-4 text-right tabular-nums">{m.opened}</td>
+                    <td className="py-3 pr-5 text-right tabular-nums">{m.clicked}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-3 text-[13.5px] leading-relaxed text-foreground/55">
+            Las aperturas son aproximadas: Apple Mail y algunos programas las esconden o las cuentan de más. Los rebotes y
+            las entregas sí son confiables.
+          </p>
+        </>
       )}
 
       {/* Actividad */}

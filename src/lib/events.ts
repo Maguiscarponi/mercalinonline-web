@@ -28,6 +28,14 @@ export const SERVER_EVENTS = [
   "email_day3_sent",
   "email_expiring_sent",
   "email_expired_sent",
+  "email_delivered",
+  "email_bounced",
+  "email_complained",
+  "email_opened",
+  "email_clicked",
+  "email_failed",
+  "email_delayed",
+  "unsubscribed",
 ] as const;
 
 export function clip(v: unknown, max: number): string | null {
