@@ -383,7 +383,9 @@ body {
   position: relative;
   background: var(--paper-warm);
   color: var(--ink);
-  filter: drop-shadow(6px 8px 0 rgb(35 33 32 / 0.16));
+  /* Nada de filter: sobre un elemento girado obliga al navegador a dibujarlo
+     como imagen y el texto sale borroso. La sombra dura va con box-shadow. */
+  box-shadow: 6px 8px 0 rgb(35 33 32 / 0.16);
 }
 .rt-ticket::before,
 .rt-ticket::after {
@@ -448,12 +450,4 @@ body {
   font-size: 14.5px;
   line-height: 1.55;
   color: var(--ink-soft);
-}
-
-@keyframes rt-pulso {
-  0%, 100% { box-shadow: 0 0 0 0 rgb(37 211 102 / 0.55); }
-  60% { box-shadow: 0 0 0 9px rgb(37 211 102 / 0); }
-}
-.rt-punto-vivo {
-  animation: rt-pulso 2.4s ease-out infinite;
 }

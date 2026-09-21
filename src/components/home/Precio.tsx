@@ -41,7 +41,7 @@ export default function Precio({ product }: { product: Product }) {
             ))}
           </ul>
 
-          <ol className="mt-10 grid gap-5 sm:grid-cols-3 sm:max-w-[42rem]">
+          <ol className="mt-10 grid gap-5 sm:grid-cols-3 sm:max-w-[34rem]">
             {PASOS.map(([n, t]) => (
               <li key={n} className="border-t-[3px] border-ink pt-2.5">
                 <span className="font-slab block text-[38px] leading-none text-brand">{n}</span>
@@ -114,9 +114,10 @@ export default function Precio({ product }: { product: Product }) {
             arriba="PAGO"
             centro="ÚNICO"
             abajo={precio}
-            size={160}
-            fuente={29}
-            className="absolute -bottom-8 -left-3 rotate-[10deg] sm:-left-32 sm:bottom-10"
+            size={180}
+            fuente={28}
+            rot={10}
+            className="absolute -bottom-8 -left-3 sm:-left-36 sm:bottom-8"
           />
         </div>
       </div>

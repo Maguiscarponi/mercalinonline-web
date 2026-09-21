@@ -59,7 +59,7 @@ export default function SiteFooter() {
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border-[3px] border-ink bg-paper-warm px-8 py-3.5 text-[18px] font-bold text-ink shadow-[4px_4px_0_var(--ink)] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_var(--ink)]"
             >
-              <IconoWhatsApp className="h-5 w-5 text-[#128c4a]" />
+              <IconoWhatsApp className="h-5 w-5" />
               WhatsApp
             </a>
             <a
@@ -137,14 +137,11 @@ export default function SiteFooter() {
             </span>
           </div>
 
-          <div className="mt-10 flex flex-wrap justify-between gap-3 border-t border-cream/20 py-6 text-[13px] text-cream/55">
-            <span className="tag-numbered">© {new Date().getFullYear()} Mercalin · Hecho en Argentina</span>
-            <span className="tag-numbered flex flex-wrap gap-x-5 gap-y-1">
-              <Link href="/privacidad" className="underline underline-offset-2 hover:text-cream">
-                Privacidad
-              </Link>
-              <span>Funciona sin internet</span>
-            </span>
+          <div className="tag-numbered mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-cream/20 py-6 pr-0 text-[13px] text-cream/55 sm:pr-72">
+            <span>© {new Date().getFullYear()} Mercalin · Hecho en Argentina</span>
+            <Link href="/privacidad" className="underline underline-offset-2 hover:text-cream">
+              Privacidad
+            </Link>
           </div>
         </div>
       </div>

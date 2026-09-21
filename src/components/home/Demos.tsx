@@ -47,8 +47,10 @@ export function DemoCaja() {
             arriba="COBRAR CON"
             centro="F2"
             abajo="O ENTER"
-            size={150}
-            className="absolute -bottom-2 right-0 rotate-[8deg] sm:-bottom-12 sm:right-2"
+            size={170}
+            fuente={44}
+            rot={8}
+            className="absolute -bottom-2 right-0 sm:-bottom-24 sm:right-2"
           />
         </div>
       </div>

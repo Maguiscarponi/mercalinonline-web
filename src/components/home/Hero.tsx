@@ -119,8 +119,10 @@ export default function Hero() {
             arriba="PROBALO"
             centro="7 DÍAS"
             abajo="GRATIS"
-            size={170}
-            className="absolute -bottom-8 -left-4 -rotate-12 sm:-bottom-10 sm:-left-20"
+            size={190}
+            fuente={27}
+            rot={-12}
+            className="absolute -bottom-8 -left-4 sm:-bottom-16 sm:-left-32"
           />
         </div>
       </div>

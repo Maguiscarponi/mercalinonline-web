@@ -7,11 +7,10 @@ import IconoWhatsApp from "@/components/retro/IconoWhatsApp";
 import { whatsappHref, whatsappMessageForPath } from "@/lib/whatsapp";
 import { usePathname } from "next/navigation";
 
-// Las secciones de la home se alcanzan con ancla; "Preguntas" y "Precio"
-// también existen como sección dentro de la home, así que en cualquier otra
-// página estos links llevan de vuelta a esa sección.
+// Las secciones de la home se alcanzan con ancla, así que desde cualquier otra
+// página estos links llevan de vuelta a esa sección. El logo es el botón de
+// inicio (por eso no hay un link "Inicio" aparte).
 const LINKS = [
-  { href: "/", label: "Inicio" },
   { href: "/#modulos", label: "Módulos" },
   { href: "/#precio", label: "Precio" },
   { href: "/#preguntas", label: "Preguntas" },
@@ -27,7 +26,7 @@ export default function SiteHeader() {
       <Awning id="toldo-nav" />
       <header className="sticky top-0 z-30 border-b-2 border-ink bg-cream">
         <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-3 px-5 py-3.5 sm:px-8 lg:px-0 lg:py-4">
-          <Link href="/" className="flex items-center gap-2.5" aria-label="Mercalin — inicio">
+          <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-80" aria-label="Mercalin — ir al inicio">
             <Image src="/mercalin-isotipo.svg" alt="" width={40} height={40} priority className="h-8 w-8 sm:h-10 sm:w-10" />
             <span className="font-slab text-[26px] leading-none tracking-[-0.01em] text-ink sm:text-[34px]">
               Merca<span className="text-brand">lin</span>
@@ -49,7 +48,7 @@ export default function SiteHeader() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 underline-offset-[6px] transition-colors hover:text-brand hover:underline"
               >
-                <span aria-hidden className="rt-punto-vivo h-2 w-2 rounded-full bg-[#25D366]" />
+                <span aria-hidden className="h-2 w-2 bg-brand" />
                 Soporte
               </a>
             </div>
@@ -81,7 +80,7 @@ export default function SiteHeader() {
             rel="noopener noreferrer"
             className="inline-flex shrink-0 items-center gap-1.5 hover:text-brand"
           >
-            <IconoWhatsApp className="h-3.5 w-3.5 text-[#128c4a]" />
+            <IconoWhatsApp className="h-3.5 w-3.5" />
             Soporte
           </a>
         </div>
