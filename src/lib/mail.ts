@@ -88,7 +88,11 @@ const BRAND = "#e1251b";
 const INK = "#232120";
 const INK_SOFT = "#4f4942";
 const INK_MUTE = "#8a8175";
-const CREAM = "#f3eee2";
+// El crema clarito (--cream, #f3eee2) casi no se distingue del blanco de la
+// página en una bandeja real -- acá conviene el crema más oscuro del sitio
+// (--cream-2) para que el contraste se note de verdad, no solo en la vista
+// previa del navegador.
+const CREAM = "#eadfcc";
 
 function boton(href: string, texto: string, opts?: { sombra?: string; grande?: boolean }): string {
   const sombra = opts?.sombra ?? BRAND;
@@ -145,7 +149,7 @@ function avisoComputadora(): string {
 function cascara(bodyHtml: string): string {
   return `<!doctype html>
 <html lang="es">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width">${FONTS_LINK}</head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light">${FONTS_LINK}</head>
 <body style="margin:0;padding:24px 12px;background:#ffffff;font-family:${F_BODY};">
   <div style="max-width:520px;margin:0 auto;background:#fff;border:3px solid ${INK};box-shadow:6px 6px 0 ${INK};">
     <div style="padding:30px 26px 26px;background:${CREAM};">
