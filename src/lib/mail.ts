@@ -140,23 +140,28 @@ function avisoComputadora(): string {
   </div>`;
 }
 
-// Todos los mails comparten esta cáscara: la tarjeta con borde duro y sombra
-// (el mismo lenguaje visual que las "ventanas" y tickets del sitio). Fondo
-// de PÁGINA blanco a propósito (el tono marrón alrededor quedaba feo en la
-// bandeja) -- pero adentro de la tarjeta queda el crema del sitio, si no los
-// mails con menos contenido (vencido, vence mañana) quedan pelados, sin
-// textura ni contraste.
+// Todos los mails comparten esta cáscara: la tarjeta con borde duro (el
+// mismo lenguaje visual que las "ventanas" y tickets del sitio), fondo de
+// PÁGINA blanco y adentro el crema del sitio. Armada con <table>, no <div>
+// -- es el formato a prueba de balas para mail: la app de Gmail en el
+// celular usa un motor de renderizado distinto al de Gmail en la web, y un
+// <div> con max-width/background puede perderse ahí aunque en el navegador
+// (o en la vista previa del admin) se vea perfecto. Con tablas, todo motor
+// de mail sabe qué hacer.
 function cascara(bodyHtml: string): string {
   return `<!doctype html>
 <html lang="es">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light">${FONTS_LINK}</head>
-<body style="margin:0;padding:24px 12px;background:#ffffff;font-family:${F_BODY};">
-  <div style="max-width:520px;margin:0 auto;background:#fff;border:3px solid ${INK};box-shadow:6px 6px 0 ${INK};">
-    <div style="padding:30px 26px 26px;background:${CREAM};">
-      ${bodyHtml}
-    </div>
-  </div>
-  <p style="max-width:520px;margin:14px auto 0;font-family:${F_MONO};font-size:10.5px;color:${INK_MUTE};text-align:center;">mercalinonline.com</p>
+<body style="margin:0;padding:0;background:#ffffff;font-family:${F_BODY};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;"><tr><td align="center" style="padding:24px 12px;">
+
+  <table role="presentation" width="520" cellpadding="0" cellspacing="0" style="width:520px;max-width:520px;background:#ffffff;border:3px solid ${INK};box-shadow:6px 6px 0 ${INK};"><tr><td style="padding:30px 26px 26px;background:${CREAM};">
+    ${bodyHtml}
+  </td></tr></table>
+
+  <table role="presentation" width="520" cellpadding="0" cellspacing="0" style="width:520px;max-width:520px;"><tr><td align="center" style="padding-top:14px;font-family:${F_MONO};font-size:10.5px;color:${INK_MUTE};">mercalinonline.com</td></tr></table>
+
+</td></tr></table>
 </body>
 </html>`;
 }
