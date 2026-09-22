@@ -1,8 +1,12 @@
 export type Faq = { q: string; a: string };
 
-// Fuente única: la usan preguntas-frecuentes/page.tsx (todas) y el teaser de
-// la sección de preguntas de la home (home/Preguntas.tsx, con todas).
-export const FAQS: Faq[] = [
+// Función, no una lista fija: el precio sale del producto (lo que se cargó
+// en el panel admin, Productos → editar) para que cambiarlo ahí lo actualice
+// acá también, sin tener que tocar código. La usan preguntas-frecuentes/
+// page.tsx (todas) y el teaser de la home (home/Preguntas.tsx, con todas).
+export function getFaqs(priceArs: number): Faq[] {
+  const precioFmt = `$${priceArs.toLocaleString("es-AR")} ARS`;
+  return [
   {
     q: "¿Cómo funciona la prueba de 7 días?",
     a: "Al pedirla te llega un mail con el instalador y una clave de prueba. Los 7 días se cuentan desde que se genera esa clave. La instalás y activás como cualquier producto completo.",
@@ -13,7 +17,7 @@ export const FAQS: Faq[] = [
   },
   {
     q: "¿Cuánto cuesta?",
-    a: "$65.000 ARS, pago único.",
+    a: `${precioFmt}, pago único.`,
   },
   {
     q: "¿Es una suscripción?",
@@ -40,11 +44,8 @@ export const FAQS: Faq[] = [
     a: "El código de activación y el link de descarga por mail.",
   },
   {
-    q: "¿Con quién hablo si tengo una duda?",
-    a: "Con nosotros, por WhatsApp al +54 2344 50-2904. Te responde la persona que hizo el sistema, no un call center.",
-  },
-  {
     q: "¿Las actualizaciones se pagan aparte?",
     a: "No. Las actualizaciones vienen incluidas: el sistema se actualiza solo y no te cobramos de nuevo.",
   },
-];
+  ];
+}
