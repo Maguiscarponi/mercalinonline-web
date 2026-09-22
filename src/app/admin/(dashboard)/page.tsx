@@ -1,18 +1,10 @@
 import Link from "next/link";
-import { getOverview, parsePeriodo, PERIODOS } from "@/lib/admin-stats";
+import { getOverview, parseCanal, parsePeriodo, PERIODOS } from "@/lib/admin-stats";
 import { listClientes, countBy } from "@/lib/clientes";
-import { eventDetail, eventLabel, locationLabel, mailTypeLabel } from "@/lib/event-labels";
-import { fmtArs, fmtDate, fmtDateTime, fmtPct, timeAgo } from "@/lib/format";
+import { fmtArs, fmtDate, fmtPct } from "@/lib/format";
 import { Alerta, Aviso, BarRow, Columnas, PageHeader, SectionTitle, Tile } from "@/components/admin/stats";
 
 export const dynamic = "force-dynamic";
-
-const BOTONES: Record<string, string> = {
-  cta_trial_clicked: "Probar gratis",
-  cta_buy_clicked: "Comprar",
-  cta_detail_clicked: "Ver detalle",
-  whatsapp_clicked: "WhatsApp",
-};
 
 function canalLabel(s: string): string {
   if (s === "sin dato") return "Sin dato (antes de medir)";
@@ -20,11 +12,23 @@ function canalLabel(s: string): string {
   return s;
 }
 
-export default async function AdminResumen({ searchParams }: { searchParams: Promise<{ dias?: string }> }) {
-  const { dias: diasParam } = await searchParams;
+export default async function AdminResumen({
+  searchParams,
+}: {
+  searchParams: Promise<{ dias?: string; canal?: string }>;
+}) {
+  const { dias: diasParam, canal: canalParam } = await searchParams;
   const dias = parsePeriodo(diasParam);
 
-  const [o, clientes] = await Promise.all([getOverview(dias), listClientes()]);
+  // El filtro de canal solo puede ser uno de los que existan en los datos —
+  // se valida contra o.sources después de traerlo, no antes.
+  const oSinFiltro = await getOverview(dias);
+  const canalesDisponibles = oSinFiltro.sources.map((s) => s.source);
+  const canalPedido = parseCanal(canalParam);
+  const canal = canalPedido === "todos" || canalesDisponibles.includes(canalPedido) ? canalPedido : "todos";
+  const o = canal === "todos" ? oSinFiltro : await getOverview(dias, canal);
+
+  const [clientes] = await Promise.all([listClientes()]);
   const now = new Date();
   const seg = countBy(clientes, now);
 
@@ -49,8 +53,8 @@ export default async function AdminResumen({ searchParams }: { searchParams: Pro
     { label: "Compraron", n: f.purchases },
   ];
   const maxPaso = Math.max(...pasos.map((p) => p.n), 1);
-  const maxModulo = Math.max(...o.modules.map((m) => m.visitors), 1);
   const totalDevices = o.devices.reduce((a, d) => a + d.visitors, 0);
+  const ganancia = o.revenueArs - o.adSpendArs;
   const hayAtencion =
     porVencer.length > 0 ||
     o.paymentsFailed > 0 ||
@@ -58,6 +62,9 @@ export default async function AdminResumen({ searchParams }: { searchParams: Pro
     o.bouncedLicenses.length > 0 ||
     seg.sinmail > 0 ||
     vencieronSemana > 0;
+
+  const linkPeriodo = (p: number) => `/admin?dias=${p}${canal !== "todos" ? `&canal=${encodeURIComponent(canal)}` : ""}`;
+  const linkCanal = (c: string) => `/admin?dias=${dias}${c !== "todos" ? `&canal=${encodeURIComponent(c)}` : ""}`;
 
   return (
     <div className="max-w-6xl">
@@ -69,7 +76,7 @@ export default async function AdminResumen({ searchParams }: { searchParams: Pro
             {PERIODOS.map((p) => (
               <Link
                 key={p}
-                href={`/admin?dias=${p}`}
+                href={linkPeriodo(p)}
                 className={`admin-btn -ml-px border border-foreground px-4 py-2.5 ${
                   p === dias ? "bg-foreground text-white" : "bg-white text-foreground hover:bg-foreground/5"
                 }`}
@@ -80,6 +87,33 @@ export default async function AdminResumen({ searchParams }: { searchParams: Pro
           </div>
         }
       />
+
+      {/* Filtro por canal: mismo lenguaje que el de período (links, sin
+          JavaScript), pero en su propia fila porque puede haber varios. */}
+      {canalesDisponibles.length > 1 && (
+        <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-2">
+          <span className="tag-numbered text-[12px] text-foreground/45">Canal:</span>
+          <Link
+            href={linkCanal("todos")}
+            className={`admin-btn border border-foreground/25 px-3.5 py-2 text-[12px] ${
+              canal === "todos" ? "bg-foreground text-white" : "bg-white text-foreground hover:bg-foreground/5"
+            }`}
+          >
+            Todos
+          </Link>
+          {canalesDisponibles.map((c) => (
+            <Link
+              key={c}
+              href={linkCanal(c)}
+              className={`admin-btn border border-foreground/25 px-3.5 py-2 text-[12px] ${
+                canal === c ? "bg-foreground text-white" : "bg-white text-foreground hover:bg-foreground/5"
+              }`}
+            >
+              {canalLabel(c)}
+            </Link>
+          ))}
+        </div>
+      )}
 
       {/* Lo que pide acción hoy */}
       <div className="mt-6 space-y-3">
@@ -104,7 +138,7 @@ export default async function AdminResumen({ searchParams }: { searchParams: Pro
           </Aviso>
         )}
         {o.paymentsFailed > 0 && (
-          <Aviso kicker="Pagos" tone="red" href="#actividad" cta="Ver actividad">
+          <Aviso kicker="Pagos" tone="red" href="/admin/actividad?tipo=payment_failed" cta="Ver actividad">
             {o.paymentsFailed} {o.paymentsFailed === 1 ? "pago rechazado o cancelado" : "pagos rechazados o cancelados"} esta
             semana.
           </Aviso>
@@ -117,8 +151,8 @@ export default async function AdminResumen({ searchParams }: { searchParams: Pro
         {o.bouncedLicenses.length > 0 && (
           <Aviso kicker="Mail rebotado" tone="red" href="/admin/clientes?segmento=sinmail" cta="Ver quiénes">
             {o.bouncedLicenses.length === 1 ? "Una persona no recibió" : `${o.bouncedLicenses.length} personas no recibieron`}{" "}
-            su clave porque el mail rebotó: {o.bouncedLicenses.map((b) => b.email).join(", ")}. Escribiles por WhatsApp para
-            pasársela.
+            su clave porque el mail rebotó: {o.bouncedLicenses.map((b) => b.email).join(", ")}. Desde su ficha podés
+            reenviarle la clave.
           </Aviso>
         )}
         {seg.sinmail > 0 && o.bouncedLicenses.length === 0 && (
@@ -142,12 +176,21 @@ export default async function AdminResumen({ searchParams }: { searchParams: Pro
         />
         <Tile label="Pruebas pedidas" value={f.trials} hint="Personas distintas" />
         <Tile label="Compras" value={f.purchases} tone={f.purchases > 0 ? "green" : "ink"} />
+        <Tile label="Ingresos" value={fmtArs(o.revenueArs)} tone={o.revenueArs > 0 ? "green" : "ink"} hint="Cobrado en el período" />
         <Tile
-          label="Ingresos"
-          value={fmtArs(o.revenueArs)}
-          tone={o.revenueArs > 0 ? "green" : "ink"}
-          hint="Cobrado en el período"
+          label="Gastado en publicidad"
+          value={fmtArs(o.adSpendArs)}
+          hint={o.adSpendArs > 0 ? "Cargado a mano en Marketing" : "Todavía no cargaste gastos"}
+          href="/admin/marketing"
         />
+        <Tile
+          label="Ganancia"
+          value={fmtArs(ganancia)}
+          tone={ganancia > 0 ? "green" : ganancia < 0 ? "red" : "ink"}
+          hint="Ingresos menos publicidad, en el período"
+        />
+      </div>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Tile
           label="De visita a prueba"
           value={sinMedicion ? "—" : fmtPct(f.trials, f.visitors)}
@@ -164,10 +207,16 @@ export default async function AdminResumen({ searchParams }: { searchParams: Pro
           value={fmtPct(o.trialToPurchase.converted, o.trialToPurchase.trials)}
           hint={`${o.trialToPurchase.converted} de ${o.trialToPurchase.trials} compraron hasta hoy`}
         />
+        <Tile
+          label="Costo por prueba"
+          value={o.adSpendArs > 0 && f.trials > 0 ? fmtArs(Math.round(o.adSpendArs / f.trials)) : "—"}
+          hint="Gasto en publicidad ÷ pruebas pedidas"
+          href="/admin/marketing"
+        />
       </div>
 
       {/* Estado de las pruebas */}
-      <SectionTitle note="Todas las personas, sin importar el período">Cómo están las pruebas</SectionTitle>
+      <SectionTitle note="Todas las personas, sin importar el período ni el canal">Cómo están las pruebas</SectionTitle>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Tile label="En prueba" value={enPrueba} href="/admin/clientes?segmento=activas" />
         <Tile
@@ -236,147 +285,17 @@ export default async function AdminResumen({ searchParams }: { searchParams: Pro
         {!sinMedicion && f.visitors > 0 && ` Llegaron a ver la demo ${f.demo} de ${f.visitors} visitantes (${fmtPct(f.demo, f.visitors)}).`}
       </p>
 
-      {/* Canales */}
-      <SectionTitle note="Cómo llegó cada persona la primera vez">De dónde vienen</SectionTitle>
-      {o.sources.length === 0 ? (
-        <p className="text-[14.5px] text-foreground/60">Todavía no hay datos de canales.</p>
-      ) : (
-        <div className="admin-card overflow-x-auto">
-          <table className="w-full min-w-[640px] text-left text-[14px]">
-            <thead>
-              <tr className="tag-numbered border-b border-foreground/15 text-[12px] text-foreground/55">
-                <th className="px-5 py-3">Canal</th>
-                <th className="py-3 pr-4 text-right">Visitantes</th>
-                <th className="py-3 pr-4 text-right">Pruebas</th>
-                <th className="py-3 pr-4 text-right">Compras</th>
-                <th className="py-3 pr-4 text-right">Ingresos</th>
-                <th className="py-3 pr-5 text-right">Visita → prueba</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-black/[0.07]">
-              {o.sources.map((s) => (
-                <tr key={s.source}>
-                  <td className="px-5 py-3 font-medium">{canalLabel(s.source)}</td>
-                  <td className="py-3 pr-4 text-right tabular-nums">{s.visitors}</td>
-                  <td className="py-3 pr-4 text-right tabular-nums">{s.trials}</td>
-                  <td className="py-3 pr-4 text-right tabular-nums">{s.purchases}</td>
-                  <td className="py-3 pr-4 text-right tabular-nums">{s.revenue ? fmtArs(s.revenue) : "—"}</td>
-                  <td className="py-3 pr-5 text-right tabular-nums">{fmtPct(s.trials, s.visitors)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-      <p className="mt-3 text-[13.5px] leading-relaxed text-foreground/55">
-        Para distinguir una campaña, usá links con etiqueta, por ejemplo:{" "}
-        <span className="font-mono text-[12.5px]">mercalinonline.com/?utm_source=instagram&amp;utm_campaign=lanzamiento</span>
+      <p className="mt-8 border-t border-foreground/15 pt-6 text-[14.5px] text-foreground/60">
+        Los canales, los botones, qué miran de la demo, los mails y el gasto en publicidad se movieron a{" "}
+        <Link href="/admin/marketing" className="font-medium text-foreground underline underline-offset-2 hover:text-brand">
+          Marketing
+        </Link>
+        . La actividad reciente, completa y con filtro, está en{" "}
+        <Link href="/admin/actividad" className="font-medium text-foreground underline underline-offset-2 hover:text-brand">
+          Actividad
+        </Link>
+        .
       </p>
-
-      {/* Demo */}
-      <SectionTitle note="Personas distintas que miraron o abrieron cada módulo">Qué miran de la demo</SectionTitle>
-      {o.modules.length === 0 ? (
-        <p className="text-[14.5px] text-foreground/60">Todavía no hay datos.</p>
-      ) : (
-        <div className="admin-card px-5 py-3">
-          {o.modules.map((m) => (
-            <BarRow key={m.module} label={m.module} sub={m.group || undefined} value={m.visitors} max={maxModulo} />
-          ))}
-        </div>
-      )}
-
-      {/* Botones */}
-      <SectionTitle note="Cuántas veces se tocó cada uno">Botones y WhatsApp</SectionTitle>
-      {o.buttons.length === 0 ? (
-        <p className="text-[14.5px] text-foreground/60">Todavía no hay datos.</p>
-      ) : (
-        <div className="admin-card overflow-x-auto">
-          <table className="w-full min-w-[520px] text-left text-[14px]">
-            <thead>
-              <tr className="tag-numbered border-b border-foreground/15 text-[12px] text-foreground/55">
-                <th className="px-5 py-3">Botón</th>
-                <th className="py-3 pr-4">Dónde está</th>
-                <th className="py-3 pr-4 text-right">Clics</th>
-                <th className="py-3 pr-5 text-right">Personas</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-black/[0.07]">
-              {o.buttons.map((b) => (
-                <tr key={b.name + b.location}>
-                  <td className="px-5 py-3 font-medium">{BOTONES[b.name] ?? b.name}</td>
-                  <td className="py-3 pr-4 text-foreground/65">{locationLabel(b.location)}</td>
-                  <td className="py-3 pr-4 text-right tabular-nums">{b.clicks}</td>
-                  <td className="py-3 pr-5 text-right tabular-nums">{b.visitors}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* Mails */}
-      <SectionTitle note="Lo informa Resend, el servicio que envía los mails">Qué pasó con los mails</SectionTitle>
-      {o.mails.length === 0 ? (
-        <p className="text-[14.5px] leading-relaxed text-foreground/60">
-          Todavía no hay datos de entrega. Aparecen cuando se conecta Resend con el sitio (un paso de una sola vez) y sale el
-          próximo mail.
-        </p>
-      ) : (
-        <>
-          <div className="admin-card overflow-x-auto">
-            <table className="w-full min-w-[520px] text-left text-[14px]">
-              <thead>
-                <tr className="tag-numbered border-b border-foreground/15 text-[12px] text-foreground/55">
-                  <th className="px-5 py-3">Mail</th>
-                  <th className="py-3 pr-4 text-right">Entregados</th>
-                  <th className="py-3 pr-4 text-right">Rebotados</th>
-                  <th className="py-3 pr-4 text-right">Abiertos</th>
-                  <th className="py-3 pr-5 text-right">Con clic</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-black/[0.07]">
-                {o.mails.map((m) => (
-                  <tr key={m.type}>
-                    <td className="px-5 py-3 font-medium">{mailTypeLabel(m.type)}</td>
-                    <td className="py-3 pr-4 text-right tabular-nums">{m.delivered}</td>
-                    <td className={`py-3 pr-4 text-right tabular-nums ${m.bounced > 0 ? "font-semibold text-brand" : ""}`}>
-                      {m.bounced}
-                    </td>
-                    <td className="py-3 pr-4 text-right tabular-nums">{m.opened}</td>
-                    <td className="py-3 pr-5 text-right tabular-nums">{m.clicked}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="mt-3 text-[13.5px] leading-relaxed text-foreground/55">
-            Las aperturas son aproximadas: Apple Mail y algunos programas las esconden o las cuentan de más. Los rebotes y
-            las entregas sí son confiables.
-          </p>
-        </>
-      )}
-
-      {/* Actividad */}
-      <div id="actividad" />
-      <SectionTitle note="Lo último que pasó">Actividad reciente</SectionTitle>
-      {o.recent.length === 0 ? (
-        <p className="text-[14.5px] text-foreground/60">Todavía no hay actividad registrada.</p>
-      ) : (
-        <div className="admin-card divide-y divide-black/[0.07]">
-          {o.recent.map((r, i) => (
-            <div key={i} className="flex flex-wrap items-baseline gap-x-4 gap-y-0.5 px-5 py-3">
-              <p className="w-36 shrink-0 text-[13px] tabular-nums text-foreground/50" title={fmtDateTime(r.at)}>
-                {timeAgo(r.at, now)}
-              </p>
-              <p className="text-[14.5px] font-medium">{eventLabel(r.name)}</p>
-              <p className="min-w-0 flex-1 truncate text-[14px] text-foreground/60">
-                {r.email ?? `visitante anónimo${r.source ? ` · ${r.source}` : ""}`}
-                {eventDetail(r.name, r.props, r.path) ? ` · ${eventDetail(r.name, r.props, r.path)}` : ""}
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

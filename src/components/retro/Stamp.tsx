@@ -47,6 +47,13 @@ export default function Stamp({
   const masLarga = Math.max(arriba.length, abajo.length);
   const letraArco = masLarga > 13 ? 11.5 : masLarga > 10 ? 13 : 14.5;
 
+  // La palabra del centro tiene que entrar en el aro interior (diámetro
+  // ~96 unidades). Cuanto más larga, más chica: quien la usa puede pedir
+  // una fuente grande, pero nunca se le da una más grande de la que entra.
+  const centroLen = centro.replace(/\s/g, "").length;
+  const fuenteMax = centroLen <= 4 ? 28 : centroLen <= 6 ? 22 : centroLen <= 8 ? 18 : 14;
+  const fuenteFinal = Math.min(fuente, fuenteMax);
+
   return (
     <svg aria-hidden viewBox="0 0 170 170" className={className}>
       <defs>
@@ -68,7 +75,7 @@ export default function Stamp({
             {abajo}
           </textPath>
         </text>
-        <text x="85" y="86" style={SLAB} fontSize={fuente} fill={color} textAnchor="middle" dominantBaseline="central">
+        <text x="85" y="86" style={SLAB} fontSize={fuenteFinal} fill={color} textAnchor="middle" dominantBaseline="central">
           {centro}
         </text>
       </g>

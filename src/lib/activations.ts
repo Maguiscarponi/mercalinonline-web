@@ -99,6 +99,30 @@ export async function setActivationEmailSent(id: string, sent: boolean): Promise
   await sql`UPDATE activations SET email_sent = ${sent ? 1 : 0} WHERE id = ${id}`;
 }
 
+export async function getActivation(id: string): Promise<Activation | null> {
+  const sql = getDb();
+  const rows = (await sql`SELECT * FROM activations WHERE id = ${id}`) as unknown as ActivationRow[];
+  return rows[0] ? rowToActivation(rows[0]) : null;
+}
+
+// Para el soporte manual desde el admin: reemplaza la clave de una activación
+// existente por una nueva (misma persona, mismo tipo). En una prueba, esto
+// también le da 7 días nuevos desde ahora -- es una decisión deliberada del
+// admin, no algo que pueda disparar el propio cliente.
+export async function updateActivationLicense(
+  id: string,
+  licenseKey: string,
+  expiresAt: Date | null,
+  emailSent: boolean
+): Promise<void> {
+  const sql = getDb();
+  await sql`
+    UPDATE activations
+    SET license_key = ${licenseKey}, expires_at = ${expiresAt ? expiresAt.toISOString() : null}, email_sent = ${emailSent ? 1 : 0}
+    WHERE id = ${id}
+  `;
+}
+
 // Evita que un mismo mail junte pruebas gratis infinitas: si ya tiene una
 // activación "trial" de este producto que todavía no venció, se reusa esa
 // en vez de generar una licencia nueva (ver src/app/api/trial/route.ts).

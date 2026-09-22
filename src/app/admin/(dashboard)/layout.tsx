@@ -17,11 +17,15 @@ const SECCIONES: { titulo: string; items: Item[] }[] = [
     ],
   },
   {
-    titulo: "Sitio",
+    titulo: "Marketing",
     items: [
-      { href: "/admin/productos", label: "Productos", icon: "package" },
-      { href: "/admin/carrusel", label: "Carrusel", icon: "gallery" },
+      { href: "/admin/marketing", label: "Marketing", icon: "chart" },
+      { href: "/admin/actividad", label: "Actividad", icon: "activity" },
     ],
+  },
+  {
+    titulo: "Sitio",
+    items: [{ href: "/admin/productos", label: "Productos", icon: "package" }],
   },
 ];
 

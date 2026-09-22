@@ -4,6 +4,7 @@ import { getClienteTimeline } from "@/lib/admin-stats";
 import { eventDetail, eventLabel } from "@/lib/event-labels";
 import { fmtArs, fmtDateTime, timeAgo, timeLeft } from "@/lib/format";
 import { EstadoBadge, PageHeader, SectionTitle } from "@/components/admin/stats";
+import { RegenerateLicenseButton, ResendLicenseButton } from "@/components/admin/LicenseActions";
 
 export const dynamic = "force-dynamic";
 
@@ -80,16 +81,19 @@ export default async function AdminClienteDetalle({ searchParams }: { searchPara
         ))}
       </dl>
 
-      <SectionTitle note="Cada vez que se le generó una clave">Pruebas y compras</SectionTitle>
+      <SectionTitle note="Reenviar manda la misma clave. Generar clave nueva crea una y, en una prueba, le da 7 días nuevos desde ahora.">
+        Pruebas y compras
+      </SectionTitle>
       <div className="admin-card overflow-x-auto">
-        <table className="w-full min-w-[620px] text-left text-[14px]">
+        <table className="w-full min-w-[760px] text-left text-[14px]">
           <thead>
             <tr className="tag-numbered border-b border-foreground/15 text-[12px] text-foreground/55">
               <th className="px-5 py-3">Fecha</th>
               <th className="py-3 pr-4">Tipo</th>
               <th className="py-3 pr-4">Vence</th>
               <th className="py-3 pr-4">Monto</th>
-              <th className="py-3 pr-5">Mail enviado</th>
+              <th className="py-3 pr-4">Mail enviado</th>
+              <th className="py-3 pr-5">Si tiene problemas con la clave</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-black/[0.07]">
@@ -101,8 +105,14 @@ export default async function AdminClienteDetalle({ searchParams }: { searchPara
                   {a.kind === "full" ? "No vence" : fmtDateTime(a.expiresAt)}
                 </td>
                 <td className="py-3 pr-4 tabular-nums text-foreground/70">{a.amountArs ? fmtArs(a.amountArs) : "—"}</td>
-                <td className={`py-3 pr-5 ${a.emailSent ? "text-foreground/70" : "font-medium text-brand"}`}>
+                <td className={`py-3 pr-4 ${a.emailSent ? "text-foreground/70" : "font-medium text-brand"}`}>
                   {a.emailSent ? "Sí" : "No"}
+                </td>
+                <td className="py-3 pr-5">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <ResendLicenseButton activationId={a.id} />
+                    <RegenerateLicenseButton activationId={a.id} kind={a.kind} />
+                  </div>
                 </td>
               </tr>
             ))}

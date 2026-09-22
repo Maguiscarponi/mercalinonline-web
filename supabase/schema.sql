@@ -24,15 +24,10 @@ CREATE TABLE IF NOT EXISTS products (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE TABLE IF NOT EXISTS carousel_slides (
-  id TEXT PRIMARY KEY,
-  label TEXT NOT NULL,
-  note TEXT,
-  image_url TEXT,
-  sort_order INTEGER NOT NULL DEFAULT 0,
-  active INTEGER NOT NULL DEFAULT 1,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
+-- carousel_slides existió para el carrusel de la home vieja, que ya no está
+-- en el sitio (etapa de rediseño). Se deja de crear en instalaciones nuevas;
+-- si tu base ya tiene la tabla con datos, no pasa nada por dejarla — no la
+-- lee ni la escribe ningún código de la app.
 
 CREATE TABLE IF NOT EXISTS activations (
   id TEXT PRIMARY KEY,
@@ -58,6 +53,12 @@ CREATE TABLE IF NOT EXISTS activations (
   campaign TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+-- lower(email): las búsquedas por cliente siempre comparan en minúsculas.
+-- (kind, created_at): las cuentas de pruebas/compras del Resumen filtran por
+-- los dos. created_at solo: el resto de los filtros por período.
+CREATE INDEX IF NOT EXISTS idx_activations_email_lower ON activations (lower(email));
+CREATE INDEX IF NOT EXISTS idx_activations_kind_created_at ON activations (kind, created_at);
+CREATE INDEX IF NOT EXISTS idx_activations_created_at ON activations (created_at);
 
 -- Personas que pidieron no recibir más los avisos de la prueba (link "darte
 -- de baja" de los mails). No afecta al mail con la clave ni al de compra.
@@ -108,3 +109,16 @@ CREATE INDEX IF NOT EXISTS idx_events_visitor_id ON events (visitor_id);
 -- gratis, que no tienen pago) no cuenta como duplicado para Postgres, así
 -- que esto no afecta a los trials.
 CREATE UNIQUE INDEX IF NOT EXISTS idx_activations_mp_payment_id ON activations (mp_payment_id);
+
+-- Gasto en publicidad, cargado a mano desde /admin/marketing: no hay
+-- integración con Meta Ads, es un registro simple para poder comparar
+-- contra los ingresos (ganancia real, costo por prueba, costo por compra).
+CREATE TABLE IF NOT EXISTS ad_spend (
+  id TEXT PRIMARY KEY,
+  spent_on DATE NOT NULL,
+  platform TEXT NOT NULL,
+  amount_ars INTEGER NOT NULL,
+  note TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_ad_spend_spent_on ON ad_spend (spent_on);

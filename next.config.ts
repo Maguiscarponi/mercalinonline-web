@@ -3,9 +3,9 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
-    // Next.js 16 solo permite calidad 75 salvo que se declare acá. Los
-    // banners del carrusel son gráficos con texto y colores planos —
-    // comprimirlos al 75 por defecto se nota muchísimo más que en una foto.
+    // Next.js 16 solo permite calidad 75 salvo que se declare acá. Las
+    // capturas de la app tienen texto y líneas finas — comprimirlas al 75
+    // por defecto se nota muchísimo más que en una foto común.
     qualities: [75, 90, 100],
   },
   experimental: {
@@ -33,6 +33,21 @@ const nextConfig: NextConfig = {
         headers: [
           { key: "X-Robots-Tag", value: "noindex, nofollow" },
           { key: "Cache-Control", value: "no-store" },
+          {
+            // Nada de terceros en el admin: si algún día se cuela un script
+            // inyectado (una dependencia comprometida, un campo mal
+            // sanitizado), esto le impide cargar o mandar datos a otro
+            // dominio. 'unsafe-inline' y 'unsafe-eval' quedan porque
+            // Next.js arranca la página con scripts propios inline (el
+            // payload de React) y, en desarrollo, usa eval() para reconstruir
+            // el stack de errores — sacarlos requeriría un nonce por pedido.
+            // Lo que sí bloquea esto es cualquier script/estilo que NO sea
+            // del propio sitio, que es el riesgo real (exfiltrar datos a
+            // otro dominio).
+            key: "Content-Security-Policy",
+            value:
+              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+          },
         ],
       },
     ];
