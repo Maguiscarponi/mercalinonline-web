@@ -88,6 +88,7 @@ const BRAND = "#e1251b";
 const INK = "#232120";
 const INK_SOFT = "#4f4942";
 const INK_MUTE = "#8a8175";
+const CREAM = "#f3eee2";
 
 function boton(href: string, texto: string, opts?: { sombra?: string; grande?: boolean }): string {
   const sombra = opts?.sombra ?? BRAND;
@@ -135,17 +136,19 @@ function avisoComputadora(): string {
   </div>`;
 }
 
-// Todos los mails comparten esta cáscara: la tarjeta blanca con borde duro y
-// sombra (el mismo lenguaje visual que las "ventanas" y tickets del sitio).
-// Fondo blanco a propósito -- el tono crema/marrón de fondo quedaba feo
-// en la bandeja de entrada.
+// Todos los mails comparten esta cáscara: la tarjeta con borde duro y sombra
+// (el mismo lenguaje visual que las "ventanas" y tickets del sitio). Fondo
+// de PÁGINA blanco a propósito (el tono marrón alrededor quedaba feo en la
+// bandeja) -- pero adentro de la tarjeta queda el crema del sitio, si no los
+// mails con menos contenido (vencido, vence mañana) quedan pelados, sin
+// textura ni contraste.
 function cascara(bodyHtml: string): string {
   return `<!doctype html>
 <html lang="es">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width">${FONTS_LINK}</head>
 <body style="margin:0;padding:24px 12px;background:#ffffff;font-family:${F_BODY};">
   <div style="max-width:520px;margin:0 auto;background:#fff;border:3px solid ${INK};box-shadow:6px 6px 0 ${INK};">
-    <div style="padding:30px 26px 26px;background:#ffffff;">
+    <div style="padding:30px 26px 26px;background:${CREAM};">
       ${bodyHtml}
     </div>
   </div>
