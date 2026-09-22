@@ -28,8 +28,8 @@ export default function Precio({ product }: { product: Product }) {
 
       <div className="mx-auto grid max-w-[1240px] items-center gap-12 px-5 pb-20 pt-10 sm:px-8 lg:grid-cols-[1.2fr_1fr] lg:gap-10 lg:pt-14">
         <div className="min-w-0">
-          <span className="rt-label-box">Nº 07 · Precio</span>
-          <p className="font-slab mt-4 text-[clamp(64px,12vw,152px)] leading-none tracking-[-0.02em] text-ink">{precio}</p>
+          <span className="rt-label">Nº 07 · Precio</span>
+          <p className="font-slab mt-3 text-[clamp(64px,12vw,152px)] leading-none tracking-[-0.02em] text-ink">{precio}</p>
           <p className="font-slab mt-2 text-[clamp(30px,3.7vw,52px)] leading-[1.04] text-brand">Pago único.</p>
           <p className="font-slab text-[clamp(30px,3.7vw,52px)] leading-[1.04] text-ink">Sin cuotas mensuales.</p>
 
@@ -51,9 +51,10 @@ export default function Precio({ product }: { product: Product }) {
           </ol>
         </div>
 
-        {/* Ticket de licencia */}
-        <div className="relative mx-auto w-full max-w-[440px] lg:mx-0 lg:ml-auto">
-          <div className="rt-ticket -rotate-[1.8deg] px-6 pb-7 pt-8 sm:px-[30px]">
+        {/* Ticket de licencia. Mismo criterio que el del hero: el sello
+            cuelga del margen reservado abajo, nunca sobre el texto. */}
+        <div className="relative mx-auto w-full max-w-[440px] pb-24 sm:pb-40 lg:mx-0 lg:ml-auto">
+          <div className="rt-ticket -rotate-[1.8deg] px-6 pb-10 pt-8 sm:px-[30px]">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Image src="/mercalin-isotipo.svg" alt="" width={30} height={30} />
@@ -114,10 +115,9 @@ export default function Precio({ product }: { product: Product }) {
             arriba="PAGO"
             centro="ÚNICO"
             abajo={precio}
-            size={180}
-            fuente={28}
-            rot={10}
-            className="absolute -bottom-8 -left-3 sm:-left-36 sm:bottom-8"
+            fuente={26}
+            rot={9}
+            className="absolute bottom-0 left-3 h-auto w-[88px] drop-shadow-[3px_4px_0_rgba(35,33,32,0.14)] sm:left-10 sm:w-[136px]"
           />
         </div>
       </div>

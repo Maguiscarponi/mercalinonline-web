@@ -33,7 +33,7 @@ export default function Rubros() {
       <div className="mx-auto w-full max-w-[1200px] px-5 py-16 sm:px-8 sm:py-20 lg:px-0">
         <p className="rt-label">Nº 01 · Rubros</p>
         <h2 className="mt-2 text-[clamp(38px,6.6vw,88px)] leading-[1.05] text-ink">Para qué comercios sirve</h2>
-        <p className="mt-3 text-[20px] text-ink-soft sm:text-[22px]">Cualquier negocio que venda productos con código de barras.</p>
+        <p className="mt-3 text-[20px] text-ink-soft sm:text-[22px]">Para cualquier comercio que vende productos, con o sin código de barras.</p>
 
         <div className="mt-10 grid gap-x-14 sm:mt-14 md:grid-cols-2">
           <div>
@@ -47,6 +47,11 @@ export default function Rubros() {
             ))}
           </div>
         </div>
+
+        <p className="font-typewriter mt-8 border-t-2 border-dashed border-ink/35 pt-6 text-[15px] leading-relaxed text-ink-soft sm:mt-10">
+          ¿No viste tu rubro? Si tu comercio vende productos, tiene caja y controla stock, probablemente te sirva
+          igual.
+        </p>
       </div>
     </section>
   );

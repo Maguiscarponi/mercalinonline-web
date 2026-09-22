@@ -226,20 +226,6 @@ body {
   text-transform: uppercase;
   color: var(--brand);
 }
-/* La misma, encerrada entre dos líneas (hero y precio). */
-.rt-label-box {
-  display: inline-block;
-  padding: 7px 0;
-  border-top: 2px solid var(--ink);
-  border-bottom: 2px solid var(--ink);
-  font-family: var(--font-courier), monospace;
-  font-weight: 700;
-  font-size: 12.5px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ink);
-}
-
 /* Botones: borde de tinta, mayúsculas de máquina de escribir. Al pasar el
    mouse se levantan sobre una sombra dura. */
 .rt-btn {
@@ -450,4 +436,14 @@ body {
   font-size: 14.5px;
   line-height: 1.55;
   color: var(--ink-soft);
+}
+
+/* Etiquetas que van "apareciendo" una por una (demo de la home). */
+@keyframes rt-etiqueta-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+.etiqueta-in {
+  opacity: 0;
+  animation: rt-etiqueta-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }

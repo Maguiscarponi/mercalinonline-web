@@ -30,9 +30,9 @@ export default function Hero() {
     <section className="relative overflow-hidden lg:min-h-[calc(100svh-150px)]">
       <div className="mx-auto grid max-w-[1200px] items-center gap-12 px-5 pb-14 pt-10 sm:px-8 lg:grid-cols-[1.15fr_1fr] lg:gap-6 lg:px-0 lg:pb-16 lg:pt-12">
         <div className="min-w-0">
-          <span className="rt-label-box">{COPY.etiqueta}</span>
+          <span className="rt-label">{COPY.etiqueta}</span>
 
-          <h1 className="mt-6 text-[clamp(56px,8.6vw,112px)] leading-[0.98] text-ink">
+          <h1 className="mt-4 text-[clamp(56px,8.6vw,112px)] leading-[0.98] text-ink">
             {COPY.h1[0]}
             <br />
             {COPY.h1[1]}
@@ -73,9 +73,11 @@ export default function Hero() {
           </ul>
         </div>
 
-        {/* Ticket + sello */}
-        <div className="relative mx-auto w-full max-w-[380px] lg:mx-0 lg:ml-auto">
-          <div className="rt-ticket rotate-[2.6deg] px-6 pb-8 pt-8 font-typewriter">
+        {/* Ticket + sello. El contenedor reserva un margen abajo (pb-16/24)
+            para que el sello cuelgue ahí, fuera del papel: nunca pisa texto
+            del ticket, en ningún ancho de pantalla. */}
+        <div className="relative mx-auto w-full max-w-[380px] pb-24 sm:pb-36 lg:mx-0 lg:ml-auto">
+          <div className="rt-ticket rotate-[2.2deg] px-6 pb-10 pt-8 font-typewriter">
             <div className="flex flex-col items-center">
               <Image src="/mercalin-isotipo.svg" alt="" width={46} height={46} />
               <p className="font-slab mt-2 text-[30px] leading-none tracking-[0.02em]">MERCALIN</p>
@@ -119,10 +121,8 @@ export default function Hero() {
             arriba="PROBALO"
             centro="7 DÍAS"
             abajo="GRATIS"
-            size={190}
-            fuente={27}
-            rot={-12}
-            className="absolute -bottom-8 -left-4 sm:-bottom-16 sm:-left-32"
+            rot={-11}
+            className="absolute bottom-0 right-3 h-auto w-[80px] drop-shadow-[3px_4px_0_rgba(35,33,32,0.14)] sm:right-8 sm:w-[128px]"
           />
         </div>
       </div>

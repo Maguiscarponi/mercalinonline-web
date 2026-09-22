@@ -74,7 +74,7 @@ export default function SiteFooter() {
 
       {/* Pie oscuro */}
       <div className="overflow-hidden bg-ink text-cream">
-        <div className="mx-auto max-w-[1200px] px-5 pt-14 sm:px-8 lg:px-0">
+        <div className="mx-auto max-w-[1200px] px-5 pb-28 pt-14 sm:px-8 sm:pb-12 lg:px-0">
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
             <div>
               <div className="flex items-center gap-2.5">
@@ -137,7 +137,7 @@ export default function SiteFooter() {
             </span>
           </div>
 
-          <div className="tag-numbered mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-cream/20 py-6 pr-0 text-[13px] text-cream/55 sm:pr-72">
+          <div className="tag-numbered mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-cream/20 py-6 text-[13px] text-cream/55">
             <span>© {new Date().getFullYear()} Mercalin · Hecho en Argentina</span>
             <Link href="/privacidad" className="underline underline-offset-2 hover:text-cream">
               Privacidad

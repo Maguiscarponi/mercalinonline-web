@@ -1,7 +1,8 @@
-/* Código de barras decorativo. Determinístico: siempre dibuja lo mismo, así
-   el HTML del servidor y el del navegador coinciden. */
-function generarBarras(width: number): { x: number; w: number }[] {
-  let seed = 7;
+/* Código de barras decorativo. Determinístico: siempre dibuja lo mismo para
+   una misma `seed`, así el HTML del servidor y el del navegador coinciden
+   (y dos códigos con distinta seed no se ven idénticos uno al lado del otro). */
+function generarBarras(width: number, seed0: number): { x: number; w: number }[] {
+  let seed = seed0;
   const rnd = () => {
     seed = (seed * 9301 + 49297) % 233280;
     return seed / 233280;
@@ -18,7 +19,17 @@ function generarBarras(width: number): { x: number; w: number }[] {
   return barras;
 }
 
-export default function Barcode({ width = 320, height = 60 }: { width?: number; height?: number }) {
+export default function Barcode({
+  width = 320,
+  height = 60,
+  seed = 7,
+  color = "#232120",
+}: {
+  width?: number;
+  height?: number;
+  seed?: number;
+  color?: string;
+}) {
   return (
     <svg
       aria-hidden
@@ -27,8 +38,8 @@ export default function Barcode({ width = 320, height = 60 }: { width?: number; 
       preserveAspectRatio="none"
       style={{ aspectRatio: `${width} / ${height}` }}
     >
-      {generarBarras(width).map((b) => (
-        <rect key={b.x} x={b.x} y={0} width={b.w} height={height} fill="#232120" />
+      {generarBarras(width, seed).map((b) => (
+        <rect key={b.x} x={b.x} y={0} width={b.w} height={height} fill={color} />
       ))}
     </svg>
   );
