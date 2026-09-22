@@ -41,9 +41,9 @@ export default async function AdminMailsVistaPrevia({ searchParams }: { searchPa
 
   const html =
     tipo === "trial"
-      ? licenseEmailHtml({ productName, kind: "trial", licenseKey: "eyJraW5kIjoidHJpYWwifQ.EJEMPLO_DE_CLAVE_FIRMADA", downloadUrl: producto?.downloadUrl ?? `${siteUrl}/descargar`, expiresAt: en7Dias })
+      ? licenseEmailHtml({ productName, kind: "trial", licenseKey: "TElDUEFZTE9BRDF8dHJpYWx8Y2xpZW50ZUBlamVtcGxvLmNvbXwxODAxMzUzNjAw.8cYn40zn9YRCOt+5QV49IW3gyTe6/JOBUM0mf7SOPHo=", downloadUrl: producto?.downloadUrl ?? `${siteUrl}/descargar`, expiresAt: en7Dias })
       : tipo === "compra"
-        ? licenseEmailHtml({ productName, kind: "full", licenseKey: "eyJraW5kIjoiZnVsbCJ9.EJEMPLO_DE_CLAVE_FIRMADA", downloadUrl: producto?.downloadUrl ?? `${siteUrl}/descargar`, expiresAt: null })
+        ? licenseEmailHtml({ productName, kind: "full", licenseKey: "TElDUEFZTE9BRDF8ZnVsbHxjbGllbnRlQGVqZW1wbG8uY29tfDA=.SrUwnlyLTcyeBqOXmf22mE1uqqaf+OiwiekaPqFEzPw=", downloadUrl: producto?.downloadUrl ?? `${siteUrl}/descargar`, expiresAt: null })
         : tipo === "dia3"
           ? trialDay3EmailHtml({ productName, siteUrl, unsubscribeUrl: unsubUrl })
           : tipo === "vence"
