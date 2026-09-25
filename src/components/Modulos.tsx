@@ -11,10 +11,11 @@ const TAB: Record<string, string> = {
 };
 
 export default function Modulos() {
+  const totalModulos = GRUPOS.reduce((n, g) => n + g.modulos.length, 0);
   return (
     <section className="mx-auto max-w-5xl px-5 py-14 sm:px-6 sm:py-20">
       <div className="max-w-2xl">
-        <p className="rt-label">Los 18 módulos</p>
+        <p className="rt-label">Los {totalModulos} módulos</p>
         <h2 className="mt-3 text-[clamp(32px,4.6vw,52px)] leading-[1.06] text-ink">Mirá el sistema por dentro</h2>
         <p className="mt-4 text-[18px] leading-relaxed text-ink-soft">
           Cada módulo con lo que podés hacer adentro. Los colores son los mismos que vas a ver en el menú del sistema.

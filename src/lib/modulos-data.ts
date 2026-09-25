@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 /**
- * Los 18 módulos del sistema, agrupados y con el mismo color que tienen en
+ * Los 19 módulos del sistema, agrupados y con el mismo color que tienen en
  * la app (ver GROUP_ACCENT en kiosco-pos/src/components/Layout.tsx).
  *
  * `corta` es la línea de la carpeta en la home; `desc` e `items` son el detalle.
@@ -207,6 +207,20 @@ export const GRUPOS: Grupo[] = [
           "A todo el comercio o a una categoría",
           "Válidas entre dos fechas",
           "Condiciones por horario, días y cantidad",
+        ],
+      },
+      {
+        nombre: "Facturación (ARCA)",
+        archivo: "facturacion.png",
+        corta: "Factura A, B o C real ante ARCA, al cobrar.",
+        desc: "Facturación electrónica real, integrada a la venta — no un módulo aparte que hay que ir a completar.",
+        items: [
+          "Factura A, B o C según la condición del cliente",
+          "Se emite sola al cobrar, con CAE real de ARCA",
+          "Nota de crédito automática si hay una devolución",
+          "Configuración guiada en 3 pasos, sin conocimientos técnicos",
+          "Ticket con el QR oficial de ARCA",
+          "Reintentar pendientes con un clic si falló la conexión",
         ],
       },
       {

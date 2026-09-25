@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import ProductFrame from "@/components/ProductFrame";
 import BuyButtons from "@/components/BuyButtons";
 import Modulos from "@/components/Modulos";
-import ContactoArca from "@/components/ContactoArca";
 import { getProduct } from "@/lib/products";
 
 export const dynamic = "force-dynamic";
@@ -87,8 +86,6 @@ export default async function ProductoDetalle({ params }: { params: Promise<{ sl
       </section>
 
       <Modulos />
-
-      <ContactoArca />
 
       {/* FAQ + compra final */}
       <section className="border-t-[3px] border-ink bg-paper">

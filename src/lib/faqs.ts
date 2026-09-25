@@ -33,7 +33,7 @@ export function getFaqs(priceArs: number): Faq[] {
   },
   {
     q: "¿Tiene facturación electrónica (ARCA)?",
-    a: "Esta versión no. Si tu comercio necesita facturación electrónica, escribinos por WhatsApp antes de comprar y te contamos cómo lo resolvemos.",
+    a: "Sí. Emite Factura A, B o C real ante ARCA al momento de cobrar, con CAE, y nota de crédito automática si hay una devolución. La configuración es guiada, en 3 pasos.",
   },
   {
     q: "¿En qué sistemas operativos funciona?",

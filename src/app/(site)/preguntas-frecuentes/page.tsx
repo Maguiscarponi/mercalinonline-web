@@ -1,4 +1,3 @@
-import ContactoArca from "@/components/ContactoArca";
 import FaqList from "@/components/FaqList";
 import { getFaqs } from "@/lib/faqs";
 import { listProducts } from "@/lib/products";
@@ -22,7 +21,6 @@ export default async function PreguntasFrecuentes() {
           <FaqList faqs={getFaqs(producto?.priceArs ?? 65000)} columnas={1} />
         </div>
       </section>
-      <ContactoArca />
     </>
   );
 }

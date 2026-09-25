@@ -102,7 +102,7 @@ export default function Precio({ product }: { product: Product }) {
 
             <div className="rt-dashed mb-3 mt-5" />
             <p className="font-typewriter text-[12px] leading-snug text-ink-soft">
-              Esta versión no factura con ARCA. Si lo necesitás, escribinos antes de comprar.
+              Incluye facturación electrónica (ARCA): Factura A, B o C real, con CAE.
             </p>
             <div className="mt-4">
               <Barcode width={380} height={44} />
