@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { listClientes, matchesSegmento, countBy, isSegmento, SEGMENTOS, type Cliente } from "@/lib/clientes";
+import { listClientes, countBy, filterClientes, isSegmento, SEGMENTOS, type Cliente } from "@/lib/clientes";
+import BulkExtendForm from "@/components/admin/BulkExtendForm";
 import { fmtArs, fmtDate, fmtDateTime, timeAgo, timeLeft } from "@/lib/format";
 import { EstadoBadge, PageHeader } from "@/components/admin/stats";
 
@@ -46,15 +47,8 @@ export default async function AdminClientes({ searchParams }: { searchParams: Pr
   const counts = countBy(todos, now);
   const canales = [...new Set(todos.map((c) => c.source ?? "sin dato"))].sort();
 
-  const filtrados = sortClientes(
-    todos.filter((c) => {
-      if (!matchesSegmento(c, segmento, now)) return false;
-      if (canal && (c.source ?? "sin dato") !== canal) return false;
-      if (q && !(c.email.includes(q) || (c.businessName ?? "").toLowerCase().includes(q))) return false;
-      return true;
-    }),
-    orden
-  );
+  const filtrados = sortClientes(filterClientes(todos, { segmento, canal, q }, now), orden);
+  const extendibles = filtrados.filter((c) => c.estado === "activa" || c.estado === "por_vencer").length;
 
   const totalPages = Math.max(1, Math.ceil(filtrados.length / PAGE_SIZE));
   const page = Math.min(Math.max(1, Number(params.page) || 1), totalPages);
@@ -66,6 +60,16 @@ export default async function AdminClientes({ searchParams }: { searchParams: Pr
       <PageHeader
         title="Clientes"
         subtitle="Quién probó Mercalin, en qué estado está y quién ya compró."
+        action={
+          <div className="flex flex-wrap items-center gap-2">
+            <a href={`/api/admin/clientes-export?${new URLSearchParams({ ...(segmento !== "todos" ? { segmento } : {}), ...(canal ? { canal } : {}), ...(q ? { q } : {}) }).toString()}`} className="admin-btn admin-btn-outline">
+              Exportar CSV
+            </a>
+            <Link href="/admin/clientes/nuevo" className="admin-btn admin-btn-dark">
+              + Regalar / cargar licencia
+            </Link>
+          </div>
+        }
       />
 
       {/* Segmentos */}
@@ -136,6 +140,8 @@ export default async function AdminClientes({ searchParams }: { searchParams: Pr
         {filtrados.length} {filtrados.length === 1 ? "persona" : "personas"}
         {segmento !== "todos" ? ` · ${segActual.label}` : ""}
       </p>
+
+      <BulkExtendForm segmento={segmento} canal={canal} q={q} extendibles={extendibles} />
 
       {/* Tabla */}
       <div className="admin-card mt-2 overflow-x-auto">

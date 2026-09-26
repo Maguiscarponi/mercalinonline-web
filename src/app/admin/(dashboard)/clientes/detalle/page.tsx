@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { listClientes } from "@/lib/clientes";
 import { getClienteTimeline } from "@/lib/admin-stats";
+import { listClientNotesFor } from "@/lib/notes";
 import { eventDetail, eventLabel } from "@/lib/event-labels";
 import { fmtArs, fmtDateTime, timeAgo, timeLeft } from "@/lib/format";
 import { EstadoBadge, PageHeader, SectionTitle } from "@/components/admin/stats";
-import { RegenerateLicenseButton, ResendLicenseButton } from "@/components/admin/LicenseActions";
+import { RegenerateLicenseButton, ResendLicenseButton, ExtendTrialButton } from "@/components/admin/LicenseActions";
+import NoteForm from "@/components/admin/NoteForm";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +28,10 @@ export default async function AdminClienteDetalle({ searchParams }: { searchPara
     );
   }
 
-  const timeline = await getClienteTimeline(cliente.email, cliente.visitorIds);
+  const [timeline, notas] = await Promise.all([
+    getClienteTimeline(cliente.email, cliente.visitorIds),
+    listClientNotesFor(cliente.email),
+  ]);
   const activo = cliente.estado === "activa" || cliente.estado === "por_vencer";
 
   const datos: { label: string; value: React.ReactNode }[] = [
@@ -112,6 +117,7 @@ export default async function AdminClienteDetalle({ searchParams }: { searchPara
                   <div className="flex flex-wrap items-center gap-2">
                     <ResendLicenseButton activationId={a.id} />
                     <RegenerateLicenseButton activationId={a.id} kind={a.kind} />
+                    {a.kind === "trial" && <ExtendTrialButton activationId={a.id} />}
                   </div>
                 </td>
               </tr>
@@ -141,6 +147,23 @@ export default async function AdminClienteDetalle({ searchParams }: { searchPara
           ))}
         </ol>
       )}
+
+      <SectionTitle note="Lo que anotaste vos: problemas que reportó, qué se hizo. Queda también en Reportes.">
+        Notas
+      </SectionTitle>
+      <div className="space-y-3">
+        <NoteForm email={cliente.email} />
+        {notas.length > 0 && (
+          <div className="admin-card divide-y divide-black/[0.07]">
+            {notas.map((n) => (
+              <div key={n.id} className="px-5 py-3">
+                <span className="text-[12.5px] tabular-nums text-foreground/50">{fmtDateTime(n.createdAt)}</span>
+                <p className="mt-1 whitespace-pre-line text-[14.5px] text-foreground/80">{n.note}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

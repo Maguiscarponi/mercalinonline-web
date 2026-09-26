@@ -30,13 +30,21 @@ export interface GeneratedLicense {
   expiresAt: Date | null;
 }
 
-export function generateLicenseKey(email: string, kind: "trial" | "full"): GeneratedLicense {
+// `trialDurationSeconds` solo importa cuando kind === "trial" -- para el
+// soporte manual (extender una prueba puntual desde el admin), en vez de
+// los 7 días fijos de siempre. La cuenta arranca desde AHORA, no se suma al
+// vencimiento viejo -- lo decide quien llama a esto (ver extendTrialAction).
+export function generateLicenseKey(
+  email: string,
+  kind: "trial" | "full",
+  trialDurationSeconds: number = TRIAL_SECONDS
+): GeneratedLicense {
   const normalizedEmail = email.trim().toLowerCase();
   if (!normalizedEmail || !normalizedEmail.includes("@") || normalizedEmail.includes("|")) {
     throw new Error("Mail inválido para generar una licencia.");
   }
 
-  const expiresAtEpoch = kind === "trial" ? Math.floor(Date.now() / 1000) + TRIAL_SECONDS : 0;
+  const expiresAtEpoch = kind === "trial" ? Math.floor(Date.now() / 1000) + trialDurationSeconds : 0;
   const payloadStr = buildPayload(kind, normalizedEmail, expiresAtEpoch);
   const sig = createHmac("sha256", getSecret()).update(payloadStr).digest();
   const key = `${b64url(Buffer.from(payloadStr, "utf8"))}.${b64url(sig)}`;

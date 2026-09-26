@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, LayoutDashboard, LineChart, Package, Users } from "lucide-react";
+import { Activity, ClipboardList, LayoutDashboard, LineChart, Package, Users } from "lucide-react";
 
 const ICONS = {
   dashboard: LayoutDashboard,
@@ -10,6 +10,7 @@ const ICONS = {
   package: Package,
   chart: LineChart,
   activity: Activity,
+  clipboard: ClipboardList,
 };
 
 export type AdminNavIcon = keyof typeof ICONS;

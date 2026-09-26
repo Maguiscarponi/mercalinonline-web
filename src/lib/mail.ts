@@ -187,11 +187,14 @@ export function licenseEmailHtml(opts: {
   licenseKey: string;
   downloadUrl: string | null;
   expiresAt: Date | null;
+  gifted?: boolean;
 }): string {
-  const { kind, licenseKey, downloadUrl, expiresAt } = opts;
+  const { kind, licenseKey, downloadUrl, expiresAt, gifted } = opts;
   const esFull = kind === "full";
-  const titulo = esFull ? "¡Gracias por tu compra!" : "Tu prueba está lista";
-  const intro = esFull
+  const titulo = gifted ? "¡Tenés Mercalin!" : esFull ? "¡Gracias por tu compra!" : "Tu prueba está lista";
+  const intro = gifted
+    ? `Te regalamos tu licencia de Mercalin. <strong style="color:${INK};">No vence</strong> ni se renueva.`
+    : esFull
     ? `Tu licencia de Mercalin ya es tuya. <strong style="color:${INK};">No vence</strong> ni se renueva — la pagaste una sola vez.`
     : `Tenés <strong style="color:${INK};">7 días</strong> para probarla con tus productos reales, hasta el ${expiresAt ? fechaAr(expiresAt) : ""}. Después se bloquea, pero no se borra nada.`;
 

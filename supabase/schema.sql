@@ -122,3 +122,18 @@ CREATE TABLE IF NOT EXISTS ad_spend (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS idx_ad_spend_spent_on ON ad_spend (spent_on);
+
+-- Notas de soporte cargadas a mano desde /admin/reportes o desde la ficha de
+-- un cliente: "me escribió por tal problema", historial de intervenciones
+-- manuales (clave regenerada, prueba extendida, etc.) para no depender de la
+-- memoria. Una fila por nota; el email no tiene que existir necesariamente
+-- en `activations` (puede ser alguien que escribió sin haber pedido la
+-- prueba todavía).
+CREATE TABLE IF NOT EXISTS client_notes (
+  id TEXT PRIMARY KEY,
+  email TEXT NOT NULL,
+  note TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_client_notes_email ON client_notes (lower(email));
+CREATE INDEX IF NOT EXISTS idx_client_notes_created_at ON client_notes (created_at);

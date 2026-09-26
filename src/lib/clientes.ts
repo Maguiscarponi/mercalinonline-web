@@ -182,3 +182,21 @@ export function countBy(clientes: Cliente[], now = new Date()): Record<SegmentoI
   for (const s of SEGMENTOS) out[s.id] = clientes.filter((c) => matchesSegmento(c, s.id, now)).length;
   return out;
 }
+
+// Mismo filtro (segmento + canal + búsqueda) que usan la pantalla de
+// Clientes, la exportación a CSV y las acciones en lote -- para que lo que
+// se ve filtrado, lo que se descarga y lo que se afecta en lote sea siempre
+// exactamente el mismo conjunto.
+export function filterClientes(
+  clientes: Cliente[],
+  filtro: { segmento: SegmentoId; canal?: string; q?: string },
+  now = new Date()
+): Cliente[] {
+  const q = (filtro.q ?? "").trim().toLowerCase();
+  return clientes.filter((c) => {
+    if (!matchesSegmento(c, filtro.segmento, now)) return false;
+    if (filtro.canal && (c.source ?? "sin dato") !== filtro.canal) return false;
+    if (q && !(c.email.includes(q) || (c.businessName ?? "").toLowerCase().includes(q))) return false;
+    return true;
+  });
+}

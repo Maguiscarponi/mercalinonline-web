@@ -14,6 +14,7 @@ const SECCIONES: { titulo: string; items: Item[] }[] = [
     items: [
       { href: "/admin", label: "Resumen", icon: "dashboard" },
       { href: "/admin/clientes", label: "Clientes", icon: "users" },
+      { href: "/admin/reportes", label: "Reportes", icon: "clipboard" },
     ],
   },
   {
