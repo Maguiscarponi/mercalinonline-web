@@ -9,11 +9,13 @@ import Barcode from "@/components/retro/Barcode";
 
    - Se ven nítidas en cualquier pantalla — una imagen de 1919px reescalada
      a 340px en un celular pierde definición; esto es vector y texto real.
-   - Colores propios de la app (el índigo de "Operación", no el rojo del
-     sitio) para que siga leyéndose como "esto es el programa de verdad",
-     distinto del marketing alrededor.
    - Podemos animar la aparición (las etiquetas) y no arrastramos errores
      de una captura vieja.
+   - Usan el rojo de marca (no el índigo real de la app) a propósito: la
+     idea original era señalar "esto es el programa de verdad" con su color
+     real, pero al lado del resto del sitio (todo rojo/crema/tinta) leía como
+     dos productos distintos pegados uno al lado del otro. Layout y contenido
+     siguen siendo fieles a la app real -- solo el color se adaptó al sitio.
    ───────────────────────────────────────────────────────────────────────── */
 
 const money = (n: number) => `$${n.toLocaleString("es-AR")}`;
@@ -34,7 +36,7 @@ const ARTICULOS_CAJA = ITEMS_CAJA.length;
 export function CajaMock() {
   return (
     <div className="bg-white text-[#1a1a2e]">
-      <div className="flex items-center justify-between bg-gradient-to-r from-[#6d28d9] to-[#4f46e5] px-4 py-2.5">
+      <div className="flex items-center justify-between bg-gradient-to-r from-brand-dark to-brand px-4 py-2.5">
         <span className="font-sans text-[13px] font-bold uppercase tracking-wide text-white">Caja</span>
         <span className="font-sans text-[11px] text-white/70">Lista: Minorista</span>
       </div>
@@ -53,11 +55,11 @@ export function CajaMock() {
               <p className="font-sans text-[11px] text-[#9491a8]">{money(precio)} c/u</p>
             </div>
             <div className="flex shrink-0 items-center gap-1.5">
-              <span className="flex h-6 w-6 items-center justify-center rounded border border-[#e3e2ea] font-sans text-[13px] text-[#6d28d9]">
+              <span className="flex h-6 w-6 items-center justify-center rounded border border-[#e3e2ea] font-sans text-[13px] text-brand">
                 −
               </span>
               <span className="w-4 text-center font-sans text-[13px]">1</span>
-              <span className="flex h-6 w-6 items-center justify-center rounded border border-[#e3e2ea] font-sans text-[13px] text-[#6d28d9]">
+              <span className="flex h-6 w-6 items-center justify-center rounded border border-[#e3e2ea] font-sans text-[13px] text-brand">
                 +
               </span>
             </div>
@@ -73,7 +75,7 @@ export function CajaMock() {
         <button
           type="button"
           tabIndex={-1}
-          className="mt-3 flex w-full items-center justify-center gap-2.5 rounded-md bg-[#4f46e5] py-3 font-sans text-[14px] font-bold text-white"
+          className="mt-3 flex w-full items-center justify-center gap-2.5 rounded-md bg-brand py-3 font-sans text-[14px] font-bold text-white"
         >
           Cobrar
           <span className="rounded bg-white/20 px-1.5 py-0.5 font-mono text-[10px] font-normal tracking-wide">
@@ -111,7 +113,7 @@ const ALERTAS: Alerta[] = [
 export function ConsejoMock() {
   return (
     <div className="bg-white px-4 py-4 text-[#1a1a2e]">
-      <p className="font-sans text-[12px] font-bold text-[#6d28d9]">Consejo del día (9)</p>
+      <p className="font-sans text-[12px] font-bold text-brand">Consejo del día (9)</p>
       <div className="mt-3 space-y-2.5">
         {ALERTAS.map((a) => (
           <div
@@ -130,7 +132,7 @@ export function ConsejoMock() {
             <p className="mt-0.5 font-sans text-[12.5px] font-semibold leading-snug">{a.texto}</p>
             <div className="mt-1 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
               <span className="font-sans text-[11px] text-[#726f85]">{a.nota}</span>
-              <span className="font-sans text-[11px] font-semibold text-[#4f46e5]">{a.link}</span>
+              <span className="font-sans text-[11px] font-semibold text-brand">{a.link}</span>
             </div>
           </div>
         ))}

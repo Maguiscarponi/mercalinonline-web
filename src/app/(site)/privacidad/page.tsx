@@ -15,7 +15,7 @@ const SECCIONES: { titulo: string; contenido: React.ReactNode }[] = [
       <p>
         Mercalin, sistema de gestión para comercios, es responsable del tratamiento de los datos personales descriptos en
         esta política. Cualquier consulta vinculada con ellos puede dirigirse a{" "}
-        <a href={`mailto:${CONTACTO}`} className="font-bold text-brand underline underline-offset-4">
+        <a href={`mailto:${CONTACTO}`} className="font-bold text-brand-dark underline underline-offset-4">
           {CONTACTO}
         </a>
         .
@@ -68,6 +68,18 @@ const SECCIONES: { titulo: string; contenido: React.ReactNode }[] = [
     ),
   },
   {
+    titulo: "Cookies",
+    contenido: (
+      <p>
+        El sitio no usa cookies. El identificador anónimo de navegación mencionado arriba se guarda con{" "}
+        <code>localStorage</code>/<code>sessionStorage</code> del navegador, no con cookies, y no se usa para
+        publicidad ni se comparte con redes sociales o plataformas de terceros. La única cookie que existe en el
+        sitio es la de sesión del panel administrativo interno, que solo se crea al iniciar sesión ahí — no afecta a
+        quien visita o compra en el sitio.
+      </p>
+    ),
+  },
+  {
     titulo: "Comunicación a terceros",
     contenido: (
       <>
@@ -99,7 +111,7 @@ const SECCIONES: { titulo: string; contenido: React.ReactNode }[] = [
         <p>
           El titular de los datos puede solicitar el acceso, la rectificación o la supresión de su información personal
           escribiendo a{" "}
-          <a href={`mailto:${CONTACTO}`} className="font-bold text-brand underline underline-offset-4">
+          <a href={`mailto:${CONTACTO}`} className="font-bold text-brand-dark underline underline-offset-4">
             {CONTACTO}
           </a>
           . Mercalin responderá a la solicitud a la brevedad.

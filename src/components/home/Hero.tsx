@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import Barcode from "@/components/retro/Barcode";
-import Stamp from "@/components/retro/Stamp";
+import TicketTag from "@/components/retro/TicketTag";
 
 /* ─────────────────────────────────────────────────────────────────────────
    Hero: el toldo está en el header; acá va el mensaje y un ticket de caja.
@@ -73,10 +73,12 @@ export default function Hero() {
           </ul>
         </div>
 
-        {/* Ticket + sello. El contenedor reserva un margen abajo (pb-16/24)
-            para que el sello cuelgue ahí, fuera del papel: nunca pisa texto
-            del ticket, en ningún ancho de pantalla. */}
-        <div className="relative mx-auto w-full max-w-[380px] pb-24 sm:pb-36 lg:mx-0 lg:ml-auto">
+        {/* Ticket + etiqueta. La etiqueta va pinchada en la esquina de ARRIBA
+            del papel (no colgando del borde de abajo): el botón de WhatsApp
+            es fijo en la esquina inferior derecha de toda la página, así que
+            cualquier cosa que cuelgue del borde inferior del ticket termina
+            tapada por él en algún punto del scroll. */}
+        <div className="relative mx-auto w-full max-w-[380px] pt-5 sm:pt-7 lg:mx-0 lg:ml-auto">
           <div className="rt-ticket rotate-[2.2deg] px-6 pb-10 pt-8 font-typewriter">
             <div className="flex flex-col items-center">
               <Image src="/mercalin-isotipo.svg" alt="" width={46} height={46} />
@@ -116,13 +118,12 @@ export default function Hero() {
             <p className="mt-3 text-center text-[12.5px] tracking-[0.06em]">¡GRACIAS POR SU COMPRA!</p>
           </div>
 
-          <Stamp
-            id="sello-hero"
-            arriba="PROBALO"
-            centro="7 DÍAS"
-            abajo="GRATIS"
-            rot={-11}
-            className="absolute bottom-0 right-3 h-auto w-[80px] drop-shadow-[3px_4px_0_rgba(35,33,32,0.14)] sm:right-8 sm:w-[128px]"
+          <TicketTag
+            arriba="Probalo"
+            centro="7 días"
+            abajo="gratis"
+            rot={-7}
+            className="absolute -top-4 right-4 w-[92px] sm:-top-5 sm:right-8 sm:w-[112px]"
           />
         </div>
       </div>

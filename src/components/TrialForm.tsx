@@ -42,7 +42,7 @@ export default function TrialForm({ products, defaultSlug }: { products: Product
   if (status === "done") {
     return (
       <Ventana titulo="Mercalin — Prueba gratis">
-        <div className="p-8 text-center">
+        <div role="status" className="p-8 text-center">
           <p className="rt-label">Listo</p>
           <h2 className="mt-3 text-3xl leading-tight text-ink">Revisá tu mail.</h2>
           <p className="mt-3 text-[16px] text-ink-soft">
@@ -130,7 +130,9 @@ export default function TrialForm({ products, defaultSlug }: { products: Product
           onChange={(e) => setWebsite(e.target.value)}
         />
       </div>
-      {status === "error" && <p className="mb-4 text-sm font-semibold text-brand">{errorMsg}</p>}
+      {status === "error" && (
+        <p role="alert" className="mb-4 text-sm font-semibold text-brand">{errorMsg}</p>
+      )}
       <button
         type="submit"
         disabled={status === "loading"}

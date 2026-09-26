@@ -139,6 +139,9 @@ export default function SiteFooter() {
 
           <div className="tag-numbered mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-cream/20 py-6 text-[13px] text-cream/55">
             <span>© {new Date().getFullYear()} Mercalin · Hecho en Argentina</span>
+            <Link href="/terminos" className="underline underline-offset-2 hover:text-cream">
+              Términos y condiciones
+            </Link>
             <Link href="/privacidad" className="underline underline-offset-2 hover:text-cream">
               Privacidad
             </Link>

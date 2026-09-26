@@ -12,7 +12,7 @@ export function DemoCaja() {
     <section className="flex min-h-[100svh] items-center">
       <div className="mx-auto grid w-full max-w-[1240px] items-center gap-10 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:gap-12">
         <div>
-          <p className="rt-label">Nº 04 · La pantalla real</p>
+          <p className="rt-label">Nº 03 · La pantalla real</p>
           <h2 className="mt-2 text-[clamp(72px,10vw,128px)] leading-[0.95] tracking-[-0.02em] text-ink">Caja.</h2>
           <p className="font-slab mt-4 text-[clamp(26px,2.6vw,33px)] leading-[1.08] text-brand">La pantalla donde se vende.</p>
           <p className="mt-4 text-[19px] leading-relaxed text-ink-soft">Pensada para que el cajero no toque el mouse.</p>
@@ -57,7 +57,7 @@ export function DemoConsejosEtiquetas() {
   return (
     <section className="flex min-h-[100svh] items-center bg-ink text-cream">
       <div className="mx-auto w-full max-w-[1240px] px-5 py-16 sm:px-8 sm:py-20">
-        <p className="rt-label !text-[#ff5b52]">Nº 05 · La pantalla real</p>
+        <p className="rt-label !text-[#ff5b52]">Nº 04 · La pantalla real</p>
 
         <div className="mt-6 grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.85fr)] lg:gap-8">
           <div className="mx-auto w-full max-w-[420px] pr-2.5 sm:pr-3 lg:max-w-none">
@@ -74,7 +74,7 @@ export function DemoConsejosEtiquetas() {
 
           <div className="space-y-9 lg:pl-3">
             <div>
-              <p className="tag-numbered text-[12px] text-[#ff5b52]">05.1</p>
+              <p className="tag-numbered text-[12px] text-[#ff5b52]">04.1</p>
               <h3 className="mt-1 text-[clamp(30px,3vw,40px)] leading-[1.04]">Consejo del día</h3>
               <p className="mt-2 text-[18px] leading-snug text-cream/85">No muestra gráficos: te dice qué hacer hoy.</p>
               <Puntos
@@ -87,7 +87,7 @@ export function DemoConsejosEtiquetas() {
               />
             </div>
             <div>
-              <p className="tag-numbered text-[12px] text-[#ff5b52]">05.2</p>
+              <p className="tag-numbered text-[12px] text-[#ff5b52]">04.2</p>
               <h3 className="mt-1 text-[clamp(30px,3vw,40px)] leading-[1.04]">Etiquetas</h3>
               <p className="mt-2 text-[18px] leading-snug text-cream/85">De góndola, con código de barras, listas para imprimir.</p>
               <Puntos

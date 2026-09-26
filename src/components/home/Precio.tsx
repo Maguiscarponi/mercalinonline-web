@@ -3,7 +3,7 @@ import Link from "next/link";
 import TrackView from "@/components/TrackView";
 import Awning from "@/components/retro/Awning";
 import Barcode from "@/components/retro/Barcode";
-import Stamp from "@/components/retro/Stamp";
+import TicketTag from "@/components/retro/TicketTag";
 import type { Product } from "@/lib/products";
 
 /* Precio: mismo lenguaje que el hero (toldo, crema, sello y ticket). El precio
@@ -13,9 +13,9 @@ import type { Product } from "@/lib/products";
 const INCLUYE = ["Actualizaciones incluidas", "Soporte por WhatsApp", "Windows"];
 
 const PASOS = [
-  ["1", "Pedís la prueba. Tu mail y listo."],
+  ["1", "Pedís la prueba con tu mail, nada más."],
   ["2", "Instalás y probás 7 días con tus productos."],
-  ["3", "Si te sirve, comprás. Un solo pago."],
+  ["3", "Si te sirve, comprás con un solo pago."],
 ];
 
 export default function Precio({ product }: { product: Product }) {
@@ -28,7 +28,7 @@ export default function Precio({ product }: { product: Product }) {
 
       <div className="mx-auto grid max-w-[1240px] items-center gap-12 px-5 pb-20 pt-10 sm:px-8 lg:grid-cols-[1.2fr_1fr] lg:gap-10 lg:pt-14">
         <div className="min-w-0">
-          <span className="rt-label">Nº 07 · Precio</span>
+          <span className="rt-label">Nº 06 · Precio</span>
           <p className="font-slab mt-3 text-[clamp(64px,12vw,152px)] leading-none tracking-[-0.02em] text-ink">{precio}</p>
           <p className="font-slab mt-2 text-[clamp(30px,3.7vw,52px)] leading-[1.04] text-brand">Pago único.</p>
           <p className="font-slab text-[clamp(30px,3.7vw,52px)] leading-[1.04] text-ink">Sin cuotas mensuales.</p>
@@ -51,9 +51,10 @@ export default function Precio({ product }: { product: Product }) {
           </ol>
         </div>
 
-        {/* Ticket de licencia. Mismo criterio que el del hero: el sello
-            cuelga del margen reservado abajo, nunca sobre el texto. */}
-        <div className="relative mx-auto w-full max-w-[440px] pb-24 sm:pb-40 lg:mx-0 lg:ml-auto">
+        {/* Ticket de licencia. Mismo criterio que el del hero: la etiqueta va
+            arriba, nunca colgando del borde de abajo (ahí choca con el botón
+            fijo de WhatsApp en algún punto del scroll). */}
+        <div className="relative mx-auto w-full max-w-[440px] pt-5 sm:pt-7 lg:mx-0 lg:ml-auto">
           <div className="rt-ticket -rotate-[1.8deg] px-6 pb-10 pt-8 sm:px-[30px]">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -110,14 +111,11 @@ export default function Precio({ product }: { product: Product }) {
             <p className="font-typewriter mt-2 text-center text-[12px] tracking-[0.06em]">¡GRACIAS POR SU COMPRA!</p>
           </div>
 
-          <Stamp
-            id="sello-precio"
-            arriba="PAGO"
-            centro="ÚNICO"
-            abajo={precio}
-            fuente={26}
-            rot={9}
-            className="absolute bottom-0 left-3 h-auto w-[88px] drop-shadow-[3px_4px_0_rgba(35,33,32,0.14)] sm:left-10 sm:w-[136px]"
+          <TicketTag
+            arriba="Pago único"
+            centro={precio}
+            rot={7}
+            className="absolute -top-4 left-4 w-[100px] sm:-top-5 sm:left-10 sm:w-[128px]"
           />
         </div>
       </div>

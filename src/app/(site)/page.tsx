@@ -14,7 +14,9 @@ export const dynamic = "force-dynamic";
 // La sección de video (VideoSlot) está sacada a propósito: todavía no hay
 // video grabado. El componente sigue en components/home/VideoSlot.tsx --
 // para volver a mostrarla, importarla acá y agregar <VideoSlot /> después de
-// <Carpetas />.
+// <Carpetas />. Ojo: hoy dice "Nº 03" adentro del componente, pero esa
+// posición ya la ocupa DemoCaja -- hay que renumerar en cascada (Demos.tsx,
+// Preguntas.tsx, Precio.tsx) si se vuelve a agregar.
 export default async function Home() {
   // El precio y los links de compra salen del producto destacado (listProducts
   // ya lo ordena primero). Si no hay productos cargados no hay nada que vender:

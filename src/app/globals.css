@@ -17,7 +17,11 @@
   --paper-warm: #fffdf7;
   --ink: #232120;
   --ink-soft: #4f4942;
-  --ink-mute: #8a8175;
+  /* Antes #8a8175: contrastaba 3.3:1 contra el fondo crema, por debajo del
+     4.5:1 que pide WCAG AA para texto chico (se usa en labels y fechas de
+     11-13px, no es texto grande). Este tono da 4.5:1+ contra crema, papel y
+     mostaza-crema, sin perder la jerarquía con ink-soft. */
+  --ink-mute: #6b6255;
   --line: #dccfb6;
   --amber: #f2a51c;
 }

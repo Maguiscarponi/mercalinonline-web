@@ -51,7 +51,7 @@ export default function CompraForm({ product }: { product: Product }) {
         <p>El pago con Mercado Pago todavía no está conectado en este sitio.</p>
         <a
           href={`mailto:onlinemercalin@gmail.com?subject=Quiero%20comprar%20Mercalin&body=Hola%2C%20quiero%20comprar%20Mercalin.%0D%0A%0D%0AMi%20mail%3A%20${encodeURIComponent(email)}`}
-          className="mt-3 inline-block font-bold text-brand underline underline-offset-4"
+          className="mt-3 inline-block font-bold text-brand-dark underline underline-offset-4"
         >
           Escribinos directo para coordinar la compra →
         </a>
@@ -101,7 +101,9 @@ export default function CompraForm({ product }: { product: Product }) {
         />
       </div>
 
-      {status === "error" && <p className="mt-4 text-sm font-semibold text-brand">{errorMsg}</p>}
+      {status === "error" && (
+        <p role="alert" className="mt-4 text-sm font-semibold text-brand">{errorMsg}</p>
+      )}
 
       <button
         type="submit"

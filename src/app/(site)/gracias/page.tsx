@@ -53,7 +53,7 @@ export default async function Gracias({
       </div>
 
       <p className="tag-numbered mt-10 text-center text-[13px] uppercase">
-        <Link href="/" className="text-brand underline underline-offset-4">
+        <Link href="/" className="text-brand-dark underline underline-offset-4">
           Volver al inicio →
         </Link>
       </p>

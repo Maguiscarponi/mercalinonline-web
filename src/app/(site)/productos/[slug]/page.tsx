@@ -92,7 +92,7 @@ export default async function ProductoDetalle({ params }: { params: Promise<{ sl
         <div className="mx-auto max-w-3xl px-5 py-12 text-center sm:px-6">
           <p className="text-[17px] text-ink-soft">
             ¿Dudas sobre la prueba, el pago o la instalación?{" "}
-            <Link href="/preguntas-frecuentes" className="font-bold text-brand underline underline-offset-4">
+            <Link href="/preguntas-frecuentes" className="font-bold text-brand-dark underline underline-offset-4">
               Ver preguntas frecuentes
             </Link>
           </p>
