@@ -84,8 +84,11 @@ export default function Precio({ product }: { product: Product }) {
               </Link>
             </div>
 
-            {/* Opción 2: comprar */}
-            <div className="mt-3 border-2 border-[#cfc6b4] bg-paper-warm p-4">
+            {/* Opción 2: comprar -- secundaria frente a la prueba gratis (que
+                sigue siendo la recomendada), pero con presencia real: borde y
+                botón sólidos en vez del borde beige clarito + botón outline
+                que antes la hacían leer como una opción casi deshabilitada. */}
+            <div className="mt-3 border-2 border-ink bg-paper-warm p-4">
               <p className="font-slab text-[19px] leading-tight">COMPRAR LA LICENCIA · {precio}</p>
               <p className="font-typewriter mt-1.5 text-[12.5px] leading-snug text-ink-soft">
                 Un solo pago con Mercado Pago. La clave completa no vence.
@@ -94,7 +97,7 @@ export default function Precio({ product }: { product: Product }) {
                 href={`/carrito?product=${product.slug}`}
                 data-track="cta_buy_clicked"
                 data-track-loc="precio"
-                className="rt-btn rt-btn-line mt-3.5 w-full !py-3 !text-[13px]"
+                className="rt-btn rt-btn-ink mt-3.5 w-full !py-3 !text-[13px]"
               >
                 Comprar
               </Link>

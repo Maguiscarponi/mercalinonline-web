@@ -275,6 +275,10 @@ body {
   background: var(--paper-warm);
   color: var(--ink);
 }
+.rt-btn-ink {
+  background: var(--ink);
+  color: var(--paper-warm);
+}
 
 .rt-input {
   width: 100%;
