@@ -28,8 +28,7 @@ export default function Carpetas() {
         <TrackView name="demo_section_viewed" />
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
-            <p className="rt-label">Nº 02 · Módulos</p>
-            <h2 className="mt-2 text-[clamp(38px,6vw,80px)] leading-[1.05] text-ink">Módulos incluidos</h2>
+            <h2 className="text-[clamp(38px,6vw,80px)] leading-[1.05] text-ink">Módulos incluidos</h2>
             <p className="mt-3 text-[20px] text-ink-soft sm:text-[21px]">
               Todos vienen con el sistema. No hay que pagar nada aparte.
             </p>

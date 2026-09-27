@@ -15,8 +15,7 @@ export default function VideoSlot() {
     <section id="video" className="flex min-h-[100svh] scroll-mt-20 items-center bg-brand text-white">
       <div className="mx-auto grid w-full max-w-[1240px] items-center gap-10 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.5fr)] lg:gap-14">
         <div>
-          <p className="rt-label !text-white">Nº 03 · El sistema en video</p>
-          <h2 className="mt-3 text-[clamp(44px,6vw,78px)] leading-none text-white">Así se usa.</h2>
+          <h2 className="text-[clamp(44px,6vw,78px)] leading-none text-white">Así se usa.</h2>
           <p className="mt-5 max-w-sm text-[19px] leading-relaxed sm:text-[21px]">
             El sistema funcionando, en pantalla real.
           </p>

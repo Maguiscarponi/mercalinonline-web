@@ -221,7 +221,7 @@ body {
   color: #fff;
 }
 
-/* Etiqueta chica en mayúsculas: "Nº 01 · RUBROS" */
+/* Etiqueta chica en mayúsculas, tipo "PRUEBA GRATIS" */
 .rt-label {
   font-family: var(--font-courier), monospace;
   font-weight: 700;

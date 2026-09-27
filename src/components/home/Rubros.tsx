@@ -31,8 +31,7 @@ export default function Rubros() {
   return (
     <section className="flex min-h-[100svh] items-center">
       <div className="mx-auto w-full max-w-[1200px] px-5 py-16 sm:px-8 sm:py-20 lg:px-0">
-        <p className="rt-label">Nº 01 · Rubros</p>
-        <h2 className="mt-2 text-[clamp(38px,6.6vw,88px)] leading-[1.05] text-ink">Para qué comercios sirve</h2>
+        <h2 className="text-[clamp(38px,6.6vw,88px)] leading-[1.05] text-ink">Para qué comercios sirve</h2>
         <p className="mt-3 text-[20px] text-ink-soft sm:text-[22px]">Para cualquier comercio que vende productos, con o sin código de barras.</p>
 
         <div className="mt-10 grid gap-x-14 sm:mt-14 md:grid-cols-2">

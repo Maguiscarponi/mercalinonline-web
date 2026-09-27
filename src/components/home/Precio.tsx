@@ -28,8 +28,7 @@ export default function Precio({ product }: { product: Product }) {
 
       <div className="mx-auto grid max-w-[1240px] items-center gap-12 px-5 pb-20 pt-10 sm:px-8 lg:grid-cols-[1.2fr_1fr] lg:gap-10 lg:pt-14">
         <div className="min-w-0">
-          <span className="rt-label">Nº 06 · Precio</span>
-          <p className="font-slab mt-3 text-[clamp(64px,12vw,152px)] leading-none tracking-[-0.02em] text-ink">{precio}</p>
+          <p className="font-slab text-[clamp(64px,12vw,152px)] leading-none tracking-[-0.02em] text-ink">{precio}</p>
           <p className="font-slab mt-2 text-[clamp(30px,3.7vw,52px)] leading-[1.04] text-brand">Pago único.</p>
           <p className="font-slab text-[clamp(30px,3.7vw,52px)] leading-[1.04] text-ink">Sin cuotas mensuales.</p>
 
