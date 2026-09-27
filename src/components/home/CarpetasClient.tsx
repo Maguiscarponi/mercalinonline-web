@@ -137,7 +137,7 @@ export default function CarpetasClient({ modulos }: { modulos: ModuloCarpeta[] }
                   height={m.alto}
                   quality={90}
                   priority
-                  className="mx-auto h-auto max-h-[52vh] w-auto max-w-full object-contain"
+                  className="block h-auto w-full"
                   sizes="(min-width: 1100px) 1100px, 100vw"
                 />
               ) : (
@@ -147,21 +147,7 @@ export default function CarpetasClient({ modulos }: { modulos: ModuloCarpeta[] }
               )}
             </div>
 
-            <div className="grid gap-6 border-t-[3px] border-ink p-5 sm:grid-cols-[1fr_1.1fr] sm:p-7">
-              <div>
-                <h3 className="text-[clamp(26px,3vw,36px)] leading-[1.05] text-ink">{m.nombre}</h3>
-                <p className="mt-2 text-[17px] leading-relaxed text-ink-soft">{m.desc}</p>
-              </div>
-              <ul className="font-typewriter space-y-1.5 text-[14px] leading-snug">
-                {m.items.map((it) => (
-                  <li key={it}>
-                    <span className="font-bold text-brand">/</span> {it}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="tag-numbered flex items-center justify-between border-t-2 border-ink/15 px-5 py-3 text-[12px] uppercase sm:px-7">
+            <div className="tag-numbered flex items-center justify-between border-t-[3px] border-ink px-5 py-3 text-[12px] uppercase sm:px-7">
               <button type="button" onClick={() => abrir((abierto - 1 + modulos.length) % modulos.length)} className="hover:text-brand">
                 ← Anterior
               </button>
