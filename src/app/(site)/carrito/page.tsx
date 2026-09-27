@@ -14,13 +14,19 @@ export const metadata: Metadata = {
 export default async function Comprar({
   searchParams,
 }: {
-  searchParams: Promise<{ product?: string }>;
+  searchParams: Promise<{ product?: string; status?: string; collection_status?: string }>;
 }) {
-  const { product: slug } = await searchParams;
+  const { product: slug, status: statusParam, collection_status } = await searchParams;
   const products = await listProducts();
   const product = (slug ? products.find((p) => p.slug === slug) : undefined) ?? products[0];
 
   if (!product) notFound();
+
+  // Mercado Pago vuelve acá (back_urls.failure) cuando el pago no se pudo
+  // procesar -- cualquier estado que no sea aprobado/pendiente es un fallo
+  // real, no solo "rejected" (MP también manda "cancelled" y otros).
+  const status = statusParam ?? collection_status ?? "";
+  const fallo = status !== "" && !["approved", "pending", "in_process"].includes(status);
 
   return (
     <section className="mx-auto max-w-lg px-5 py-14 sm:px-6 sm:py-20">
@@ -33,6 +39,14 @@ export default async function Comprar({
       <p className="mt-4 text-[18px] leading-relaxed text-ink-soft">
         Pagás con Mercado Pago y te llega el código de activación por mail.
       </p>
+      {fallo && (
+        <div role="alert" className="mt-6 border-[3px] border-brand bg-brand/10 p-4">
+          <p className="font-slab text-[18px] leading-tight text-ink">El pago no se pudo procesar.</p>
+          <p className="font-typewriter mt-1.5 text-[13.5px] leading-relaxed text-ink-soft">
+            Mercado Pago rechazó el intento anterior (tarjeta, fondos u otro motivo del medio de pago). No te cobramos nada — probá de nuevo, con otro medio de pago si hace falta.
+          </p>
+        </div>
+      )}
       <div className="mt-9 pr-2.5">
         <CompraForm product={product} />
       </div>
