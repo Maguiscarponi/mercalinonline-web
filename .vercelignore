@@ -1,0 +1,15 @@
+# Lo que NO se sube al hacer deploy con la CLI de Vercel (se despliega desde esta carpeta).
+# Material de redes y archivos locales: no forman parte del sitio.
+redes-sociales/
+redes-sociales-mercalin/
+redes-sociales-mercalin.zip
+_to_delete/
+.claude/
+.env.local
+.env*.local
+dev.db
+dev.db-journal
+dev.db-shm
+dev.db-wal
+public/uploads/
+*.tsbuildinfo
