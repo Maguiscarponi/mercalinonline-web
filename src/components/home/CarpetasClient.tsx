@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { Play } from "lucide-react";
 import { track } from "@/lib/track";
@@ -120,7 +121,10 @@ export default function CarpetasClient({ modulos }: { modulos: ModuloCarpeta[] }
         ))}
       </div>
 
-      {m && abierto !== null && (
+      {/* Portal al body: la sección se arma a medida que se baja (clase
+          rt-diferida, con content-visibility), y eso la vuelve el marco de los
+          elementos "fixed" -- sin el portal, la ventana quedaría encerrada ahí. */}
+      {m && abierto !== null && createPortal(
         <div
           role="dialog"
           aria-modal="true"
@@ -193,7 +197,8 @@ export default function CarpetasClient({ modulos }: { modulos: ModuloCarpeta[] }
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );

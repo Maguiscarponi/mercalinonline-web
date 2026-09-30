@@ -24,12 +24,14 @@ export default async function Home() {
   return (
     <>
       <Hero />
-      <Rubros />
-      <Carpetas />
-      <VideoSlot />
-      <DemoConsejosEtiquetas />
-      <Preguntas priceArs={producto?.priceArs ?? 65000} />
-      {producto && <Precio product={producto} />}
+      {/* Todo lo que está abajo del hero se arma recién cuando se acerca con
+          el scroll (ver .rt-diferida en globals.css). */}
+      <div className="rt-diferida"><Rubros /></div>
+      <div className="rt-diferida"><Carpetas /></div>
+      <div className="rt-diferida"><VideoSlot /></div>
+      <div className="rt-diferida"><DemoConsejosEtiquetas /></div>
+      <div className="rt-diferida"><Preguntas priceArs={producto?.priceArs ?? 65000} /></div>
+      {producto && <div className="rt-diferida"><Precio product={producto} /></div>}
     </>
   );
 }

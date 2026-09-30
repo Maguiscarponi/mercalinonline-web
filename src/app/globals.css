@@ -455,3 +455,34 @@ body {
   opacity: 0;
   animation: rt-etiqueta-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+
+/* Secciones de la home que se arman a medida que se baja. content-visibility:
+   el navegador no dibuja una sección hasta que se acerca a la pantalla (el HTML
+   está entero igual, así que Google la lee completa). contain-intrinsic-size
+   reserva su alto mientras tanto -- "auto" recuerda el alto real una vez que se
+   vio, así la barra de scroll no salta. Al entrar, cada sección aparece con un
+   fundido hacia arriba atado al scroll (solo CSS, sin JavaScript: si el
+   navegador no lo soporta, se ve directo sin animación). */
+.rt-diferida {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+@keyframes rt-aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(56px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .rt-diferida > * {
+      animation: rt-aparecer linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
+}
