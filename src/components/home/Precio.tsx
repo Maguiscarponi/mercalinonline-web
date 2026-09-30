@@ -117,7 +117,9 @@ export default function Precio({ product }: { product: Product }) {
             arriba="Pago único"
             centro={precio}
             rot={7}
-            className="absolute -top-4 left-4 w-[100px] sm:-top-5 sm:left-10 sm:w-[128px]"
+            // Ancho según el texto (con un mínimo): con 100px fijos, en celular
+            // "$65.000" no entraba y se salía de la etiqueta.
+            className="absolute -top-4 left-4 w-max min-w-[112px] sm:-top-5 sm:left-10 sm:min-w-[128px]"
           />
         </div>
       </div>
