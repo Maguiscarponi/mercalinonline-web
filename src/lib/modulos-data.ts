@@ -310,18 +310,20 @@ export const GRUPOS: Grupo[] = [
  * haría que Vercel empaquete los videos dentro de la función. Los módulos que
  * no están acá siguen mostrando la captura.
  */
-const CON_VIDEO = new Set([
-  "caja", "caja-gestion", "clientes", "devoluciones",
-  "productos", "proveedores", "categorias", "vencimientos", "inventario", "etiquetas", "combos",
-  "presupuestos", "promociones", "facturacion", "usuarios",
-  "dashboard", "reportes",
-  "auditoria", "configuracion",
-]);
+// Duración de cada video (m:ss), para mostrarla en la tarjeta del módulo.
+const CON_VIDEO: Record<string, string> = {
+  caja: "0:57", "caja-gestion": "0:38", clientes: "0:39", devoluciones: "0:35",
+  productos: "2:07", proveedores: "1:14", categorias: "0:46", vencimientos: "0:48", inventario: "0:44", etiquetas: "1:18", combos: "0:52",
+  presupuestos: "1:09", promociones: "0:59", facturacion: "1:40", usuarios: "0:49",
+  dashboard: "1:03", reportes: "1:23",
+  auditoria: "0:47", configuracion: "1:08",
+};
 
-export function video(archivo: string): { src: string; poster: string } | null {
+export function video(archivo: string): { src: string; poster: string; duracion: string } | null {
   const slug = archivo.replace(/\.png$/, "");
-  if (!CON_VIDEO.has(slug)) return null;
-  return { src: `/videos/modulos/${slug}.mp4`, poster: `/videos/modulos/${slug}.jpg` };
+  const duracion = CON_VIDEO[slug];
+  if (!duracion) return null;
+  return { src: `/videos/modulos/${slug}.mp4`, poster: `/videos/modulos/${slug}.jpg`, duracion };
 }
 
 /**

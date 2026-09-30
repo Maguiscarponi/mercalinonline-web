@@ -6,7 +6,10 @@ import BuyButtons from "@/components/BuyButtons";
 import Modulos from "@/components/Modulos";
 import { getProduct } from "@/lib/products";
 
-export const dynamic = "force-dynamic";
+// Se sirve desde el CDN y se regenera cada 5 minutos (o al instante cuando se
+// edita un producto en el admin, que llama a revalidatePath). Antes se armaba
+// en cada visita con una consulta a la base: tardaba ~0,8 s más en responder.
+export const revalidate = 300;
 
 export async function generateMetadata({
   params,

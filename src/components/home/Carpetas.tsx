@@ -21,6 +21,7 @@ export default function Carpetas() {
         alto: med?.alto ?? null,
         video: vid?.src ?? null,
         poster: vid?.poster ?? null,
+        duracion: vid?.duracion ?? null,
       };
     }),
   );

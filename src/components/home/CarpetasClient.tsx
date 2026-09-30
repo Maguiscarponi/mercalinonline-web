@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
+import { Play } from "lucide-react";
 import { track } from "@/lib/track";
 
 export type ModuloCarpeta = {
@@ -15,6 +16,7 @@ export type ModuloCarpeta = {
   alto: number | null;
   video: string | null;
   poster: string | null;
+  duracion: string | null;
 };
 
 // Color de la solapa por grupo (los mismos cinco grupos del menú de la app).
@@ -75,7 +77,12 @@ export default function CarpetasClient({ modulos }: { modulos: ModuloCarpeta[] }
             {g}
           </span>
         ))}
-        <span className="text-ink-soft normal-case tracking-normal sm:ml-auto">Tocá una carpeta para ver cómo se usa.</span>
+        <span className="inline-flex items-center gap-2 text-ink normal-case tracking-normal sm:ml-auto">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand text-cream">
+            <Play className="ml-px h-2.5 w-2.5 fill-current" />
+          </span>
+          Cada carpeta tiene su video: tocala para ver cómo se usa.
+        </span>
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-x-5 gap-y-6 md:grid-cols-3 lg:grid-cols-6">
@@ -83,7 +90,7 @@ export default function CarpetasClient({ modulos }: { modulos: ModuloCarpeta[] }
           <button
             key={mod.nombre}
             type="button"
-            className="rt-folder"
+            className="rt-folder group"
             style={{ "--tab": TAB[mod.grupo] } as CSSProperties}
             onClick={(e) => {
               ultimoFoco.current = e.currentTarget;
@@ -92,10 +99,22 @@ export default function CarpetasClient({ modulos }: { modulos: ModuloCarpeta[] }
             aria-haspopup="dialog"
           >
             <span className="rt-folder-tab" aria-hidden />
-            <span className="rt-folder-body block">
+            <span className="rt-folder-body flex flex-col">
               <span className="tag-numbered block text-[11px] text-ink-mute">{String(i + 1).padStart(2, "0")}</span>
               <span className="font-slab mt-1 block text-[19px] leading-[1.08] text-ink">{mod.nombre}</span>
               <span className="mt-2 block text-[14.5px] leading-snug text-ink-soft">{mod.corta}</span>
+              {mod.video && (
+                // Que se entienda que detrás de cada carpeta hay un video.
+                <span className="mt-auto flex items-center gap-2 pt-3">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-brand text-cream transition-transform group-hover:scale-110">
+                    <Play className="ml-0.5 h-3 w-3 fill-current" />
+                  </span>
+                  <span className="tag-numbered text-[11px] uppercase leading-tight text-ink">
+                    <span className="block whitespace-nowrap">Ver video</span>
+                    <span className="block text-ink-mute">{mod.duracion}</span>
+                  </span>
+                </span>
+              )}
             </span>
           </button>
         ))}

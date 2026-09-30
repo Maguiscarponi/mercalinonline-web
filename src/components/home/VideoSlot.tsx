@@ -33,7 +33,7 @@ export default function VideoSlot() {
 
         <div className="min-w-0 pr-2.5 sm:pr-4">
           <Ventana titulo="Mercalin — Caja" sombra="#161412" tamano={12}>
-            <VideoPantalla src="/videos/modulos/caja.mp4" poster="/videos/modulos/caja.jpg" modulo="Caja" />
+            <VideoPantalla src="/videos/modulos/caja.mp4" poster="/videos/modulos/caja-uso.jpg" modulo="Caja" />
           </Ventana>
         </div>
       </div>

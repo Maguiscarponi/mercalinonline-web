@@ -8,7 +8,10 @@ export const metadata: Metadata = {
   description: "Dudas sobre la prueba gratis, el pago, la activación y la instalación de Mercalin.",
 };
 
-export const dynamic = "force-dynamic";
+// Se sirve desde el CDN y se regenera cada 5 minutos (o al instante cuando se
+// edita un producto en el admin, que llama a revalidatePath). Antes se armaba
+// en cada visita con una consulta a la base: tardaba ~0,8 s más en responder.
+export const revalidate = 300;
 
 export default async function PreguntasFrecuentes() {
   const [producto] = await listProducts();
