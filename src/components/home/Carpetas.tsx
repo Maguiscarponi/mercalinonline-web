@@ -1,14 +1,15 @@
-import { GRUPOS, medidas } from "@/lib/modulos-data";
+import { GRUPOS, medidas, video } from "@/lib/modulos-data";
 import TrackView from "@/components/TrackView";
 import CarpetasClient, { type ModuloCarpeta } from "./CarpetasClient";
 
-// Server Component: mide las capturas en disco (medidas() usa node:fs) y le
-// pasa todo resuelto al cliente, que solo maneja qué carpeta está abierta.
+// Server Component: resuelve el video de cada módulo (o la captura, si todavía
+// no tiene video) y le pasa todo al cliente, que solo maneja qué carpeta está abierta.
 // Es la misma fuente que la ficha del producto (lib/modulos-data.ts).
 export default function Carpetas() {
   const modulos: ModuloCarpeta[] = GRUPOS.flatMap((g) =>
     g.modulos.map((m) => {
       const med = medidas(m.archivo);
+      const vid = video(m.archivo);
       return {
         nombre: m.nombre,
         grupo: g.label,
@@ -18,6 +19,8 @@ export default function Carpetas() {
         src: `/capturas/${m.archivo}`,
         ancho: med?.ancho ?? null,
         alto: med?.alto ?? null,
+        video: vid?.src ?? null,
+        poster: vid?.poster ?? null,
       };
     }),
   );

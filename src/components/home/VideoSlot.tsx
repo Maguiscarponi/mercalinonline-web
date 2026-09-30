@@ -1,14 +1,17 @@
 import Ventana from "@/components/retro/Ventana";
+import VideoPantalla from "@/components/VideoPantalla";
 
-/* ─────────────────────────────────────────────────────────────────────────
-   Sección reservada para el video del sistema (fondo rojo, pantalla completa).
+/* "Así se usa.": el tutorial de Caja en grande (fondo rojo, pantalla completa).
+   Reemplaza a la vieja sección "Caja." que recreaba la pantalla con código:
+   ahora se ve el sistema real funcionando. */
 
-   Para activarlo, pegá acá la ruta del video. Lo más simple es subir el .mp4
-   a /public (por ejemplo /public/video/mercalin.mp4) y poner "/video/mercalin.mp4".
-   Mientras esté vacío se muestra el marco con el botón de play, sin reproducir nada.
-   ───────────────────────────────────────────────────────────────────────── */
-const VIDEO_SRC = "/videos/modulos/caja.mp4";
-const VIDEO_POSTER = "/videos/modulos/caja.jpg"; // opcional: imagen de portada, ej. "/capturas/caja.png"
+const PUNTOS = [
+  "Código de barras o nombre",
+  "Cobrar con Enter o F2, precio con F3",
+  "Lista minorista y mayorista",
+  "Descuento por monto o porcentaje",
+  "Cliente asignado para vender fiado",
+];
 
 export default function VideoSlot() {
   return (
@@ -17,34 +20,20 @@ export default function VideoSlot() {
         <div>
           <h2 className="text-[clamp(44px,6vw,78px)] leading-none text-white">Así se usa.</h2>
           <p className="mt-5 max-w-sm text-[19px] leading-relaxed sm:text-[21px]">
-            El sistema funcionando, en pantalla real.
+            El sistema funcionando, en pantalla real. Empezando por la Caja, donde se vende sin tocar el mouse.
           </p>
+          <ul className="font-typewriter mt-6 max-w-sm space-y-1.5 border-t-[3px] border-white/80 pt-4 text-[14px] leading-snug">
+            {PUNTOS.map((t) => (
+              <li key={t}>
+                <span className="font-bold text-ink">/</span> {t}
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div className="min-w-0 pr-2.5 sm:pr-4">
-          <Ventana titulo="Mercalin — Demo" sombra="#161412" tamano={12}>
-            {VIDEO_SRC ? (
-              <video
-                controls
-                playsInline
-                preload="none"
-                poster={VIDEO_POSTER || undefined}
-                className="block aspect-video w-full bg-ink"
-                src={VIDEO_SRC}
-              />
-            ) : (
-              <div className="relative flex aspect-video w-full items-center justify-center bg-ink">
-                <div className="flex h-[88px] w-[88px] items-center justify-center rounded-full border-4 border-ink bg-cream shadow-[0_0_0_4px_var(--cream)] sm:h-[118px] sm:w-[118px]">
-                  <span
-                    aria-hidden
-                    className="ml-2 h-0 w-0 border-y-[18px] border-l-[28px] border-y-transparent border-l-brand sm:ml-2.5 sm:border-y-[24px] sm:border-l-[38px]"
-                  />
-                </div>
-                <p className="tag-numbered absolute bottom-3 left-4 text-[11px] uppercase text-cream/75 sm:text-[12px]">
-                  Video del sistema · próximamente
-                </p>
-              </div>
-            )}
+          <Ventana titulo="Mercalin — Caja" sombra="#161412" tamano={12}>
+            <VideoPantalla src="/videos/modulos/caja.mp4" poster="/videos/modulos/caja.jpg" modulo="Caja" />
           </Ventana>
         </div>
       </div>

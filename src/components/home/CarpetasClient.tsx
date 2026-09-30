@@ -13,6 +13,8 @@ export type ModuloCarpeta = {
   src: string;
   ancho: number | null;
   alto: number | null;
+  video: string | null;
+  poster: string | null;
 };
 
 // Color de la solapa por grupo (los mismos cinco grupos del menú de la app).
@@ -73,7 +75,7 @@ export default function CarpetasClient({ modulos }: { modulos: ModuloCarpeta[] }
             {g}
           </span>
         ))}
-        <span className="text-ink-soft normal-case tracking-normal sm:ml-auto">Tocá una carpeta para ver la pantalla real.</span>
+        <span className="text-ink-soft normal-case tracking-normal sm:ml-auto">Tocá una carpeta para ver cómo se usa.</span>
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-x-5 gap-y-6 md:grid-cols-3 lg:grid-cols-6">
@@ -128,7 +130,20 @@ export default function CarpetasClient({ modulos }: { modulos: ModuloCarpeta[] }
             </div>
 
             <div className="bg-white">
-              {m.ancho && m.alto ? (
+              {m.video ? (
+                // key: al pasar de módulo con Anterior/Siguiente arranca el video nuevo desde cero.
+                <video
+                  key={m.video}
+                  src={m.video}
+                  poster={m.poster ?? undefined}
+                  controls
+                  autoPlay
+                  playsInline
+                  className="block aspect-video w-full bg-ink"
+                >
+                  Tu navegador no puede reproducir este video.
+                </video>
+              ) : m.ancho && m.alto ? (
                 <Image
                   key={m.src}
                   src={m.src}
