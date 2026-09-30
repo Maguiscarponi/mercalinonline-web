@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getOverview, parseCanal, parsePeriodo, PERIODOS } from "@/lib/admin-stats";
 import { listClientes, countBy } from "@/lib/clientes";
+import { licenseSecretMatchesApp } from "@/lib/license";
 import { fmtArs, fmtDate, fmtPct } from "@/lib/format";
 import { Alerta, Aviso, BarRow, Columnas, PageHeader, SectionTitle, Tile } from "@/components/admin/stats";
 
@@ -33,6 +34,7 @@ export default async function AdminResumen({
   const seg = countBy(clientes, now);
 
   const sinMedicion = o.analyticsSince === null;
+  const secretoLicenciasOk = licenseSecretMatchesApp();
   const porVencer = clientes.filter((c) => c.estado === "por_vencer");
   const vencieronSemana = clientes.filter(
     (c) =>
@@ -87,6 +89,19 @@ export default async function AdminResumen({
           </div>
         }
       />
+
+      {/* Si el secreto de licencias de la web no es el mismo con el que se
+          compila la app, ninguna clave que manda la web funciona: se avisa
+          arriba de todo, antes que cualquier número. */}
+      {secretoLicenciasOk === false && (
+        <div className="mt-6">
+          <Aviso kicker="Licencias" tone="red">
+            El LICENSE_SECRET de la web (en Vercel) no es el mismo que usa la app publicada: la app rechaza las claves de
+            prueba y de compra que manda la web. Poné en Vercel el mismo valor que el secret LICENSE_SECRET de GitHub y
+            volvé a publicar la web.
+          </Aviso>
+        </div>
+      )}
 
       {/* Filtro por canal: mismo lenguaje que el de período (links, sin
           JavaScript), pero en su propia fila porque puede haber varios. */}

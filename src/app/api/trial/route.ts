@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getProduct, listProducts } from "@/lib/products";
-import { generateLicenseKey, isLicensingConfigured } from "@/lib/license";
-import { createActivation, findActiveTrialActivation } from "@/lib/activations";
+import { generateLicenseKey, isLicenseKeyValid, isLicensingConfigured } from "@/lib/license";
+import { createActivation, findActiveTrialActivation, updateActivationLicense } from "@/lib/activations";
 import { sendMail, licenseEmailHtml, ADMIN_NOTIFY_EMAIL } from "@/lib/mail";
 import { clip, recordEvent } from "@/lib/events";
 import { escapeHtml, isHoneypotFilled, isValidEmail } from "@/lib/validate";
@@ -51,6 +51,17 @@ export async function POST(req: NextRequest) {
   // pedir "otros 7 días" las veces que quisiera con el mismo mail.
   const existing = await findActiveTrialActivation(email, product.slug);
   if (existing) {
+    let licenseKey = existing.licenseKey;
+    const expiresAt = existing.expiresAt ? new Date(existing.expiresAt) : null;
+    // Si la clave guardada ya no la acepta la app (firmada con otro
+    // LICENSE_SECRET), se genera una nueva con el MISMO vencimiento: la
+    // persona recibe una clave que funciona, sin sumar días de prueba.
+    if (!isLicenseKeyValid(licenseKey) && expiresAt) {
+      const restante = Math.max(60, Math.floor((expiresAt.getTime() - Date.now()) / 1000));
+      const nueva = generateLicenseKey(email, "trial", restante);
+      licenseKey = nueva.key;
+      await updateActivationLicense(existing.id, nueva.key, nueva.expiresAt, true);
+    }
     await sendMail({
       type: "trial_license",
       to: email,
@@ -58,9 +69,9 @@ export async function POST(req: NextRequest) {
       html: licenseEmailHtml({
         productName: product.name,
         kind: "trial",
-        licenseKey: existing.licenseKey,
+        licenseKey,
         downloadUrl: product.downloadUrl,
-        expiresAt: existing.expiresAt ? new Date(existing.expiresAt) : null,
+        expiresAt,
       }),
     });
     await recordEvent({ name: "trial_resent", email, visitorId, source, campaign, props: { product: product.slug } });
