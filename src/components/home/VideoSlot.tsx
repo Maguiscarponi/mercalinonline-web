@@ -7,8 +7,8 @@ import Ventana from "@/components/retro/Ventana";
    a /public (por ejemplo /public/video/mercalin.mp4) y poner "/video/mercalin.mp4".
    Mientras esté vacío se muestra el marco con el botón de play, sin reproducir nada.
    ───────────────────────────────────────────────────────────────────────── */
-const VIDEO_SRC = "";
-const VIDEO_POSTER = ""; // opcional: imagen de portada, ej. "/capturas/caja.png"
+const VIDEO_SRC = "/videos/modulos/caja.mp4";
+const VIDEO_POSTER = "/videos/modulos/caja.jpg"; // opcional: imagen de portada, ej. "/capturas/caja.png"
 
 export default function VideoSlot() {
   return (
@@ -27,7 +27,7 @@ export default function VideoSlot() {
               <video
                 controls
                 playsInline
-                preload="metadata"
+                preload="none"
                 poster={VIDEO_POSTER || undefined}
                 className="block aspect-video w-full bg-ink"
                 src={VIDEO_SRC}

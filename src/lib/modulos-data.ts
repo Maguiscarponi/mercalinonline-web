@@ -304,6 +304,27 @@ export const GRUPOS: Grupo[] = [
 ];
 
 /**
+ * Módulos que ya tienen tutorial en video: /public/videos/modulos/<nombre de la
+ * captura>.mp4, con su portada .jpg al lado. Es una lista fija a propósito (en
+ * vez de mirar el disco como medidas()): leer esa carpeta desde el servidor
+ * haría que Vercel empaquete los videos dentro de la función. Los módulos que
+ * no están acá siguen mostrando la captura.
+ */
+const CON_VIDEO = new Set([
+  "caja", "caja-gestion", "clientes", "devoluciones",
+  "productos", "proveedores", "categorias", "vencimientos", "inventario", "etiquetas", "combos",
+  "presupuestos", "promociones", "facturacion", "usuarios",
+  "dashboard", "reportes",
+  "auditoria", "configuracion",
+]);
+
+export function video(archivo: string): { src: string; poster: string } | null {
+  const slug = archivo.replace(/\.png$/, "");
+  if (!CON_VIDEO.has(slug)) return null;
+  return { src: `/videos/modulos/${slug}.mp4`, poster: `/videos/modulos/${slug}.jpg` };
+}
+
+/**
  * Lee ancho y alto directo de la cabecera IHDR del PNG (bytes 16 a 24).
  * Evita sumar una dependencia solo para saber el tamaño de una imagen.
  */

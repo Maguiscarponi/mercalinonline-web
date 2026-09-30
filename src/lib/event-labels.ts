@@ -11,6 +11,7 @@ export const EVENT_LABELS: Record<string, string> = {
   demo_section_viewed: "Llegó a la demo",
   demo_module_viewed: "Miró un módulo de la demo",
   demo_capture_opened: "Abrió una captura",
+  demo_video_opened: "Miró el video de un módulo",
   pricing_viewed: "Llegó al precio",
   trial_form_started: "Empezó el formulario de prueba",
   buy_form_started: "Empezó el formulario de compra",
@@ -78,6 +79,7 @@ export function eventDetail(name: string, props: Props, path: string | null): st
     case "demo_module_viewed":
       return [p.group, p.module].filter(Boolean).join(" › ");
     case "demo_capture_opened":
+    case "demo_video_opened":
     case "hero_demo_tab_clicked":
       return String(p.module ?? "");
     case "payment_approved":

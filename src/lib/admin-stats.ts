@@ -211,7 +211,7 @@ export async function getOverview(dias: number, canal = "todos"): Promise<Overvi
              COUNT(DISTINCT visitor_id)::int AS visitors,
              COUNT(*)::int AS interactions
       FROM events
-      WHERE name IN ('demo_module_viewed','demo_capture_opened') AND created_at >= ${since()} AND ${notDev()} ${bySource()}
+      WHERE name IN ('demo_module_viewed','demo_capture_opened','demo_video_opened') AND created_at >= ${since()} AND ${notDev()} ${bySource()}
       GROUP BY 1 ORDER BY visitors DESC, interactions DESC LIMIT 12
     ` as unknown as Promise<Overview["modules"]>),
     tm("q8_buttons", () => sql`

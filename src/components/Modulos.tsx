@@ -1,5 +1,6 @@
 import CapturaModal from "./CapturaModal";
-import { GRUPOS, medidas } from "@/lib/modulos-data";
+import VideoModal from "./VideoModal";
+import { GRUPOS, medidas, video } from "@/lib/modulos-data";
 
 // Mismo color de solapa por grupo que las carpetas de la home.
 const TAB: Record<string, string> = {
@@ -37,6 +38,7 @@ export default function Modulos() {
             <div className="mt-7 grid gap-8 pr-2 sm:grid-cols-2">
               {grupo.modulos.map((m) => {
                 const med = medidas(m.archivo);
+                const vid = video(m.archivo);
                 return (
                   <article key={m.nombre} className="rt-card flex flex-col p-6">
                     <span
@@ -56,7 +58,9 @@ export default function Modulos() {
                       ))}
                     </ul>
 
-                    {med && (
+                    {vid ? (
+                      <VideoModal src={vid.src} poster={vid.poster} titulo={m.nombre} />
+                    ) : med && (
                       <CapturaModal
                         src={`/capturas/${m.archivo}`}
                         titulo={m.nombre}

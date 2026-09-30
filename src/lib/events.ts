@@ -14,6 +14,7 @@ export const CLIENT_EVENTS = new Set([
   "demo_section_viewed",
   "demo_module_viewed",
   "demo_capture_opened",
+  "demo_video_opened",
   "pricing_viewed",
   "trial_form_started",
   "buy_form_started",
