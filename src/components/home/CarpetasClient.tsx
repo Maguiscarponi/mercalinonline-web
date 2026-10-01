@@ -127,6 +127,7 @@ export default function CarpetasClient({ modulos }: { modulos: ModuloCarpeta[] }
       {m && abierto !== null && createPortal(
         <div
           role="dialog"
+          data-lenis-prevent
           aria-modal="true"
           aria-label={`Módulo ${m.nombre}`}
           onClick={cerrar}

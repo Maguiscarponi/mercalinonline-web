@@ -2,6 +2,7 @@ import Hero from "@/components/home/Hero";
 import Rubros from "@/components/home/Rubros";
 import Carpetas from "@/components/home/Carpetas";
 import VideoSlot from "@/components/home/VideoSlot";
+import RevelarSecciones from "@/components/home/RevelarSecciones";
 import { DemoConsejosEtiquetas } from "@/components/home/Demos";
 import Preguntas from "@/components/home/Preguntas";
 import Precio from "@/components/home/Precio";
@@ -32,6 +33,7 @@ export default async function Home() {
       <div className="rt-diferida"><DemoConsejosEtiquetas /></div>
       <div className="rt-diferida"><Preguntas priceArs={producto?.priceArs ?? 65000} /></div>
       {producto && <div className="rt-diferida"><Precio product={producto} /></div>}
+      <RevelarSecciones />
     </>
   );
 }

@@ -66,6 +66,7 @@ export default function VideoModal({ src, poster, titulo }: { src: string; poste
       {abierto && (
         <div
           role="dialog"
+          data-lenis-prevent
           aria-modal="true"
           aria-label={`Video de ${titulo}`}
           onClick={cerrar}

@@ -460,29 +460,37 @@ body {
    el navegador no dibuja una sección hasta que se acerca a la pantalla (el HTML
    está entero igual, así que Google la lee completa). contain-intrinsic-size
    reserva su alto mientras tanto -- "auto" recuerda el alto real una vez que se
-   vio, así la barra de scroll no salta. Al entrar, cada sección aparece con un
-   fundido hacia arriba atado al scroll (solo CSS, sin JavaScript: si el
-   navegador no lo soporta, se ve directo sin animación). */
+   vio, así la barra de scroll no salta. */
 .rt-diferida {
   content-visibility: auto;
   contain-intrinsic-size: auto 900px;
 }
-@keyframes rt-aparecer {
-  from {
-    opacity: 0;
-    transform: translateY(56px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+/* Aparición al llegar con el scroll (lo maneja RevelarSecciones.tsx): la
+   sección arranca oculta un poco más abajo y entra con un fundido hacia
+   arriba cuando asoma en la pantalla. Sin JavaScript no se oculta nada. */
+.rt-diferida.rt-oculta > * {
+  opacity: 0;
+  transform: translateY(80px);
+  transition:
+    opacity 0.9s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .rt-diferida > * {
-      animation: rt-aparecer linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 35%;
-    }
-  }
+.rt-diferida.rt-oculta.rt-visible > * {
+  opacity: 1;
+  transform: none;
+}
+
+/* Scroll suave (Lenis, ver ScrollSuave.tsx). Reglas que pide la librería. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
