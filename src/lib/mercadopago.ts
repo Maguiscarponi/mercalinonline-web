@@ -17,6 +17,10 @@ export interface CreatePreferenceInput {
   productSlug: string;
   productName: string;
   priceArs: number;
+  // 0 = sin límite (Mercado Pago ofrece sus cuotas con interés, como siempre).
+  // 1 = un solo pago. Más de 1 = plan en cuotas fijas: priceArs ya es el total
+  // financiado y el cobro se limita a tarjeta de crédito.
+  maxInstallments: number;
   email: string;
   siteUrl: string; // base URL, ej. https://mercalin.online
   visitorId?: string | null;
@@ -56,6 +60,27 @@ export async function createCheckoutPreference(input: CreatePreferenceInput): Pr
           currency_id: "ARS",
         },
       ],
+      // Un pago: sin cuotas, para que las "cuotas sin interés" activadas en la
+      // cuenta (que las paga el vendedor) no se puedan usar sobre el precio de
+      // contado. Plan en cuotas: solo crédito -- con débito o efectivo el
+      // cliente pagaría el total financiado sin financiar nada.
+      ...(input.maxInstallments > 1
+        ? {
+            payment_methods: {
+              installments: input.maxInstallments,
+              default_installments: input.maxInstallments,
+              excluded_payment_types: [
+                { id: "debit_card" },
+                { id: "prepaid_card" },
+                { id: "ticket" },
+                { id: "atm" },
+                { id: "bank_transfer" },
+              ],
+            },
+          }
+        : input.maxInstallments === 1
+        ? { payment_methods: { installments: 1 } }
+        : {}),
       payer: { email: input.email },
       external_reference: buildExternalReference(input),
       back_urls: {

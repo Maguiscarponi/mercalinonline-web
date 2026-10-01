@@ -5,6 +5,7 @@ import ProductFrame from "@/components/ProductFrame";
 import BuyButtons from "@/components/BuyButtons";
 import Modulos from "@/components/Modulos";
 import { getProduct } from "@/lib/products";
+import { planCuotas, pesos } from "@/lib/cuotas";
 
 // Se sirve desde el CDN y se regenera cada 5 minutos (o al instante cuando se
 // edita un producto en el admin, que llama a revalidatePath). Antes se armaba
@@ -26,6 +27,7 @@ export default async function ProductoDetalle({ params }: { params: Promise<{ sl
   const { slug } = await params;
   const product = await getProduct(slug);
   if (!product) notFound();
+  const plan = planCuotas(product);
 
   return (
     <>
@@ -61,6 +63,14 @@ export default async function ProductoDetalle({ params }: { params: Promise<{ sl
               </span>
               <span className="tag-numbered text-xs uppercase text-ink-mute">ARS</span>
             </div>
+            {plan && (
+              <p className="font-slab mt-2 text-[20px] leading-tight text-ink">
+                o {plan.cuotas} cuotas fijas de <span className="text-brand">{pesos(plan.montoCuota)}</span>
+                <span className="font-typewriter mt-1 block text-[12.5px] font-normal leading-snug text-ink-soft">
+                  Con tarjeta de crédito (total {pesos(plan.total)}). La licencia es tuya para siempre.
+                </span>
+              </p>
+            )}
             <BuyButtons product={product} className="mt-5" location="product_top" />
 
             <div className="mt-8 border-t-[3px] border-ink pt-5">

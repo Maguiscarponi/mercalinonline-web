@@ -101,7 +101,12 @@ export async function POST(req: NextRequest) {
     email,
     visitorId: visitorId || null,
     source: source || null,
-    props: { product: product.slug, amount: payment.transaction_amount ?? product.priceArs, payment: dataId },
+    props: {
+      product: product.slug,
+      amount: payment.transaction_amount ?? product.priceArs,
+      installments: payment.installments ?? 1,
+      payment: dataId,
+    },
   });
 
   const { sent } = await sendMail({
@@ -122,7 +127,9 @@ export async function POST(req: NextRequest) {
     type: "admin_notify",
     to: ADMIN_NOTIFY_EMAIL,
     subject: `Nueva venta: ${email}`,
-    html: `<p>${escapeHtml(email)} compró ${escapeHtml(product.name)} por $${payment.transaction_amount ?? product.priceArs}.</p>`,
+    html: `<p>${escapeHtml(email)} compró ${escapeHtml(product.name)} por $${payment.transaction_amount ?? product.priceArs}${
+      (payment.installments ?? 1) > 1 ? ` en ${payment.installments} cuotas` : ""
+    }.</p>`,
   });
 
   return NextResponse.json({ ok: true });

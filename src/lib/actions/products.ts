@@ -23,6 +23,8 @@ async function parseProductForm(formData: FormData, existingImageUrl: string | n
     tagline: String(formData.get("tagline") ?? "").trim(),
     description: String(formData.get("description") ?? "").trim(),
     priceArs: Number(formData.get("priceArs") ?? 0),
+    installmentsCount: Math.max(0, Math.trunc(Number(formData.get("installmentsCount") ?? 0)) || 0),
+    installmentArs: Math.max(0, Math.trunc(Number(formData.get("installmentArs") ?? 0)) || 0),
     idealFor,
     featureGroups,
     downloadUrl: String(formData.get("downloadUrl") ?? "").trim() || null,

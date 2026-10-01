@@ -24,6 +24,11 @@ CREATE TABLE IF NOT EXISTS products (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Plan en cuotas fijas (0 cuotas = no se ofrece). El total que paga el
+-- cliente es installments_count x installment_ars.
+ALTER TABLE products ADD COLUMN IF NOT EXISTS installments_count INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE products ADD COLUMN IF NOT EXISTS installment_ars INTEGER NOT NULL DEFAULT 0;
+
 -- carousel_slides existió para el carrusel de la home vieja, que ya no está
 -- en el sitio (etapa de rediseño). Se deja de crear en instalaciones nuevas;
 -- si tu base ya tiene la tabla con datos, no pasa nada por dejarla — no la

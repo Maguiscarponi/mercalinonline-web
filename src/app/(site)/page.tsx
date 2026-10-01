@@ -7,6 +7,7 @@ import { DemoConsejosEtiquetas } from "@/components/home/Demos";
 import Preguntas from "@/components/home/Preguntas";
 import Precio from "@/components/home/Precio";
 import { listProducts } from "@/lib/products";
+import { planCuotas } from "@/lib/cuotas";
 
 // Se sirve desde el CDN y se regenera cada 5 minutos (o al instante cuando se
 // edita un producto en el admin, que llama a revalidatePath). Antes se armaba
@@ -31,7 +32,7 @@ export default async function Home() {
       <div className="rt-diferida"><Carpetas /></div>
       <div className="rt-diferida"><VideoSlot /></div>
       <div className="rt-diferida"><DemoConsejosEtiquetas /></div>
-      <div className="rt-diferida"><Preguntas priceArs={producto?.priceArs ?? 65000} /></div>
+      <div className="rt-diferida"><Preguntas priceArs={producto?.priceArs ?? 65000} plan={producto ? planCuotas(producto) : null} /></div>
       {producto && <div className="rt-diferida"><Precio product={producto} /></div>}
       <RevelarSecciones />
     </>

@@ -65,6 +65,32 @@ export default function ProductForm({
           className="admin-input"
         />
       </Field>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Cuotas fijas: cantidad (0 = no ofrecer)">
+          <input
+            name="installmentsCount"
+            type="number"
+            min={0}
+            max={12}
+            defaultValue={defaultValues?.installmentsCount ?? 0}
+            className="admin-input"
+          />
+        </Field>
+        <Field label="Valor de cada cuota (ARS)">
+          <input
+            name="installmentArs"
+            type="number"
+            min={0}
+            defaultValue={defaultValues?.installmentArs ?? 0}
+            className="admin-input"
+          />
+        </Field>
+        <p className="text-xs leading-relaxed text-foreground/50 sm:col-span-2">
+          El total en cuotas (cantidad × valor) puede ser más alto que el precio en un pago: cubre lo que Mercado Pago
+          te cobra por financiar. Activá esa misma cantidad en Mercado Pago, en Costos → Checkout → Por ofrecer cuotas;
+          si no, el cliente paga además el interés de su tarjeta.
+        </p>
+      </div>
       <Field label="Ideal para (separado por comas)">
         <input
           name="idealFor"

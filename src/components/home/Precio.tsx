@@ -5,6 +5,7 @@ import Awning from "@/components/retro/Awning";
 import Barcode from "@/components/retro/Barcode";
 import TicketTag from "@/components/retro/TicketTag";
 import type { Product } from "@/lib/products";
+import { planCuotas, pesos } from "@/lib/cuotas";
 
 /* Precio: mismo lenguaje que el hero (toldo, crema, sello y ticket). El precio
    sale del producto en la base, no está escrito acá. Las dos puertas de
@@ -12,14 +13,14 @@ import type { Product } from "@/lib/products";
 
 const INCLUYE = ["Actualizaciones incluidas", "Soporte por WhatsApp", "Windows"];
 
-const PASOS = [
-  ["1", "Pedís la prueba con tu mail, nada más."],
-  ["2", "Instalás y probás 7 días con tus productos."],
-  ["3", "Si te sirve, comprás con un solo pago."],
-];
-
 export default function Precio({ product }: { product: Product }) {
-  const precio = `$${product.priceArs.toLocaleString("es-AR")}`;
+  const precio = pesos(product.priceArs);
+  const plan = planCuotas(product);
+  const PASOS = [
+    ["1", "Pedís la prueba con tu mail, nada más."],
+    ["2", "Instalás y probás 7 días con tus productos."],
+    ["3", plan ? "Si te sirve, lo comprás en un pago o en cuotas." : "Si te sirve, comprás con un solo pago."],
+  ];
 
   return (
     <section id="precio" className="relative min-h-[100svh] scroll-mt-16 overflow-hidden border-t-[3px] border-ink">
@@ -28,9 +29,23 @@ export default function Precio({ product }: { product: Product }) {
 
       <div className="mx-auto grid max-w-[1240px] items-center gap-12 px-5 pb-20 pt-10 sm:px-8 lg:grid-cols-[1.2fr_1fr] lg:gap-10 lg:pt-14">
         <div className="min-w-0">
-          <p className="font-slab text-[clamp(64px,12vw,152px)] leading-none tracking-[-0.02em] text-ink">{precio}</p>
+          <p className="rt-label">Precio de lanzamiento</p>
+          <p className="font-slab mt-2 text-[clamp(64px,12vw,152px)] leading-none tracking-[-0.02em] text-ink">{precio}</p>
           <p className="font-slab mt-2 text-[clamp(30px,3.7vw,52px)] leading-[1.04] text-brand">Pago único.</p>
-          <p className="font-slab text-[clamp(30px,3.7vw,52px)] leading-[1.04] text-ink">Sin cuotas mensuales.</p>
+          <p className="font-slab text-[clamp(30px,3.7vw,52px)] leading-[1.04] text-ink">Sin abono mensual.</p>
+
+          {/* Cuotas fijas: siempre con el total a la vista, y aclarando que no
+              es un abono (se termina de pagar y la licencia queda). */}
+          {plan && (
+            <div className="mt-6 max-w-[36rem] border-[3px] border-ink bg-paper-warm px-4 py-3.5">
+              <p className="font-slab text-[clamp(21px,2.4vw,30px)] leading-[1.1] text-ink">
+                O en {plan.cuotas} cuotas fijas de <span className="text-brand">{pesos(plan.montoCuota)}</span>
+              </p>
+              <p className="font-typewriter mt-1.5 text-[13px] leading-snug text-ink-soft">
+                Con tarjeta de crédito (total {pesos(plan.total)}). Terminás de pagar y es tuyo para siempre: no es un abono.
+              </p>
+            </div>
+          )}
 
           <ul className="tag-numbered mt-7 grid gap-x-6 gap-y-2.5 text-[13.5px] uppercase sm:grid-cols-2 sm:max-w-[36rem]">
             {INCLUYE.map((t) => (
@@ -91,7 +106,9 @@ export default function Precio({ product }: { product: Product }) {
             <div className="mt-3 border-2 border-ink bg-paper-warm p-4">
               <p className="font-slab text-[19px] leading-tight">COMPRAR LA LICENCIA · {precio}</p>
               <p className="font-typewriter mt-1.5 text-[12.5px] leading-snug text-ink-soft">
-                Un solo pago con Mercado Pago. La clave completa no vence.
+                {plan
+                  ? `En un pago, o en ${plan.cuotas} cuotas fijas de ${pesos(plan.montoCuota)} con tarjeta. La licencia no vence nunca.`
+                  : "Un solo pago con Mercado Pago. La clave completa no vence."}
               </p>
               <Link
                 href={`/carrito?product=${product.slug}`}

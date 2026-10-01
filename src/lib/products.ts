@@ -18,6 +18,9 @@ export interface Product {
   tagline: string;
   description: string;
   priceArs: number;
+  // Plan en cuotas fijas (ver lib/cuotas.ts). 0 cuotas = no se ofrece.
+  installmentsCount: number;
+  installmentArs: number;
   idealFor: string[];
   featureGroups: FeatureGroup[];
   downloadUrl: string | null;
@@ -33,6 +36,8 @@ interface ProductRow {
   tagline: string;
   description: string;
   price_ars: number;
+  installments_count?: number | null;
+  installment_ars?: number | null;
   ideal_for: string;
   feature_groups: string;
   download_url: string | null;
@@ -49,6 +54,8 @@ function rowToProduct(row: ProductRow): Product {
     tagline: row.tagline,
     description: row.description,
     priceArs: row.price_ars,
+    installmentsCount: row.installments_count ?? 0,
+    installmentArs: row.installment_ars ?? 0,
     idealFor: JSON.parse(row.ideal_for),
     featureGroups: JSON.parse(row.feature_groups),
     downloadUrl: row.download_url,
@@ -92,6 +99,8 @@ export interface ProductInput {
   tagline: string;
   description: string;
   priceArs: number;
+  installmentsCount: number;
+  installmentArs: number;
   idealFor: string[];
   featureGroups: FeatureGroup[];
   downloadUrl: string | null;
@@ -103,8 +112,9 @@ export async function createProduct(input: ProductInput): Promise<Product> {
   const sql = getDb();
   const id = randomUUID();
   await sql`
-    INSERT INTO products (id, slug, name, tagline, description, price_ars, ideal_for, feature_groups, download_url, image_url, active)
+    INSERT INTO products (id, slug, name, tagline, description, price_ars, installments_count, installment_ars, ideal_for, feature_groups, download_url, image_url, active)
     VALUES (${id}, ${input.slug}, ${input.name}, ${input.tagline}, ${input.description}, ${input.priceArs},
+            ${input.installmentsCount}, ${input.installmentArs},
             ${JSON.stringify(input.idealFor)}, ${JSON.stringify(input.featureGroups)}, ${input.downloadUrl},
             ${input.imageUrl}, ${input.active ? 1 : 0})
   `;
@@ -116,7 +126,8 @@ export async function updateProduct(id: string, input: ProductInput): Promise<Pr
   await sql`
     UPDATE products SET
       slug = ${input.slug}, name = ${input.name}, tagline = ${input.tagline}, description = ${input.description},
-      price_ars = ${input.priceArs}, ideal_for = ${JSON.stringify(input.idealFor)},
+      price_ars = ${input.priceArs}, installments_count = ${input.installmentsCount},
+      installment_ars = ${input.installmentArs}, ideal_for = ${JSON.stringify(input.idealFor)},
       feature_groups = ${JSON.stringify(input.featureGroups)}, download_url = ${input.downloadUrl},
       image_url = ${input.imageUrl}, active = ${input.active ? 1 : 0}
     WHERE id = ${id}

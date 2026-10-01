@@ -1,6 +1,7 @@
 import FaqList from "@/components/FaqList";
 import { getFaqs } from "@/lib/faqs";
 import { listProducts } from "@/lib/products";
+import { planCuotas } from "@/lib/cuotas";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -21,7 +22,7 @@ export default async function PreguntasFrecuentes() {
         <p className="rt-label">Preguntas frecuentes</p>
         <h1 className="mt-3 text-[clamp(38px,6vw,64px)] leading-[1.05] text-ink">Dudas antes de comprar.</h1>
         <div className="mt-10">
-          <FaqList faqs={getFaqs(producto?.priceArs ?? 65000)} columnas={1} />
+          <FaqList faqs={getFaqs(producto?.priceArs ?? 65000, producto ? planCuotas(producto) : null)} columnas={1} />
         </div>
       </section>
     </>

@@ -210,7 +210,7 @@ export function licenseEmailHtml(opts: {
   const intro = gifted
     ? `Te regalamos tu licencia de Mercalin. <strong style="color:${INK};">No vence</strong> ni se renueva.`
     : esFull
-    ? `Tu licencia de Mercalin ya es tuya. <strong style="color:${INK};">No vence</strong> ni se renueva — la pagaste una sola vez.`
+    ? `Tu licencia de Mercalin ya es tuya. <strong style="color:${INK};">No vence</strong> ni se renueva: es tuya para siempre.`
     : `Tenés <strong style="color:${INK};">7 días</strong> para probarla con tus productos reales, hasta el ${expiresAt ? fechaAr(expiresAt) : ""}. Después se bloquea, pero no se borra nada.`;
 
   return cascara(`

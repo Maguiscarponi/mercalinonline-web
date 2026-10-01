@@ -1,12 +1,17 @@
+import { pesos, type PlanCuotas } from "./cuotas";
+
 export type Faq = { q: string; a: string };
 
 // Función, no una lista fija: el precio sale del producto (lo que se cargó
 // en el panel admin, Productos → editar) para que cambiarlo ahí lo actualice
 // acá también, sin tener que tocar código. La usan preguntas-frecuentes/
 // page.tsx (todas) y el teaser de la home (home/Preguntas.tsx, con todas).
-export function getFaqs(priceArs: number): Faq[] {
+export function getFaqs(priceArs: number, plan: PlanCuotas | null = null): Faq[] {
   const precioFmt = `$${priceArs.toLocaleString("es-AR")} ARS`;
-  return [
+  const enCuotas = plan
+    ? `${plan.cuotas} cuotas fijas de ${pesos(plan.montoCuota)} con tarjeta de crédito (total ${pesos(plan.total)})`
+    : "";
+  const faqs: Faq[] = [
   {
     q: "¿Cómo funciona la prueba de 7 días?",
     a: "Al pedirla te llega un mail con el instalador y una clave de prueba. Los 7 días se cuentan desde que se genera esa clave. La instalás y activás como cualquier producto completo.",
@@ -17,11 +22,11 @@ export function getFaqs(priceArs: number): Faq[] {
   },
   {
     q: "¿Cuánto cuesta?",
-    a: `${precioFmt}, pago único.`,
+    a: plan ? `${precioFmt} en un pago, o ${enCuotas}. Es precio de lanzamiento.` : `${precioFmt}, pago único.`,
   },
   {
     q: "¿Es una suscripción?",
-    a: "No. Se paga una sola vez. La clave completa no vence ni se renueva.",
+    a: "No. Se compra una sola vez y la licencia es tuya para siempre: la clave completa no vence ni se renueva.",
   },
   {
     q: "¿Cómo se activa?",
@@ -52,4 +57,13 @@ export function getFaqs(priceArs: number): Faq[] {
     a: "No. Las actualizaciones vienen incluidas: el sistema se actualiza solo y no te cobramos de nuevo.",
   },
   ];
+
+  if (plan) {
+    const despuesDe = faqs.findIndex((f) => f.q === "¿Es una suscripción?");
+    faqs.splice(despuesDe + 1, 0, {
+      q: "¿Se puede pagar en cuotas?",
+      a: `Sí: ${enCuotas}. No es un abono: cuando terminás de pagar las ${plan.cuotas} cuotas no pagás nunca más. La licencia la recibís apenas se aprueba el pago, no al final de las cuotas.`,
+    });
+  }
+  return faqs;
 }

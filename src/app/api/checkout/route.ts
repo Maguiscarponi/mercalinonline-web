@@ -4,6 +4,7 @@ import { createCheckoutPreference, isPaymentsConfigured } from "@/lib/mercadopag
 import { clip, recordEvent } from "@/lib/events";
 import { isHoneypotFilled, isValidEmail } from "@/lib/validate";
 import { tooManyRequests } from "@/lib/rate-limit";
+import { planCuotas, pesos } from "@/lib/cuotas";
 
 export async function POST(req: NextRequest) {
   if (!isPaymentsConfigured()) {
@@ -42,13 +43,26 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Producto no encontrado." }, { status: 404 });
   }
 
+  // El monto se decide acá, con lo que hay cargado en el producto: del
+  // navegador solo llega qué forma de pago eligió.
+  const planDelProducto = planCuotas(product);
+  const enCuotas = body?.plan === "cuotas";
+  if (enCuotas && !planDelProducto) {
+    return NextResponse.json({ error: "Esa forma de pago no está disponible." }, { status: 400 });
+  }
+  const plan = enCuotas ? planDelProducto : null;
+  const amount = plan ? plan.total : product.priceArs;
+
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || `${req.nextUrl.protocol}//${req.nextUrl.host}`;
 
   try {
     const initPoint = await createCheckoutPreference({
       productSlug: product.slug,
-      productName: product.name,
-      priceArs: product.priceArs,
+      productName: plan ? `${product.name} (${plan.cuotas} cuotas de ${pesos(plan.montoCuota)})` : product.name,
+      priceArs: amount,
+      // Si el producto ofrece cuotas fijas, el pago de contado va sin cuotas
+      // (ver mercadopago.ts). Si no las ofrece, queda como siempre.
+      maxInstallments: plan ? plan.cuotas : planDelProducto ? 1 : 0,
       email,
       siteUrl,
       visitorId,
@@ -60,7 +74,7 @@ export async function POST(req: NextRequest) {
       visitorId,
       source,
       campaign,
-      props: { product: product.slug, amount: product.priceArs },
+      props: { product: product.slug, amount, plan: plan ? "cuotas" : "contado" },
     });
     return NextResponse.json({ url: initPoint });
   } catch (err) {
