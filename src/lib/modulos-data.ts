@@ -201,12 +201,13 @@ export const GRUPOS: Grupo[] = [
         nombre: "Promociones",
         archivo: "promociones.png",
         corta: "Porcentaje, monto fijo, 2x1 y 3x2, aplicados en la caja.",
-        desc: "Descuentos que se aplican solos en la caja.",
+        desc: "Descuentos que se aplican solos en la caja, con su cartel listo para la góndola.",
         items: [
           "Porcentaje, monto fijo, 2x1 y 3x2",
-          "A todo el comercio o a una categoría",
+          "A todo el comercio, a una categoría o a un producto",
           "Válidas entre dos fechas",
           "Condiciones por horario, días y cantidad",
+          "Cartel para imprimir y pegar en la góndola",
         ],
       },
       {
@@ -216,9 +217,9 @@ export const GRUPOS: Grupo[] = [
         desc: "Facturación electrónica real, integrada a la venta — no un módulo aparte que hay que ir a completar.",
         items: [
           "Factura A, B o C según la condición del cliente",
-          "Se emite sola al cobrar, con CAE real de ARCA",
+          "Se emite sola al cobrar, o solo cuando vos la pedís",
           "Nota de crédito automática si hay una devolución",
-          "Configuración guiada en 3 pasos, sin conocimientos técnicos",
+          "CAE real de ARCA, configuración guiada en 3 pasos",
           "Ticket con el QR oficial de ARCA",
           "Reintentar pendientes con un clic si falló la conexión",
         ],

@@ -33,7 +33,7 @@ export function getFaqs(priceArs: number): Faq[] {
   },
   {
     q: "¿Tiene facturación electrónica (ARCA)?",
-    a: "Sí. Emite Factura A, B o C real ante ARCA al momento de cobrar, con CAE, y nota de crédito automática si hay una devolución. La configuración es guiada, en 3 pasos.",
+    a: "Sí. Emite Factura A, B o C real ante ARCA, con CAE: sola al momento de cobrar, o solo cuando vos la pedís (lo elegís en la configuración). Si hay una devolución, hace la nota de crédito automáticamente. La configuración es guiada, en 3 pasos.",
   },
   {
     q: "¿En qué sistemas operativos funciona?",
