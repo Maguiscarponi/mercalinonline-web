@@ -128,6 +128,20 @@ function bajaFooter(unsubscribeUrl: string): string {
   </p>`;
 }
 
+// Windows y los navegadores avisan cuando un instalador es nuevo y todavía lo
+// bajó poca gente ("no se descarga habitualmente", "Windows protegió su PC").
+// Sin esta explicación, quien no lo sabe cree que es un virus y no instala.
+function avisoWindows(): string {
+  return `<div style="margin:14px 0 0;padding:14px;background:#f5f2ea;border-radius:5px;font-family:${F_BODY};font-size:13.5px;line-height:1.55;color:${INK_SOFT};">
+      <strong style="color:${INK};font-size:14.5px;">¿Windows te muestra un aviso? Es normal.</strong>
+      <br>Somos nuevos: Mercalin recién sale, y Windows avisa cuando un programa todavía lo descargó poca gente. Le pasa a todos los programas nuevos.
+      <br><br><strong style="color:${INK};">Al descargar</strong> puede aparecer este cartel. Tocá <strong style="color:${INK};">Ver más</strong> (o los tres puntitos) y elegí <strong style="color:${INK};">Conservar</strong>:
+      <img src="https://www.mercalinonline.com/mail/aviso-descarga.png" width="340" alt="Cartel de Windows: “Mercalin-setup.exe no se descarga habitualmente”. Tocá “Ver más” y elegí “Conservar”." style="display:block;margin:10px 0 12px;width:340px;max-width:100%;height:auto;border-radius:6px;">
+      <strong style="color:${INK};">Al abrir el instalador</strong>, si aparece el cartel azul <em>“Windows protegió su PC”</em>: tocá <strong style="color:${INK};">Más información</strong> y después <strong style="color:${INK};">Ejecutar de todas formas</strong>.
+      <br><br>¿No te sale? ${linkWhatsApp("Escribinos por WhatsApp")} y te ayudamos en el momento.
+    </div>`;
+}
+
 // Día 3 de la prueba: todavía activa, es solo un empujón para que la instale
 // si no lo hizo, o siga usándola si ya arrancó.
 export function trialDay3EmailHtml(opts: { productName: string; siteUrl: string; unsubscribeUrl: string }): string {
@@ -136,8 +150,9 @@ export function trialDay3EmailHtml(opts: { productName: string; siteUrl: string;
     ${encabezado()}
     <h1 style="margin:0 0 12px;font-family:${F_BODY};font-size:21px;color:${INK};">¿Ya instalaste Mercalin?</h1>
     <p style="margin:0 0 14px;font-size:15px;line-height:1.6;color:${INK_SOFT};">Van 3 días de tu prueba gratis. Si todavía no la instalaste, es un buen momento — te quedan unos días para probarla con tus productos reales, no con datos de ejemplo.</p>
-    <p style="margin:0 0 22px;font-size:15px;line-height:1.6;color:${INK_SOFT};">Si te trabaste en algo, ${linkWhatsApp()} y te ayudamos.</p>
-    <p style="margin:0;font-size:13.5px;font-family:${F_BODY};"><a href="${siteUrl}/preguntas-frecuentes" style="color:${BRAND};">Ver preguntas frecuentes →</a></p>
+    <p style="margin:0 0 6px;font-size:15px;line-height:1.6;color:${INK_SOFT};">Si te trabaste en algo, ${linkWhatsApp()} y te ayudamos.</p>
+    ${avisoWindows()}
+    <p style="margin:22px 0 0;font-size:13.5px;font-family:${F_BODY};"><a href="${siteUrl}/preguntas-frecuentes" style="color:${BRAND};">Ver preguntas frecuentes →</a></p>
     ${bajaFooter(unsubscribeUrl)}
   `);
 }
@@ -206,6 +221,7 @@ export function licenseEmailHtml(opts: {
     <p style="margin:0 0 6px;font-size:15px;font-weight:bold;color:${INK};">1. Descargá el instalador</p>
     ${downloadUrl ? boton(downloadUrl, "Descargar Mercalin-setup.exe") : `<p style="margin:0;font-size:14px;color:${INK_SOFT};">Todavía no hay un link de descarga cargado — respondé este mail y te lo mandamos a mano.</p>`}
     <p style="margin:12px 0 0;font-size:13.5px;line-height:1.5;color:${INK_SOFT};"><strong style="color:${BRAND};">Importante:</strong> instalalo en tu computadora con Windows, no en el celular. Mercalin no funciona en Android ni iOS.</p>
+    ${downloadUrl ? avisoWindows() : ""}
 
     <p style="margin:24px 0 6px;font-size:15px;font-weight:bold;color:${INK};">2. Activalo con este código${esFull ? " (no vence)" : ""}</p>
     <p style="margin:0;padding:12px 14px;background:#f5f2ea;border-radius:5px;font-family:${F_MONO};font-size:13px;color:${INK};word-break:break-all;line-height:1.5;">${licenseKey}</p>

@@ -40,6 +40,10 @@ export function getFaqs(priceArs: number): Faq[] {
     a: "Windows.",
   },
   {
+    q: "Windows me muestra un aviso al descargar o instalar, ¿es normal?",
+    a: "Sí. Mercalin es un programa nuevo y Windows avisa cuando todavía lo descargó poca gente. Si al descargar dice “no se descarga habitualmente”, tocá “Ver más” (o los tres puntitos) y elegí “Conservar”. Si al abrir el instalador aparece el cartel azul “Windows protegió su PC”, tocá “Más información” y después “Ejecutar de todas formas”. Si no te deja, escribinos por WhatsApp y te ayudamos.",
+  },
+  {
     q: "¿Qué recibo después de comprar?",
     a: "El código de activación y el link de descarga por mail.",
   },
