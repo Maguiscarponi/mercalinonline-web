@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import { Play } from "lucide-react";
 import { track } from "@/lib/track";
+import { COLOR_GRUPO } from "@/lib/modulos-colores";
 
 export type ModuloCarpeta = {
   nombre: string;
@@ -20,14 +21,8 @@ export type ModuloCarpeta = {
   duracion: string | null;
 };
 
-// Color de la solapa por grupo (los mismos cinco grupos del menú de la app).
-const TAB: Record<string, string> = {
-  Operación: "#e1251b",
-  Catálogo: "#f2a51c",
-  Gestión: "#232120",
-  Análisis: "#0a7d3e",
-  Sistema: "#fdfbf5",
-};
+// Color de la solapa por grupo: los mismos del menú de la app y de los videos.
+const TAB = COLOR_GRUPO;
 const GRUPOS = Object.keys(TAB);
 
 export default function CarpetasClient({ modulos }: { modulos: ModuloCarpeta[] }) {
@@ -136,7 +131,7 @@ export default function CarpetasClient({ modulos }: { modulos: ModuloCarpeta[] }
           <div
             onClick={(e) => e.stopPropagation()}
             className="rt-window my-auto w-full max-w-[1100px]"
-            style={{ "--sh": "10px", "--sh-color": "#e1251b" } as CSSProperties}
+            style={{ "--sh": "10px", "--sh-color": TAB[m.grupo] ?? "#e1251b" } as CSSProperties}
           >
             <div className="rt-window-bar">
               <span className="truncate">

@@ -42,7 +42,7 @@ export default async function ProductoDetalle({ params }: { params: Promise<{ sl
         </nav>
 
         <div className="mt-6 grid gap-10 lg:grid-cols-[1.1fr_1fr]">
-          <div className="rt-card overflow-hidden">
+          <div className="rt-card self-start overflow-hidden">
             <ProductFrame label={product.name} src={product.imageUrl} aspect="aspect-square" bordered={false} />
           </div>
 

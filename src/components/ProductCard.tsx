@@ -26,7 +26,7 @@ export default function ProductCard({ product }: { product: Product }) {
       )}
 
       <div className="overflow-hidden border-b-[3px] border-ink">
-        <ProductFrame label={product.name} src={product.imageUrl} aspect="aspect-[4/3]" bordered={false} />
+        <ProductFrame label={product.name} src={product.imageUrl} aspect="aspect-[4/3]" fit="cover" bordered={false} />
       </div>
 
       <div className="flex flex-1 flex-col p-5">

@@ -10,7 +10,18 @@ import { track } from "@/lib/track";
  * con carga diferida); el video recién se descarga cuando alguien lo abre, así
  * los 19 videos no pesan nada en la carga de la página.
  */
-export default function VideoModal({ src, poster, titulo }: { src: string; poster: string; titulo: string }) {
+export default function VideoModal({
+  src,
+  poster,
+  titulo,
+  color = "#e1251b",
+}: {
+  src: string;
+  poster: string;
+  titulo: string;
+  /** Color del grupo del módulo: pinta la sombra del marco y el botón de play. */
+  color?: string;
+}) {
   const [abierto, setAbierto] = useState(false);
   const cerrar = useCallback(() => setAbierto(false), []);
 
@@ -39,7 +50,8 @@ export default function VideoModal({ src, poster, titulo }: { src: string; poste
         type="button"
         onClick={abrir}
         aria-label={`Ver el video de ${titulo}`}
-        className="group relative mt-5 block w-full overflow-hidden border-[3px] border-ink bg-ink shadow-[6px_6px_0_#e1251b] transition-transform hover:-translate-y-0.5"
+        className="group relative mt-5 block w-full overflow-hidden border-[3px] border-ink bg-ink transition-transform hover:-translate-y-0.5"
+        style={{ boxShadow: `6px 6px 0 ${color}` }}
       >
         {poster ? (
           <Image
@@ -56,7 +68,7 @@ export default function VideoModal({ src, poster, titulo }: { src: string; poste
         {/* El play va en la esquina: en el centro de la portada está el nombre del módulo. */}
         <span className="absolute inset-0 bg-ink/0 transition-colors group-hover:bg-ink/15" />
         <span className="absolute bottom-3 right-3 flex h-12 w-12 items-center justify-center rounded-full border-[3px] border-ink bg-cream shadow-[0_0_0_2px_var(--cream)] transition-transform group-hover:scale-110">
-          <Play className="ml-0.5 h-5 w-5 fill-brand text-brand" />
+          <Play className="ml-0.5 h-5 w-5 fill-current" style={{ color }} />
         </span>
         <span className="tag-numbered absolute bottom-3 left-3 bg-ink px-2 py-1 text-[11px] uppercase text-cream">
           Ver cómo se usa
@@ -89,7 +101,8 @@ export default function VideoModal({ src, poster, titulo }: { src: string; poste
               autoPlay
               playsInline
               preload="none"
-              className="block aspect-video w-full border-[3px] border-ink bg-ink shadow-[10px_10px_0_#e1251b]"
+              className="block aspect-video w-full border-[3px] border-ink bg-ink"
+              style={{ boxShadow: `10px 10px 0 ${color}` }}
             >
               Tu navegador no puede reproducir este video.
             </video>

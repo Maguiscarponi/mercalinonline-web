@@ -1,15 +1,7 @@
 import CapturaModal from "./CapturaModal";
 import VideoModal from "./VideoModal";
 import { GRUPOS, medidas, video } from "@/lib/modulos-data";
-
-// Mismo color de solapa por grupo que las carpetas de la home.
-const TAB: Record<string, string> = {
-  Operación: "#e1251b",
-  Catálogo: "#f2a51c",
-  Gestión: "#232120",
-  Análisis: "#0a7d3e",
-  Sistema: "#fdfbf5",
-};
+import { COLOR_GRUPO } from "@/lib/modulos-colores";
 
 export default function Modulos() {
   const totalModulos = GRUPOS.reduce((n, g) => n + g.modulos.length, 0);
@@ -27,7 +19,7 @@ export default function Modulos() {
         {GRUPOS.map((grupo) => (
           <div key={grupo.label}>
             <div className="flex items-center gap-3">
-              <span className="h-3.5 w-7 border-2 border-ink" style={{ background: TAB[grupo.label] }} />
+              <span className="h-3.5 w-7 border-2 border-ink" style={{ background: COLOR_GRUPO[grupo.label] }} />
               <h3 className="tag-numbered text-[15px] uppercase text-ink">{grupo.label}</h3>
               <span className="tag-numbered text-[12px] uppercase text-ink-mute">
                 {grupo.modulos.length} {grupo.modulos.length === 1 ? "módulo" : "módulos"}
@@ -43,7 +35,7 @@ export default function Modulos() {
                   <article key={m.nombre} className="rt-card flex flex-col p-6">
                     <span
                       className="tag-numbered self-start border-2 border-ink px-2.5 py-1 text-[11px] uppercase"
-                      style={{ background: TAB[grupo.label], color: grupo.label === "Gestión" || grupo.label === "Operación" || grupo.label === "Análisis" ? "#fff" : "#232120" }}
+                      style={{ background: COLOR_GRUPO[grupo.label], color: "#fff" }}
                     >
                       {grupo.label}
                     </span>
@@ -59,7 +51,7 @@ export default function Modulos() {
                     </ul>
 
                     {vid ? (
-                      <VideoModal src={vid.src} poster={vid.poster} titulo={m.nombre} />
+                      <VideoModal src={vid.src} poster={vid.poster} titulo={m.nombre} color={COLOR_GRUPO[grupo.label]} />
                     ) : med && (
                       <CapturaModal
                         src={`/capturas/${m.archivo}`}
