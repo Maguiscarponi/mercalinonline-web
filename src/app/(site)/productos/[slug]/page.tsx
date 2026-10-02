@@ -47,8 +47,8 @@ export default async function ProductoDetalle({ params }: { params: Promise<{ sl
           </div>
 
           <div>
-            <div className="tag-numbered flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11.5px] uppercase">
-              {["Pago único", "7 días gratis", "Soporte por WhatsApp", "Actualizaciones incluidas"].map((t) => (
+            <div className="tag-numbered grid grid-cols-1 justify-start gap-x-6 gap-y-1.5 text-[11.5px] uppercase sm:grid-cols-[auto_auto]">
+              {["Licencia de por vida", "7 días gratis", "Actualizaciones incluidas", "Soporte por WhatsApp"].map((t) => (
                 <span key={t}>
                   <span className="text-brand">✦</span> {t}
                 </span>

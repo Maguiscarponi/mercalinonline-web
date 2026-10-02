@@ -84,7 +84,7 @@ export default function SiteFooter() {
                 </span>
               </div>
               <p className="mt-4 max-w-[30ch] text-[16px] leading-relaxed text-cream/70">
-                Sistema de gestión para comercios. Pago único, con actualizaciones incluidas.
+                Sistema de gestión para comercios. Licencia de por vida, con actualizaciones incluidas.
               </p>
             </div>
 

@@ -11,7 +11,7 @@ import { planCuotas, pesos } from "@/lib/cuotas";
    sale del producto en la base, no está escrito acá. Las dos puertas de
    conversión (probar y comprar) llevan los mismos data-track que antes. */
 
-const INCLUYE = ["Actualizaciones incluidas", "Soporte por WhatsApp", "Windows"];
+const INCLUYE = ["Licencia de por vida", "Actualizaciones incluidas", "Soporte por WhatsApp", "Windows"];
 
 export default function Precio({ product }: { product: Product }) {
   const precio = pesos(product.priceArs);
@@ -29,8 +29,12 @@ export default function Precio({ product }: { product: Product }) {
 
       <div className="mx-auto grid max-w-[1240px] items-center gap-12 px-5 pb-20 pt-10 sm:px-8 lg:grid-cols-[1.2fr_1fr] lg:gap-10 lg:pt-14">
         <div className="min-w-0">
-          <p className="rt-label">Precio de lanzamiento</p>
-          <p className="font-slab mt-2 text-[clamp(64px,12vw,152px)] leading-none tracking-[-0.02em] text-ink">{precio}</p>
+          {/* Etiqueta con peso propio (borde, sombra dura y un toque girada): como
+              texto chico en rojo pasaba desapercibida. */}
+          <p className="font-slab inline-block -rotate-2 border-[3px] border-ink bg-brand px-4 py-2 text-[clamp(18px,2.2vw,28px)] uppercase leading-none tracking-[0.02em] text-paper-warm shadow-[5px_5px_0_var(--ink)]">
+            Precio de lanzamiento
+          </p>
+          <p className="font-slab mt-6 text-[clamp(64px,12vw,152px)] leading-none tracking-[-0.02em] text-ink">{precio}</p>
           <p className="font-slab mt-2 text-[clamp(30px,3.7vw,52px)] leading-[1.04] text-brand">Pago único.</p>
           <p className="font-slab text-[clamp(30px,3.7vw,52px)] leading-[1.04] text-ink">Sin abono mensual.</p>
 

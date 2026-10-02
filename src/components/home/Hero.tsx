@@ -23,7 +23,8 @@ const ITEMS = [
   ["1 x Alfajor de dulce de leche", "$2.000"],
 ];
 
-const GARANTIAS = ["Pago único", "Actualizaciones incluidas", "Soporte por WhatsApp"];
+// De a pares: se muestran en dos columnas, así nunca queda una suelta abajo.
+const GARANTIAS = ["Pago único", "Actualizaciones incluidas", "Soporte por WhatsApp", "Licencia de por vida"];
 
 export default function Hero() {
   return (
@@ -64,7 +65,7 @@ export default function Hero() {
             </Link>
           </div>
 
-          <ul className="tag-numbered mt-9 flex flex-wrap gap-x-7 gap-y-2 text-[12.5px] uppercase text-ink-soft">
+          <ul className="tag-numbered mt-9 grid grid-cols-1 justify-start gap-x-8 gap-y-2 text-[12.5px] uppercase text-ink-soft sm:grid-cols-[auto_auto]">
             {GARANTIAS.map((g) => (
               <li key={g}>
                 <span className="text-brand">✦</span> {g}

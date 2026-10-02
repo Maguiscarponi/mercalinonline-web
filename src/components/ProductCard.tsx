@@ -36,7 +36,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
         <div className="tag-numbered mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[11px] uppercase">
           <span>
-            <span className="text-brand">✦</span> Pago único
+            <span className="text-brand">✦</span> Licencia de por vida
           </span>
           <span>
             <span className="text-brand">✦</span> 7 días gratis
